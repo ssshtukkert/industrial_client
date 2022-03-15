@@ -2,7 +2,7 @@
   <q-layout view="lHh Lpr lFf">
     <q-header elevated class="bg-white">
       <q-toolbar>
-        <q-btn
+        <!-- <q-btn
          class="bg-grey-5"
           flat
           dense
@@ -10,7 +10,7 @@
           icon="menu"
           aria-label="Menu"
           @click="toggleLeftDrawer"
-        />
+        /> -->
         <q-toolbar-title>
          <Header/>
         </q-toolbar-title>
@@ -19,7 +19,6 @@
 
     <q-drawer
       v-model="leftDrawerOpen"
-      show-if-above
       bordered
     >
       <q-list>

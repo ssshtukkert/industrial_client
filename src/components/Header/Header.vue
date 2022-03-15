@@ -1,18 +1,29 @@
 <template>
-        <div class="row">
-            <div class=" col-1">
+        <div class="flex">
+            <div class=" ">
                 <img class="q-mt-xs" src="~components/Header/logo.svg">
             </div>
-            <div class="col-10">
+            <div class="">
             </div>
-            <div class="col-1 ">
+            <div class="flex">
+            <Menu
+                show-in above
+            />
+            </div>
+            <div class="">
                 <img class="tri" src="~components/Header/triangle.svg">
             </div>
         </div>
 </template>
 
 <script>
+import Menu from '../Menu/menu.vue';
+
 export default {
+  name: 'Header',
+  components: {
+    Menu,
+  },
 
 };
 </script>
