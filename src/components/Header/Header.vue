@@ -1,14 +1,12 @@
 <template>
-        <div class="flex">
+        <div class="flex justify-between no-wrap">
             <div class=" ">
                 <img class="q-mt-xs" src="~components/Header/logo.svg">
             </div>
             <div class="">
             </div>
-            <div class="flex">
-            <Menu
-                show-in above
-            />
+            <div class="flex ">
+            <!-- <Menu/> -->
             </div>
             <div class="">
                 <img class="tri" src="~components/Header/triangle.svg">
@@ -17,12 +15,12 @@
 </template>
 
 <script>
-import Menu from '../Menu/menu.vue';
+// import Menu from '../Menu/menu.vue';
 
 export default {
   name: 'Header',
   components: {
-    Menu,
+    // Menu,
   },
 
 };

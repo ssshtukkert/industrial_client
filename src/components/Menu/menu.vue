@@ -1,5 +1,5 @@
 <template>
-    <div class="flex flex-row">
+    <div class=" menu ">
       <menu-item
           v-for="link in menuItem"
           :key="link.title"
@@ -20,7 +20,7 @@ const linksList = [
   {
     title: 'Производство',
     icon: 'hub',
-    link: '/plant',
+    link: '/shop',
   },
   {
     title: 'Вентиляция',
@@ -52,3 +52,9 @@ export default defineComponent({
 
 });
 </script>
+<style scoped>
+.menu{
+  display: flex;
+  justify-content: space-between
+}
+</style>

@@ -1,8 +1,8 @@
 <template>
-  <q-layout view="lHh Lpr lFf">
-    <q-header elevated class="bg-white">
+  <q-layout view="hHh lpR fFf">
+    <q-header elevated class="bg-white"  >
       <q-toolbar>
-        <!-- <q-btn
+        <q-btn
          class="bg-grey-5"
           flat
           dense
@@ -10,35 +10,91 @@
           icon="menu"
           aria-label="Menu"
           @click="toggleLeftDrawer"
-        /> -->
+        />
         <q-toolbar-title>
          <Header/>
         </q-toolbar-title>
       </q-toolbar>
+      <q-tabs
+      v-model="tab"
+      align="right"
+      class="text-black "
+      inline-label
+      mobile-arrows
+      narrow-indicator
+      indicator-color="white"
+      active-bg-color="grey-4"
+      >
+        <q-route-tab
+         name="home"
+          :to="{ name: 'home' }"
+           icon='home'
+          label="Главная"
+        />
+        <q-route-tab
+         name="plant"
+         :to="{ name: 'plant' }"
+          label="Производство"
+        />
+        <q-route-tab
+         name="vent"
+         :to="{ name: 'vent' }"
+         label="Вентиляция"
+        />
+        <q-route-tab
+         name="lab"
+         :to="{ name: 'labPage', params: 'shopLab' }"
+         label="Лаборатория"
+         />
+
+      </q-tabs>
     </q-header>
 
     <q-drawer
       v-model="leftDrawerOpen"
       bordered
+      side="left"
+      overlay
+      behavior="mobile"
+      elevated
     >
       <q-list>
         <q-item-label
           header
         >
-
         </q-item-label>
 
-        <!-- <EssentialLink
+        <EssentialLink
           v-for="link in essentialLinks"
           :key="link.title"
           v-bind="link"
-        /> -->
+        />
       </q-list>
     </q-drawer>
 
     <q-page-container>
       <router-view />
     </q-page-container>
+
+    <q-footer reveal bordered class="bg-grey-1 text-black ">
+      <q-toolbar>
+        <q-toolbar-title>
+          <!-- <q-avatar>
+            <img src="https://cdn.quasar.dev/logo-v2/svg/logo-mono-white.svg">
+          </q-avatar> -->
+          <small>
+            © Nevatom 2020 - 2022
+            <a href="mailto:nkaravan@nevatom.ru" style="text-decoration: none; color:black">
+              <q-icon name="mail"/> Karavan Nickolay  </a>
+              <q-badge
+              color="grey"
+              >версия {{version}}
+              </q-badge>
+            </small>
+        </q-toolbar-title>
+      </q-toolbar>
+    </q-footer>
+
   </q-layout>
 </template>
 
@@ -92,6 +148,7 @@ const linksList = [
 
 import { defineComponent, ref } from 'vue';
 import Header from 'components/Header/Header.vue';
+import * as packageInfo from '../../package.json';
 
 export default defineComponent({
   name: 'MainLayout',
@@ -103,8 +160,11 @@ export default defineComponent({
 
   setup() {
     const leftDrawerOpen = ref(false);
-
+    const { version } = packageInfo;
+    const selectedTab = 'lab';
     return {
+      tab: ref(selectedTab),
+      version,
       essentialLinks: linksList,
       leftDrawerOpen,
       toggleLeftDrawer() {
