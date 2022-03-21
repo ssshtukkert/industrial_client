@@ -43,7 +43,7 @@
         />
         <q-route-tab
          name="lab"
-         :to="{ name: 'labPage', params: 'shopLab' }"
+         :to="{ name: 'lab', params: {id: 'shopLab'} }"
          label="Лаборатория"
          />
 

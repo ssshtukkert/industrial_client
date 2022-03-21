@@ -8,7 +8,7 @@ const routes = [
       { path: '/plant', name: 'plant', component: () => import('src/pages/plant/shopPlant.vue') },
       { path: '/vent', name: 'vent', component: () => import('pages/vent/index.vue') },
       // ---------------------------------LAB-------------------------------------------------------------------
-      { path: '/lab/:id', name: 'labPage', component: () => import('src/pages/lab/shopLab.vue') },
+      { path: '/lab/:id', name: 'lab', component: () => import('src/pages/lab/shopLab.vue') },
       { path: '/lab/recup-par', component: () => import('src/pages/lab/lab-recuperator/recupPar.vue') },
       { path: '/lab/recup-online', component: () => import('src/pages/lab/lab-recuperator/recupOnline.vue') },
       { path: '/lab/recup-history', component: () => import('src/pages/lab/lab-recuperator/recupHistory.vue') },
