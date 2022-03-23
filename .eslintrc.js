@@ -58,6 +58,9 @@ module.exports = {
     'no-nested-ternary': 'off',
     'max-classes-per-file': 'off',
     'max-len' : 'off',
+    'no-console': 'off',
+    'func-names': 'off',
+
 
     'import/first': 'off',
     'import/named': 'error',

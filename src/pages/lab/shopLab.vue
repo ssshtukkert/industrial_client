@@ -1,6 +1,5 @@
 <template lang="ru">
     <div class="q-pa-md row items-start q-gutter-md">
-        <!-- <MainRecup/> -->
         <MainRecup/>
     </div>
 </template>

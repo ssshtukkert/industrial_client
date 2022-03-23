@@ -68,9 +68,8 @@
 
       <q-separator dark />
 
-      <q-card-actions>
-        <!-- <q-btn flat>Action 1</q-btn>
-        <q-btn flat>Action 2</q-btn> -->
+      <q-card-actions class="bg-grey-4">
+        <q-btn color="teal" >Применить</q-btn>
       </q-card-actions>
     </q-card>
     </div>
@@ -85,7 +84,7 @@ export default {
     'height',
   ],
   setup(props) {
-    const optionsNomKoef = [0, 1, 2];
+    const optionsNomKoef = ['0,67', '1', '1,5'];
     const optionsSeason = ['Лето', 'Зима'];
     const optionsMode = ['Вытяжка 25°С/<30%, Приток 5°С/~%', 'Вытяжка 20°С/50%, Приток 20°С/50%', 'Вытяжка 22°С/45%, Приток -5°С/~%',
       'Вытяжка 25°С/50%, Приток 5°С/70%', 'Вытяжка 25°С/60%, Приток -3°С/90%', 'Вытяжка 25°С/50%, Приток 35°С/40%', 'Вытяжка 25°С/50%, Приток 35°С/50%'];

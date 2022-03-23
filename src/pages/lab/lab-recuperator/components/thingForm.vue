@@ -60,8 +60,7 @@
       <q-separator dark />
 
       <q-card-actions class="bg-grey-4">
-        <!-- <q-btn flat>Action 1</q-btn>
-        <q-btn flat>Action 2</q-btn> -->
+        <q-btn color="teal"  >Применить</q-btn>
       </q-card-actions>
     </q-card>
     </div>
