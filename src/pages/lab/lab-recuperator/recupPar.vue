@@ -14,32 +14,29 @@
     </div>
 </template>
 <script>
-import { ref, onMounted, onBeforeUnmount } from 'vue';
+import {
+  ref, onMounted, onBeforeUnmount, inject,
+} from 'vue';
 import Mainform from './components/MainForms.vue';
 import ThingForm from './components/thingForm.vue';
 import MachineFields from './components/machineFields.vue';
-
-let socket = null;
 
 export default {
   components: { Mainform, ThingForm, MachineFields },
   name: 'recupPar',
   setup() {
-    const port = 1880;
+    const {
+      WebSocket_Init, WebSocket_Close, WebSocket_Send, WebSocket_Listen,
+    } = inject('store');
     onMounted(() => {
-      socket = new WebSocket(`ws://${window.location.hostname}:${port}/recup`);
-      socket.onopen = function () {
-        socket.send(JSON.stringify({ getMain: 'onopen' }));
-      };
+      WebSocket_Init('recup', { getMain: 1 });
+      WebSocket_Listen();
     });
     onBeforeUnmount(() => {
-      // Close connection
-      socket.close();
-      // Destroy the WebSocket instance object
-      socket = null;
+      WebSocket_Close();
     });
     function clicked() {
-      socket.send(JSON.stringify({ getMain: 'click' }));
+      WebSocket_Send({ getMain: 'click' });
     }
     const colorField = 'teal';
     const radioCheck = ref('RRK');

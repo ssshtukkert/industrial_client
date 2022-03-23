@@ -15,13 +15,13 @@
               <div>
                 <q-icon name="info" color="green" size="100px" />
               </div>
-              <div>Работа</div>
+              <div>Работа щита</div>
           </div>
            <div class="flex column items-center">
               <div>
                 <q-icon name="info" color="grey" size="100px" />
               </div>
-              <div>Работа2</div>
+              <div>В работе</div>
           </div>
           <div class="flex column items-center">
               <div>
