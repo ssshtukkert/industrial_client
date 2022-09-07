@@ -1,18 +1,11 @@
 <template >
-    <div class=" q-gutter-md q-pa-md flex flex row">
-       <MachineFields
-       @click="clicked"
-       />
-       <ThingForm
-       :colorField=colorField
-       :radioCheck=radioCheck
-       />
-        <Mainform
-       :colorField=colorField
-       :height=height
-       />
-    </div>
+  <div class=" q-gutter-md q-pa-md flex flex row">
+    <MachineFields @click="clicked" />
+    <ThingForm :colorField=colorField :radioCheck=radioCheck />
+    <Mainform :colorField=colorField :height=height />
+  </div>
 </template>
+
 <script>
 import {
   ref, onMounted, onBeforeUnmount, inject,
@@ -51,7 +44,7 @@ export default {
 };
 </script>
 <style scoped>
-.param{
-    min-height: 1500;
+.param {
+  min-height: 1500;
 }
 </style>
