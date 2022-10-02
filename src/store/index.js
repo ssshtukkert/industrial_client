@@ -1,7 +1,6 @@
 import { reactive } from 'vue';
-
-// import { CheckDataJson } from './fun/CheckData/CheckData.js';
-// import { NotifyMessage } from './fun/Notify/Notify';
+import axios from 'axios';
+import ControlVU from '../../../industrial_server/classes/ControlVU.js';
 
 const state = reactive({
   portDefault: 3080,
@@ -29,6 +28,18 @@ const state = reactive({
 //   // }
 //   return true;
 // }
+const host = 'http://10.154.152.88:3001';
+
+function WebSocket_UpServer(onopenMessage) {
+  console.log('Настроена связь с WebSocketServer');
+  const ws = new WebSocket('ws://10.154.152.88:3080/wss');
+  ws.onopen = function () {
+    ws.send(JSON.stringify(onopenMessage));
+  };
+  const serverName = 'wss';
+  state.sockets[serverName] = ws;
+  return true;
+}
 function WebSocket_Create(name, onopenMessage) {
   console.log(`Создан WebSocket: ${name}`);
   const ws = new WebSocket(`ws://10.154.152.88:1880/${name}`);
@@ -64,12 +75,28 @@ function isOpen(ws) { return ws.readyState === ws.OPEN; }
 //   state.socket.close();
 //   state.socket = null;
 // }
+// закрывает вебсокет
 function WebSocket_Close(name) {
   state.sockets[name].close();
   state.sockets[name] = null;
   console.log(`Удален WebSocket: ${name}`);
   console.log(state.sockets);
 }
+// возвращает метаданные аварийных сообщений (зашиты в сервер)
+function getDataAlarms() {
+  return ControlVU.getData();
+}
+function getDataAlarm(id) {
+  const array = getDataAlarms();
+  for (let index = 0; index < array.length; index += 1) {
+    const element = array[index];
+    if (element.id === id) {
+      return element;
+    }
+  }
+  return null;
+}
+// отправляет сообщение по вебсокету name
 function WebSocket_Send(name, json) {
   state.sockets[name].send(JSON.stringify(json));
 }
@@ -109,17 +136,104 @@ function WebSocket_Listen(name, fun) {
 
 function getCurrentDate() {
   const currentDate = new Date();
-  return `${currentDate.toLocaleDateString()} ${currentDate.toLocaleTimeString()}`;
+  // .toLocaleFormat('%Y-%m-%d %h:%i:%s');
+  // `${currentDate.toLocaleDateString()} ${currentDate.toLocaleTimeString()}`
+  let day = currentDate.getDate();
+  if (day < 10) {
+    day = `0${day}`;
+  }
+  let month = currentDate.getMonth() + 1;
+  if (month < 10) {
+    month = `0${month}`;
+  }
+  const year = currentDate.getFullYear();
+  let h = currentDate.getHours();
+  if (h < 10) {
+    h = `0${h}`;
+  }
+  let m = currentDate.getMinutes();
+  if (m < 10) {
+    m = `0${m}`;
+  }
+  let s = currentDate.getSeconds();
+  if (s < 10) {
+    s = `0${s}`;
+  }
+  const format = `${year}-${month}-${day} ${h}:${m}:${s}`;
+  return format;
 }
 
+function getCurrentTime() {
+  const currentDate = new Date();
+  let h = currentDate.getHours();
+  if (h < 10) {
+    h = `0${h}`;
+  }
+  let m = currentDate.getMinutes();
+  if (m < 10) {
+    m = `0${m}`;
+  }
+  let s = currentDate.getSeconds();
+  if (s < 10) {
+    s = `0${s}`;
+  }
+  const format = `${h}:${m}:${s}`;
+  return format;
+}
+
+// возвращает свойство элемента из списка по id идентификатору
+function getProp(array, id, prop) {
+  for (let index = 0; index < array.length; index += 1) {
+    const element = array[index];
+    if (element.id === id) {
+      return element[prop];
+    }
+  }
+  return id;
+}
+// возвращает id элемента из списка по соответствующему свойству
+function getId(array, prop, value) {
+  for (let index = 0; index < array.length; index += 1) {
+    const element = array[index];
+    if (element[prop] === value) {
+      return element.id;
+    }
+  }
+  return -1;
+}
+// запросы
+// запрос категорий материалов
+function getMaterialsCategories() {
+  const rows = [];
+  axios
+    .get(`${host}/services/genprice/materials_categories`).then((response) => {
+      for (let index = 0; index < response.data.length; index += 1) {
+        const m = response.data[index];
+        rows.push({
+          name: m.name,
+        });
+      }
+      return rows;
+    });
+}
+
+// валидация
+const validationName = [(val) => (val && val.length > 0) || 'Введите наименование'];
 export default {
-  // SetSocket,
-  // WebSocket_Init,
+  host,
+  WebSocket_UpServer,
   WebSocket_Close,
-  WebSocket_Send, // WebSocket_Send,
+  WebSocket_Send,
   WebSocket_Listen,
   WebSocket_Create,
   isOpen,
   state,
   getCurrentDate,
+  getCurrentTime,
+  getDataAlarms,
+  getDataAlarm,
+  getProp,
+  getId,
+  getMaterialsCategories,
+  validationName,
 };

@@ -2,36 +2,36 @@
     <div >
     <q-card class="my-card bg-secondary text-white">
       <q-card-section>
-        <div class="text-h6">Основные параметры</div>
+        <div class="text-h6">Управление</div>
       </q-card-section>
 
       <q-separator dark />
 
       <q-card-section class="my-card bg-white text-black flex justify-between items-baseline">
           <div >
-              <q-btn color="amber" label="Пуск / Стоп" />
+              <q-btn color="green" label="Пуск / Стоп" />
           </div>
           <div class="flex column items-center" >
               <div>
-                <q-icon name="info" color="green" size="100px" />
+                <q-icon name="info" color="yellow" size="100px" />
               </div>
-              <div>Работа щита</div>
+              <div>Дежурный</div>
           </div>
            <div class="flex column items-center">
               <div>
-                <q-icon name="info" color="grey" size="100px" />
+                <q-icon name="emoji_objects" color="grey" size="100px" />
               </div>
               <div>В работе</div>
           </div>
           <div class="flex column items-center">
               <div>
-                <q-icon name="warning" color="red" size="100px" />
+                <q-icon name="warning" color="grey" size="100px" />
               </div>
             <div>Авария</div>
           </div>
-          <div >
+          <!-- <div >
               <q-btn color="red" label="Сброс аварии" />
-          </div>
+          </div> -->
       </q-card-section>
       <q-separator dark />
 

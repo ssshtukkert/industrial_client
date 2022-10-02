@@ -1,27 +1,29 @@
-<template lang="ru">
-  <div class="q-pa-md row items-start q-gutter-md">
-    <q-card class="my-card">
-      <q-card-section class="bg-teal text-white">
-        <div class="text-h6">Стэнд подготовки воздуха</div>
-      </q-card-section>
-
-        <q-card-actions vertical align="right">
-        <q-btn to="/lab/recup-par" flat>Параметры</q-btn>
-        <q-btn to="/lab/recup-online" flat>Онлайн график</q-btn>
-        <q-btn to="/lab/recup-history" flat>Архивный график</q-btn>
-      </q-card-actions>
-    </q-card>
-    </div>
+<template>
+  <q-page class="full-width" style="margin: 0px;">
+    <MachineFields @click="clicked" style="margin: 10px;"/>
+    <ThingForm :colorField=colorField :radioCheck=radioCheck style="margin: 10px;"/>
+    <Mainform :colorField=colorField :height=height style="margin: 10px;"/>
+    <FreeMode :colorField=colorField :height=height style="margin: 10px;"/>
+  </q-page>
 </template>
+
 <script>
+import Mainform from './components/MainForms.vue';
+import ThingForm from './components/thingForm.vue';
+import MachineFields from './components/machineFields.vue';
+import FreeMode from './components/freeMode.vue';
+
 export default {
   name: 'MainRecup',
+  components: {
+    Mainform, ThingForm, MachineFields, FreeMode,
+  },
   setup() {
     return {
     };
   },
 };
 </script>
-<style scoped>
+<style>
 
 </style>

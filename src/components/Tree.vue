@@ -1,80 +1,102 @@
+<!-- eslint-disable no-restricted-syntax -->
+<!-- eslint-disable no-undef -->
 <template>
   <div class="q-pa-md q-gutter-sm text-h5 text-primary">
-    <q-tree
-    :nodes="props"
-    default-expand-all
-    v-model:selected="selected"
-    node-key="label"
-    no-connectors
-    >
+    <q-tree :nodes="data" v-model:selected="selected" v-model:expanded="expanded" node-key="label" dense
+      no-selection-unset color="primary" text-color="black" selected-color="primary">
+      <!-- accordion -->
       <template v-slot:header-root="prop">
-        <div class="row items-center">
+        <q-item class="fit" v-ripple>
+          <div v-if="prop.node.icon">
+            <q-icon :name="prop.node.icon" size="28px" class="q-mr-sm" />
+          </div>
+          {{ prop.node.label }}
+        </q-item>
+        <!-- <div class="row items-center">
           <div>
             {{ prop.node.label }}
             <q-badge color="orange" class="q-ml-sm">New!</q-badge>
           </div>
-        </div>
+        </div> -->
+      </template>
+      <template v-slot:default-header="prop">
+        <q-item class="fit" v-ripple clickable :to="prop.node.to">
+          <div v-if="prop.node.icon">
+            <q-icon :name="prop.node.icon" size="28px" class="q-mr-sm" />
+          </div>
+          {{ prop.node.label }}
+        </q-item>
       </template>
     </q-tree>
   </div>
 </template>
 
 <script>
-import { ref } from 'vue';
+import { ref, defineComponent } from 'vue';
 
-export default {
-  setup() {
+export default defineComponent({
+  props: {
+    data: {
+      type: Array,
+    },
+  },
+  setup(props) {
     const selected = ref(null);
+    function getNodeIsLabel(pathEl) {
+      function getPartIsLabel(element, node) {
+        const arr = node.split('/');
+        arr.shift();
+        for (let i = 0; i < arr.length; i += 1) {
+          if (arr[i] === pathEl) {
+            return element.label;
+          }
+        }
+        return null;
+      }
+      const nodes = [];
+      const temp = [];
+      temp.push(props.data[0]);
+      while (temp.length !== 0) {
+        const current = temp[0];
+        if (Object.prototype.hasOwnProperty.call(current, 'children')) {
+          for (let index = 0; index < current.children.length; index += 1) {
+            temp.push(current.children[index]);
+          }
+        }
+        nodes.push(current);
+        temp.shift();
+      }
+      for (let index = 0; index < nodes.length; index += 1) {
+        const element = nodes[index];
 
+        if (Object.prototype.hasOwnProperty.call(element, 'node')) {
+          const res = getPartIsLabel(element, element.node);
+          if (res != null) {
+            return res;
+          }
+        } else if (Object.prototype.hasOwnProperty.call(element, 'to')) {
+          const res = getPartIsLabel(element, element.to);
+          if (res != null) {
+            return res;
+          }
+        }
+      }
+      return nodes;
+    }
+    function expand(p) {
+      const arr = p.split('/');
+      arr.shift();
+      for (let index = 0; index < arr.length; index += 1) {
+        const node = getNodeIsLabel(arr[index]);
+        this.expanded.push(node);
+      }
+    }
     return {
+      expand,
       selected,
-
-      props: [
-        {
-          label: 'Навигация',
-          selectable: false,
-          icon: 'restaurant_menu',
-          header: 'root',
-          children: [
-            { label: 'Главная', icon: 'home' },
-            {
-              label: 'Производство',
-              icon: 'restaurant_menu',
-              selectable: false,
-              children: [
-                { label: 'Quality ingredients' },
-                { label: 'Good recipe' },
-              ],
-            },
-            {
-              label: 'Вентиляция',
-              icon: 'room_service',
-              selectable: false,
-              children: [
-                { label: 'Вент. установка №1' },
-                { label: 'Вент. установка №2' },
-              ],
-            },
-            {
-              label: 'Лаборатория',
-              icon: 'photo',
-              selectable: false,
-              children: [
-                {
-                  label: 'Стенд подготовки воздуха',
-                },
-                {
-                  label: 'Стенд А',
-                },
-                {
-                  label: 'Лабораторная установка №1',
-                },
-              ],
-            },
-          ],
-        },
-      ],
+      props,
+      expanded: ref([props.data[0].label]),
     };
   },
-};
+});
 </script>

@@ -16,7 +16,6 @@
                         transition-show="flip-up"
                         transition-hide="flip-down"
                         :color=color
-                        rounded
                         outlined
                         :options="optionsRPX"
                         label="RPX"
@@ -31,7 +30,6 @@
                         transition-show="flip-up"
                         transition-hide="flip-down"
                         :color=color
-                        rounded
                         outlined
                         :options="optionsRRK"
                         label="RRK"
@@ -46,7 +44,6 @@
                         transition-show="flip-up"
                         transition-hide="flip-down"
                         :color=color
-                        rounded
                         outlined
                         :options="optionsRPP"
                         label="RPP"
