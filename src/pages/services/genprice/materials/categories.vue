@@ -6,7 +6,6 @@
       </q-card-section>
       <Table ref="table"
       :columnsDef="columns"
-      :rowsDef="rows"
       createNewName="Новая категория"
       :queryAll="getQueryAll()"
       :queryUpdate="getQueryUpdate()"
@@ -70,42 +69,8 @@ export default defineComponent({
       dialog,
       dialogName,
       createAction,
-      createInputNameRules: [
-        (val) => (val && val.length > 0) || 'Введите наименование',
-      ],
       columns,
     };
   },
 });
 </script>
-<style lang="sass">
-.my-sticky-header-column-table
-  /* height or max-height is important */
-
-  tr th
-    position: sticky
-    /* higher than z-index for td below */
-    z-index: 2
-    /* bg color is important; just specify one */
-    background: #fff
-
-  /* this will be the loading indicator */
-  thead tr:last-child th
-    /* height of all previous header rows */
-    top: 48px
-    /* highest z-index */
-    z-index: 3
-  thead tr:first-child th
-    top: 0
-    z-index: 1
-  tr:first-child th:first-child
-    /* highest z-index */
-    z-index: 3
-
-  td:first-child
-    z-index: 1
-
-  td:first-child, th:first-child
-    position: sticky
-    left: 0
-</style>

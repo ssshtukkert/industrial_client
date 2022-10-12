@@ -833,8 +833,8 @@ export default {
       const newS = replaceAt(newSt, 10, '_');
       const newEn = dateEnd.value.replaceAll('.', '-');
       const newE = replaceAt(newEn, 10, '_');
-      routeVU1.value = createRoute('measuresVu1', newS, newE);
-      routeVU2.value = createRoute('measuresVu2', newS, newE);
+      routeVU1.value = createRoute('vu1_chart', newS, newE);
+      routeVU2.value = createRoute('vu2_chart', newS, newE);
     }
     function updateTabPanels() {
       if (chart3.value != null && mountChart[2] === false) {

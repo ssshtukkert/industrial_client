@@ -3,7 +3,7 @@
 <template>
   <div class="q-pa-md q-gutter-sm text-h5 text-primary">
     <q-tree :nodes="data" v-model:selected="selected" v-model:expanded="expanded" node-key="label" dense
-      no-selection-unset color="primary" text-color="black" selected-color="primary">
+      no-selection-unset color="primary" text-color="black" selected-color="primary" tick-strategy="none">
       <!-- accordion -->
       <template v-slot:header-root="prop">
         <q-item class="fit" v-ripple>
@@ -83,12 +83,18 @@ export default defineComponent({
       }
       return nodes;
     }
-    function expand(p) {
+    function expand(p, isIdPAram) {
       const arr = p.split('/');
       arr.shift();
+      if (isIdPAram) {
+        arr.pop();
+      }
       for (let index = 0; index < arr.length; index += 1) {
         const node = getNodeIsLabel(arr[index]);
         this.expanded.push(node);
+      }
+      if (isIdPAram) {
+        selected.value = this.expanded[this.expanded.length - 1];
       }
     }
     return {

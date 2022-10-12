@@ -8,7 +8,7 @@
         :filter="filter" :filter-method="find" virtual-scroll :selected-rows-label="getSelectedString"
         selection="multiple" v-model:selected="selected" binary-state-sort v-model:pagination="pagination"
         :rows-per-page-options="[1]" style="height: 740px"
-        :no-results-label="`По запросу '${filter}' ничего не найдено`" grid-header wrap-cells>
+        :no-results-label="`По запросу '${filter}' ничего не найдено`" grid-header wrap-cells @row-click="selectRow">
         <template v-slot:top>
           <q-card-actions class="fit">
             <q-btn color='primary' label='Создать' @click="createAction" />
@@ -30,38 +30,38 @@
             <div class="text-h6">{{ props.col.label }}</div>
           </q-th>
         </template>
-        <template v-slot:body="props">
-          <q-tr :props="props" @click="selectRow(props.row, props.row.ticket_number)">
-            <q-td align="left">
-              <q-checkbox v-model="props.selected" />
-            </q-td>
-            <q-td key="name" :props="props">
-              <p class="text-h6">{{ props.row.name }}</p>
-            </q-td>
-            <q-td key="cost" :props="props">
-              <div class="text-h6">{{ props.row.cost }}</div>
-            </q-td>
-            <q-td key="category" :props="props">
-              <q-badge color="primary">
-                <div class="text-h6">{{ props.row.category }}</div>
-              </q-badge>
-            </q-td>
-            <q-td key="measure" :props="props">
-              <q-badge color="primary">
-                <div class="text-h6">{{ props.row.measure }}</div>
-              </q-badge>
-            </q-td>
-            <q-td key="article" :props="props">
-              <div class="text-h6">{{ props.row.article }}</div>
-            </q-td>
-            <q-td key="weight" :props="props">
-              <div class="text-h6">{{ props.row.weight }}</div>
-            </q-td>
-          </q-tr>
+        <template v-slot:body-cell="props">
+          <q-td :props="props">
+            <div class="text-h6">
+              {{ props.value }}
+            </div>
+            <q-tooltip v-if="props.row.descript" :delay="800">
+              <template v-slot:default>
+                <div v-if="props.row.descript.length > 0">
+                  <p style="white-space: pre;">
+                    {{ props.row.descript }}
+                  </p>
+                </div>
+              </template>
+            </q-tooltip>
+          </q-td>
+        </template>
+        <template v-slot:body-cell-category="props">
+          <q-td :props="props">
+            <q-badge color="primary">
+              <div class="text-h6">{{ props.row.category }}</div>
+            </q-badge>
+          </q-td>
+        </template>
+        <template v-slot:body-cell-measure="props">
+          <q-td :props="props">
+            <q-badge color="primary">
+              <div class="text-h6">{{ props.row.measure }}</div>
+            </q-badge>
+          </q-td>
         </template>
       </q-table>
     </q-card>
-
     <q-dialog v-model="dialog" persistent>
       <q-card class="bg-secondary text-white q-pt-none" style="width: 900px; max-width: 95vw;">
         <q-card-section>
@@ -110,7 +110,7 @@
         <q-card-actions align="right" class="bg-grey-4 text-black">
           <q-btn v-show="action === 0" class="bg-teal text-white" label="Создать" @click="createConfirmAction"
             :disabled="isValidationConfirm()" />
-            <q-btn v-show="action === 1" class="bg-teal text-white" label="Изменить" @click="changeConfirmAction"
+          <q-btn v-show="action === 1" class="bg-teal text-white" label="Изменить" @click="changeConfirmAction"
             :disabled="isValidationConfirm()" />
           <q-btn class="bg-teal text-white" label="Отмена" v-close-popup @click="cancelConfirm" />
         </q-card-actions>
@@ -389,7 +389,7 @@ export default defineComponent({
     }
     const filter = ref('');
     const filterOptions = ref(columns[0].label);
-    function selectRow(row) {
+    function selectRow(event, row) {
       selected.value.length = 0;
       selected.value.push(row);
     }

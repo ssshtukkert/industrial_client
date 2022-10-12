@@ -31,7 +31,6 @@ import {
   defineComponent,
   ref,
   onMounted,
-  // computed,
 } from 'vue';
 import Header from 'components/Header/Header.vue';
 import Tree from 'components/Tree.vue';
@@ -44,15 +43,23 @@ export default defineComponent({
     Header,
     Tree,
   },
-
-  setup() {
-    const leftDrawerOpen = ref(false);
+  props: {
+    open: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  setup(props) {
     const propsNav = [{
       label: 'Навигация',
       selectable: false,
-      node: '/home',
       children: [
-        { label: 'Главная', icon: 'home', to: '/home' },
+        {
+          label: 'Главная',
+          selectable: true,
+          icon: 'home',
+          to: '/home',
+        },
         {
           label: 'Производство',
           icon: 'precision_manufacturing',
@@ -153,6 +160,10 @@ export default defineComponent({
                     },
                   ],
                 },
+                {
+                  label: 'Настройки',
+                  to: '/services/genprice/settings',
+                },
               ],
             },
           ],
@@ -161,21 +172,30 @@ export default defineComponent({
     }];
     const navigator = ref(null);
     const route = useRoute();
+    const leftDrawerOpen = ref(props.open);
     function update() {
       const p = route.path;
-      navigator.value.expand(p);
+      navigator.value.expand(p, Object.prototype.hasOwnProperty.call(route.params, 'id'));
+    }
+    function hideToggleLeftDrawer() {
+      leftDrawerOpen.value = false;
+    }
+    function toggleLeftDrawer() {
+      leftDrawerOpen.value = !leftDrawerOpen.value;
+      update();
     }
     onMounted(() => {
       update();
     });
     return {
+      hide() {
+        console.log(4);
+      },
       navigator,
       propsNav,
       leftDrawerOpen,
-      toggleLeftDrawer() {
-        leftDrawerOpen.value = !leftDrawerOpen.value;
-        update();
-      },
+      hideToggleLeftDrawer,
+      toggleLeftDrawer,
       click() {
         // eslint-disable-next-line no-console
         // console.log(1);

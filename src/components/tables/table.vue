@@ -1,13 +1,15 @@
 <template>
-  <q-table class="window-height" :rows="rows" :columns="columns" row-key="name" :filter="filter" :filter-method="find"
-    virtual-scroll :selected-rows-label="getSelectedString" selection="multiple" v-model:selected="selected"
-    binary-state-sort v-model:pagination="pagination" :rows-per-page-options="[1]"
-    :no-results-label="`По запросу '${filter}' ничего не найдено`" grid-header wrap-cells :no-data-label="noDataText">
+  <q-table class="window-height fit" :rows="rows" :columns="columns" row-key="name" :filter="filter"
+    :filter-method="find" virtual-scroll :selected-rows-label="getSelectedString" selection="multiple"
+    v-model:selected="selected" binary-state-sort v-model:pagination="pagination" :rows-per-page-options="[1]"
+    :no-results-label="`По запросу '${filter}' ничего не найдено`" grid-header wrap-cells :no-data-label="noDataText"
+    @row-click="selectRow">
     <template v-slot:top>
-      <q-card-actions class="fit">
+      <q-card-actions v-show="!hideButtons" class="fit">
         <q-btn color='primary' label='Создать' @click="createAction" />
-        <q-btn color='primary' label='Изменить' v-show="selected.length === 1" @click="changeAction(selected)" />
+        <q-btn color='primary' label='Изменить' v-show="isOneSelect()" @click="changeAction(selected)" />
         <q-btn color='primary' label='Удалить' v-show="selected.length > 0" @click="deleteAction(selected)" />
+        <slot name="actions" />
         <q-space />
         <q-input class="text-h6" outlined dense debounce="300" color="primary" v-model="filter" clearable
           placeholder="Поиск" style="margin: 10px;">
@@ -27,6 +29,15 @@
         <div class="text-h6">
           {{ props.value }}
         </div>
+        <q-tooltip v-if="props.row.descript" :delay="800">
+            <template v-slot:default>
+              <div v-if="props.row.descript.length > 0">
+              <p style="white-space: pre;">
+                {{ props.row.descript }}
+              </p>
+            </div>
+            </template>
+        </q-tooltip>
       </q-td>
     </template>
   </q-table>
@@ -40,20 +51,21 @@
           <q-input class="fit text-h6" v-model="createInputName" clearable outlined label="Наименование" lazy-rules
             :rules="validationName" />
         </q-card-section>
+        <slot name="content" />
       </q-card-section>
       <q-card-actions align="right" class="bg-grey-4 text-black">
-        <q-btn v-show="action === 0" class="bg-teal text-white" label="Создать" @click="createConfirmAction"
+        <q-btn v-show="action === 0" color="orange" label="Создать" @click="createConfirmAction"
           :disabled="!createInputName" />
-        <q-btn v-show="action === 1" class="bg-teal text-white" label="Изменить" @click="changeConfirmAction"
+        <q-btn v-show="action === 1" color="orange" label="Изменить" @click="changeConfirmAction"
           :disabled="!createInputName" />
-        <q-btn class="bg-teal text-white" label="Отмена" v-close-popup @click="cancelConfirm" />
+        <q-btn color="primary" label="Отмена" v-close-popup @click="cancelConfirm" />
       </q-card-actions>
     </q-card>
   </q-dialog>
   <DialogError ref="de" />
   <DialogConfirm ref="dc">
     <template v-slot:buttons>
-      <q-btn color='primary' label="Да" @click="deleteConfirmAction" />
+      <q-btn color='orange' label="Да" @click="deleteConfirmAction" />
       <q-btn color='primary' label="Отмена" v-close-popup />
     </template>
   </DialogConfirm>
@@ -73,6 +85,10 @@ export default defineComponent({
     DialogConfirm,
   },
   props: {
+    hideButtons: {
+      type: Boolean,
+      default: false,
+    },
     queryAll: {
       type: String,
       required: true,
@@ -133,6 +149,9 @@ export default defineComponent({
     function resetSelect() {
       selected.value.length = 0;
     }
+    function hideDialog() {
+      dialog.value = false;
+    }
     function update(callback) {
       const query_rows = [];
       axios
@@ -163,6 +182,16 @@ export default defineComponent({
       dc.value.setText(`Удалить "${objectsNames}"?`);
       dc.value.show();
     }
+    function getSelect() {
+      return selected.value;
+    }
+    function isOneSelect() {
+      return getSelect().length === 1;
+    }
+    function selectRow(event, row) {
+      selected.value.length = 0;
+      selected.value.push(row);
+    }
     function changeAction(select) {
       const object = select[0];
       dialog.value = true;
@@ -188,17 +217,24 @@ export default defineComponent({
         (col) => ((`${cellValue(col, row)}`).toLowerCase().indexOf(lowerTerms) !== -1),
       ));
     }
+    function getQueryData() {
+      return {
+        name: createInputName.value,
+      };
+    }
+    function showError(text) {
+      de.value.setName('Ошибка');
+      de.value.setText(text);
+      de.value.show();
+    }
     function createConfirmAction() {
-      const query = {};
-      query.name = createInputName.value;
+      const query = getQueryData();
       axios.post(props.queryCreate, query)
         .then((res) => {
           if (res.data.result === 'ok') {
-            update(() => { dialog.value = false; });
+            update(() => { hideDialog(); });
           } else if (res.data.data === 'name must be unique') {
-            de.value.setName('Ошибка');
-            de.value.setText(`Наименование "${query.name}" уже существует в базе данных`);
-            de.value.show();
+            showError(`Наименование "${query.name}" уже существует в базе данных`);
           }
         });
     }
@@ -235,6 +271,12 @@ export default defineComponent({
       update();
     });
     return {
+      selectRow,
+      getSelect,
+      isOneSelect,
+      hideDialog,
+      getQueryData,
+      showError,
       action,
       validationName,
       createInputName,
@@ -260,6 +302,7 @@ export default defineComponent({
       DialogConfirm,
       de,
       dc,
+      update,
     };
   },
 

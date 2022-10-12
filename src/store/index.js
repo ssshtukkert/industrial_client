@@ -219,6 +219,12 @@ function getMaterialsCategories() {
 
 // валидация
 const validationName = [(val) => (val && val.length > 0) || 'Введите наименование'];
+const validationNumber = [
+  (val) => (val >= 0) || 'Введите корректное значение',
+];
+const validationNumberNoZero = [
+  (val) => (val > 0) || 'Введите корректное значение',
+];
 export default {
   host,
   WebSocket_UpServer,
@@ -236,4 +242,6 @@ export default {
   getId,
   getMaterialsCategories,
   validationName,
+  validationNumber,
+  validationNumberNoZero,
 };

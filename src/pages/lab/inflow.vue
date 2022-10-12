@@ -187,18 +187,6 @@ export default {
       // написать удаление элементов при размонтировании образа
       WebSocket_Create('recup', { getMain: 1 });
       WebSocket_Listen('recup', listen);
-      // setInterval(() => {
-      //   for (let index = 0; index < charts.length; index += 1) {
-      //     const element = charts[index];
-      //     const v = (23 * Math.random()).toFixed(2);
-      //     element.value.pushValues([{ value: v }], getCurrentTime());
-      //     element.value.setValue(`Темп: ${v}`);
-      //     element.value.setSetpoint(`Уст: ${v}`);
-      //     if (!element.value.getVisible()) {
-      //       element.value.setVisible(true);
-      //     }
-      //   }
-      // }, 2000);
     });
     onBeforeUnmount(() => {
       WebSocket_Close('recup');
