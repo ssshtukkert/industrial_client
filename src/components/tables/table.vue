@@ -3,7 +3,7 @@
     :filter-method="find" virtual-scroll :selected-rows-label="getSelectedString" selection="multiple"
     v-model:selected="selected" binary-state-sort v-model:pagination="pagination" :rows-per-page-options="[1]"
     :no-results-label="`По запросу '${filter}' ничего не найдено`" grid-header wrap-cells :no-data-label="noDataText"
-    @row-click="selectRow">
+    @row-click="selectRow" @row-dblclick="actionRow" style="max-height: 87vh;">
     <template v-slot:top>
       <q-card-actions v-show="!hideButtons" class="fit">
         <q-btn color='primary' label='Создать' @click="createAction" />
@@ -124,6 +124,9 @@ export default defineComponent({
       default() {
         return [];
       },
+    },
+    actionRow: {
+      type: Function,
     },
   },
   setup(props) {

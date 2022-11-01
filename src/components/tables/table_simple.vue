@@ -2,20 +2,20 @@
   <q-table class="window-height fit" :rows="rows" :columns="columns" row-key="name" :filter="filter"
     :filter-method="find" virtual-scroll :selected-rows-label="getSelectedString" selection="multiple"
     v-model:selected="selected" binary-state-sort v-model:pagination="pagination" :rows-per-page-options="[1]"
-    :no-results-label="`По запросу '${filter}' ничего не найдено`"
-    grid-header wrap-cells :no-data-label="noDataText"
-    @update:selected="updateSelected"
-    @row-click="selectRow">
+    :no-results-label="`По запросу '${filter}' ничего не найдено`" grid-header wrap-cells :no-data-label="noDataText"
+    @update:selected="updateSelected" @row-click="selectRow" :style="styleContent">
     <template v-slot:top>
       <q-card-actions class="fit">
         <slot name="actions" />
-        <q-space />
-        <q-input class="text-h6" outlined dense debounce="300" color="primary" v-model="filter" clearable
-          placeholder="Поиск" style="margin: 10px;">
-          <template v-slot:append>
-            <q-icon name="search" />
-          </template>
-        </q-input>
+        <q-space v-show="!hideShearch"/>
+        <div v-show="!hideShearch">
+          <q-input class="text-h6" outlined dense debounce="300" color="primary" v-model="filter" clearable
+            placeholder="Поиск" style="margin: 10px;">
+            <template v-slot:append>
+              <q-icon name="search" />
+            </template>
+          </q-input>
+        </div>
       </q-card-actions>
     </template>
     <template v-slot:header-cell="props">
@@ -31,10 +31,15 @@
     <template v-slot:body-cell-count="props">
       <q-td key="count" :props="props">
         <div class="text-h6">{{ props.row.count }}</div>
-        <q-popup-edit @save="setChange" label-cancel="Отмена" label-set="Установить" v-model="props.row.count" title="Изменить количество"
-           buttons v-slot="scope" :validate="(val) => val > 0" >
-          <q-input class="text-h6" type="number" v-model="scope.value" autofocus :rules="validationNumberNoZero"/>
+        <q-popup-edit @save="setChange" label-cancel="Отмена" label-set="Установить" v-model="props.row.count"
+          title="Изменить количество" buttons v-slot="scope" :validate="(val) => val > 0" v-on:keyup.enter="keyEnter">
+          <q-input class="text-h6" type="number" v-model="scope.value" autofocus :rules="validationNumberNoZero" />
         </q-popup-edit>
+      </q-td>
+    </template>
+    <template v-slot:body-cell-cost="props">
+      <q-td key="cost" :props="props">
+        <div class="text-h6">{{ props.row.cost }}</div>
       </q-td>
     </template>
   </q-table>
@@ -69,6 +74,10 @@ export default defineComponent({
         return [];
       },
     },
+    hideShearch: {
+      type: Boolean,
+      default: false,
+    },
     setChange: {
       type: Function,
       default() {
@@ -78,6 +87,16 @@ export default defineComponent({
       type: Function,
       default() {
       },
+    },
+    keyEnter: {
+      type: Function,
+      default() {
+        console.log('press enter');
+      },
+    },
+    styleContent: {
+      type: String,
+      default: '',
     },
   },
   setup(props) {

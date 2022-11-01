@@ -21,7 +21,7 @@
       <Tree ref="navigator" :data="propsNav"></Tree>
     </q-drawer>
     <q-page-container>
-      <router-view style="padding: 0px; margin: 0px;" />
+        <router-view style="padding: 0px; margin: 0px; "/>
     </q-page-container>
   </q-layout>
 </template>
@@ -100,19 +100,19 @@ export default defineComponent({
                 },
                 {
                   label: 'Подготовка воздуха Вытяжка',
-                  to: '/home',
+                  to: '/lab/recup/outflow',
                 },
                 {
                   label: 'Подготовка воздуха Удаляемые',
-                  to: '/home',
+                  to: '/lab/recup/output',
                 },
                 {
                   label: 'Испытания',
-                  to: '/home',
+                  to: '/lab/recup/tests',
                 },
                 {
                   label: 'Графики',
-                  to: '/home',
+                  to: '/lab/recup/charts',
                 },
                 {
                   label: 'Калибровка',

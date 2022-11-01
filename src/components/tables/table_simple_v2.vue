@@ -1,10 +1,10 @@
 <template>
   <q-table class="fit" :rows="rows" :columns="columns" row-key="name" :filter="filter" :filter-method="find"
-    virtual-scroll selection="single" v-model:selected="selected" v-model:pagination="pagination"
+    virtual-scroll selection="multiply" v-model:selected="selected" v-model:pagination="pagination"
     :rows-per-page-options="[1]" grid-header wrap-cells :no-data-label="noDataText" :hide-bottom="true"
-    :hide-header="true" @update:selected="updateSelect" @row-click="selectRow">
+    :hide-header="true" @update:selected="updateSelect" @row-click="selectRow" @row-dblclick="actionRow" :style="styleContent">
     <template v-slot:top>
-      <q-card-actions class="fit" style="min-height: 110px;">
+      <q-card-actions class="fit" style="min-height: 10px;">
         <q-input class="text-h6" @update:model-value="updateSearch" outlined dense debounce="300" color="primary"
           v-model="filter" clearable placeholder="Поиск">
           <template v-slot:append>
@@ -71,6 +71,17 @@ export default defineComponent({
     },
     updateSearch: {
       type: Function,
+    },
+    hideSelection: {
+      type: Boolean,
+      default: false,
+    },
+    actionRow: {
+      type: Function,
+    },
+    styleContent: {
+      type: String,
+      default: '',
     },
   },
   setup(props) {

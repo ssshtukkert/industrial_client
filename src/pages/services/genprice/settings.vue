@@ -26,6 +26,7 @@ export default defineComponent({
   name: 'GenPriceSettings',
 
   setup() {
+    document.title = 'Настройки';
     const { host, validationNumberNoZero } = inject('store');
     const inputCostOneHourWorker = ref(0);
     const inputPercentOfMaterials = ref(0);

@@ -11,6 +11,10 @@ const routes = [
       // ---------------------------------LAB-------------------------------------------------------------------
       { path: '/lab/recup/setpoints', component: () => import('src/pages/lab/recup.vue') },
       { path: '/lab/recup/inflow', component: () => import('src/pages/lab/inflow.vue') },
+      { path: '/lab/recup/outflow', component: () => import('src/pages/lab/outflow.vue') },
+      { path: '/lab/recup/output', component: () => import('src/pages/lab/output.vue') },
+      { path: '/lab/recup/tests', component: () => import('src/pages/lab/tests.vue') },
+      { path: '/lab/recup/charts', component: () => import('src/pages/lab/charts.vue') },
       { path: '/lab/recup-online', component: () => import('src/pages/lab/lab-recuperator/recupOnline.vue') },
       { path: '/lab/recup-history', component: () => import('src/pages/lab/lab-recuperator/recupHistory.vue') },
       // -----------------------------------GENPRICE------------------------------------------------------------
@@ -20,6 +24,7 @@ const routes = [
       { path: '/services/genprice/references/materials_categories', component: () => import('src/pages/services/genprice/materials/categories.vue') },
       { path: '/services/genprice/references/materials_measures', component: () => import('src/pages/services/genprice/materials/measures.vue') },
       { path: '/services/genprice/settings', component: () => import('src/pages/services/genprice/settings.vue') },
+      { path: '/farm/execute', component: () => import('src/pages/farm/index.vue') },
     ],
   },
 

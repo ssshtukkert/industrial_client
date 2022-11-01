@@ -1,7 +1,7 @@
 <!-- eslint-disable no-restricted-syntax -->
 <!-- eslint-disable no-undef -->
 <template>
-  <div class="q-pa-md q-gutter-sm text-h5 text-primary">
+  <div class="q-pa-md q-gutter-sm text-h5">
     <q-tree :nodes="data" v-model:selected="selected" v-model:expanded="expanded" node-key="label" dense
       no-selection-unset color="primary" text-color="black" selected-color="primary" tick-strategy="none">
       <!-- accordion -->

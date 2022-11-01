@@ -7,7 +7,7 @@
       <q-table class="my-sticky-header-table window-height" :rows="rows" :columns="columns" row-key="name"
         :filter="filter" :filter-method="find" virtual-scroll :selected-rows-label="getSelectedString"
         selection="multiple" v-model:selected="selected" binary-state-sort v-model:pagination="pagination"
-        :rows-per-page-options="[1]" style="height: 740px"
+        :rows-per-page-options="[1]" style="max-height: 87vh"
         :no-results-label="`По запросу '${filter}' ничего не найдено`" grid-header wrap-cells @row-click="selectRow">
         <template v-slot:top>
           <q-card-actions class="fit">
@@ -141,6 +141,7 @@ export default defineComponent({
     DialogConfirm,
   },
   setup() {
+    document.title = 'Материалы';
     const {
       host, getProp, getId, validationName,
     } = inject('store');

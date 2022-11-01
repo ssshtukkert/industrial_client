@@ -29,6 +29,7 @@ export default defineComponent({
     Table,
   },
   setup() {
+    document.title = 'Категории материалов';
     const { host } = inject('store');
     const table = ref(null);
     const dialog = ref(false);

@@ -6,11 +6,31 @@
       </q-card-section>
       <Table ref="table" :columnsDef="columns" :rowsDef="rows" createNewName="Новый расчет себестоимости"
         :queryAll="getQueryAll()" :queryUpdate="getQueryUpdate()" :queryDelete="getQueryDelete()"
-        :queryCreate="getQueryCreate()">
+        :queryCreate="getQueryCreate()" :actionRow="actionRow" >
         <template v-slot:actions>
-          <q-btn color='orange' label='Открыть' v-show="isOneSelect()" @click="goCalculation"/>
+          <q-btn color='orange' label='Открыть' v-show="isOneSelect()" @click="goCalculation" />
+          <q-btn color='green' label='Скопировать' v-show="isOneSelect()" @click="copy" />
         </template>
       </Table>
+      <q-dialog v-model="dialog" persistent>
+        <q-card class="bg-secondary text-white q-pt-none" style="width: 900px; max-width: 95vw;">
+          <q-card-section>
+            <div class="text-h6">{{ dialogName }}</div>
+          </q-card-section>
+          <q-card-section class="bg-white text-black">
+            <q-card-section class="row">
+              <q-input class="fit text-h6" v-model="createInputName" clearable outlined label="Наименование" lazy-rules
+                :rules="validationName" />
+            </q-card-section>
+            <slot name="content" />
+          </q-card-section>
+          <q-card-actions align="right" class="bg-grey-4 text-black">
+            <q-btn v-show="allowCopy()" color="orange" label="Создать копию" @click="confirmCopy"
+              :disabled="!createInputName" />
+            <q-btn color="primary" label="Отмена" v-close-popup @click="cancelConfirm" />
+          </q-card-actions>
+        </q-card>
+      </q-dialog>
     </q-card>
   </q-page>
 </template>
@@ -29,11 +49,13 @@ export default defineComponent({
     Table,
   },
   setup() {
+    document.title = 'Расчеты';
     const { host } = inject('store');
     const router = useRouter();
     const table = ref(null);
     const dialog = ref(false);
     const dialogName = ref('');
+    const createInputName = ref('');
     const columns = [
       {
         name: 'name',
@@ -79,6 +101,38 @@ export default defineComponent({
     function getQueryCreate() {
       return `${getQueryAll()}/create`;
     }
+    function goCalculationId(id) {
+      const route = router.resolve({ path: `/services/genprice/calculations/${id}` });
+      window.open(route.href, '_blank');
+    }
+    function goCalculation() {
+      router.push(`/services/genprice/calculations/${table.value.getSelect()[0].id}`);
+    }
+    function allowCopy() {
+      return createInputName.value !== table.value.selected[0].name;
+    }
+    function copy() {
+      dialog.value = true;
+      dialogName.value = 'Наименование для копии щита';
+      createInputName.value = table.value.selected[0].name;
+    }
+    function confirmCopy() {
+      const query = {};
+      query.name = createInputName.value;
+      query.cost = table.value.selected[0].cost;
+      query.materials = table.value.selected[0].materials;
+      query.operations = table.value.selected[0].operations;
+      query.descript = table.value.selected[0].descript;
+      axios.post(getQueryCreate(), query)
+        .then((res) => {
+          if (res.data.result === 'ok') {
+            table.value.update();
+            dialog.value = false;
+          } else if (res.data.data === 'name must be unique') {
+            table.value.showError(`Расчет "${query.name}" уже существует в базе данных`);
+          }
+        });
+    }
     onMounted(() => {
       table.value.createConfirmAction = () => {
         const query = table.value.getQueryData();
@@ -98,16 +152,21 @@ export default defineComponent({
           });
       };
     });
+    function actionRow(event, row) {
+      goCalculationId(row.id);
+    }
     function isOneSelect() {
       if (table.value != null) {
         return table.value.isOneSelect();
       }
       return false;
     }
-    function goCalculation() {
-      router.push(`/services/genprice/calculations/${table.value.getSelect()[0].id}`);
-    }
+
     return {
+      confirmCopy,
+      allowCopy,
+      actionRow,
+      goCalculationId,
       goCalculation,
       getQueryAll,
       getQueryDelete,
@@ -118,7 +177,9 @@ export default defineComponent({
       isOneSelect,
       dialog,
       dialogName,
+      createInputName,
       columns,
+      copy,
     };
   },
 });

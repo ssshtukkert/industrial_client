@@ -19,6 +19,7 @@ export default {
     Mainform, ThingForm, MachineFields, FreeMode,
   },
   setup() {
+    document.title = 'Установки';
     return {
     };
   },

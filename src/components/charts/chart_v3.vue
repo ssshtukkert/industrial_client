@@ -1,24 +1,13 @@
 <template>
-  <q-card class="full-width" style="background-color: rgb(60, 60, 60); padding: 5px; min-height: 200px; min-width: 120px;" >
+  <q-card class="full-width"
+    style="background-color: rgb(60, 60, 60); padding: 5px; min-height: 200px; min-width: 120px;">
     <q-card-section class="text-white" style="background-color: rgb(80, 80, 80);">
-      <div :class="classTitle+' text-left'">{{ nam }}</div>
+      <div :class="classTitle + ' text-left'">{{ nam }}</div>
     </q-card-section>
     <q-card-section align="center" style="padding: 0px;">
-      <div class="row" v-show="vis" style="padding: 5px;">
-        <div class="col-6">
-          <q-badge style="background-color: rgb(80, 80, 80);">
-            <div class="text-h6">{{ v }} {{ valueMeasure }}</div>
-          </q-badge>
-        </div>
-        <div class="col-6" v-show="s != ''">
-          <q-badge style="background-color: rgb(80, 80, 80);">
-            <div class="text-h6">Уст: {{ s }} {{ valueMeasure }}</div>
-          </q-badge>
-        </div>
-      </div>
       <canvas style="background-color: rgb(60, 60, 60);" :height="height" :id="chartId" v-show="vis"></canvas>
     </q-card-section>
-    <q-inner-loading :showing="!vis" color="teal" label-class="text-teal" label-style="font-size: 1.1em"/>
+    <q-inner-loading :showing="!vis" color="teal" label-class="text-teal" label-style="font-size: 1.1em" />
   </q-card>
 </template>
 
@@ -107,8 +96,6 @@ export default defineComponent({
   },
   data(props) {
     return {
-      v: props.value,
-      s: props.setpoint,
       vis: props.visible,
       nam: props.name,
       ma: props.max,
@@ -135,11 +122,22 @@ export default defineComponent({
           ],
         },
         options: {
+          // hover: {
+          //   onHover(e) {
+          //     const point = this.getElementAtEvent(e);
+          //     console.log(e);
+          //     if (point.length) e.target.style.cursor = 'pointer';
+          //     else e.target.style.cursor = 'default';
+          //   },
+          // },
           tooltips: {
+            enabled: true,
             mode: 'index',
             intersect: false,
             position: 'nearest',
             bodyFontSize: 10,
+            xPadding: 10,
+            yPadding: 10,
           },
           scales: {
             gridLines: 'red',
@@ -181,6 +179,9 @@ export default defineComponent({
           },
           legend: {
             display: this.legend,
+            labels: {
+              fontColor: 'white',
+            },
           },
           title: {
             display: false,
@@ -205,17 +206,15 @@ export default defineComponent({
     setMin(value) {
       this.myChart.options.scales.yAxes[0].ticks.suggestedMin = value;
     },
-    setValue(val) {
-      this.v = val;
-    },
-    setSetpoint(val) {
-      this.s = val;
-    },
     setVisible(val) {
       this.vis = val;
     },
     getVisible() {
       return this.vis;
+    },
+    update() {
+      this.myChart.update();
+      this.setVisible(true);
     },
     // очистка массива
     clear() {
@@ -244,10 +243,6 @@ export default defineComponent({
       this.myChart.data.labels.length = 0;
       this.myChart.update();
     },
-    update() {
-      this.myChart.update();
-      this.setVisible(true);
-    },
     // добавление данных в массив параметра ПРОВЕРЕНО
     pushValues(values, timeline, direct, update) {
       if (this.myChart.data.datasets[0].data.length >= this.countMax) {
@@ -273,11 +268,6 @@ export default defineComponent({
         const new_range = new_max - new_min;
         const converted = (((Number(value) - old_min) * new_range) / old_range) + new_min;
         this.setStep(converted);
-        if (direct) {
-          this.setValue(Number(value));
-        } else {
-          this.setValue(Number(this.myChart.data.datasets[i].data[this.myChart.data.datasets[i].data.length - 1]));
-        }
       }
       if (direct) {
         this.myChart.data.labels.push(timeline);
