@@ -8,7 +8,7 @@
       <div class="col-4">
         <Chart :ref="charts[0]" name='Температура наружняя, °С' :parameters="[{ name: 'Температура', color: 'white' }]"
           typeChart="line" chartId="chart0" colorDefault="black" :legend="false" classTitle="text-h8" :height="70"
-          valueMeasure="°С" />
+          valueMeasure="°С" :min="-40" :max="60"/>
       </div>
       <div class="col-4">
         <Chart :ref="charts[1]" name='Температура помещение, °С' :parameters="[{ name: 'Температура', color: 'white' }]"
@@ -61,7 +61,7 @@
       </div>
       <div class="col-2">
         <Chart :ref="charts[10]" name='Вент Вытяжка' :parameters="[{ name: 'Расход', color: 'white' }]" typeChart="line"
-          chartId="chart10" colorDefault="black" :legend="false" classTitle="text-h8" valueMeasure="м3/ч" />
+          chartId="chart10" colorDefault="black" :legend="false" classTitle="text-h8" valueMeasure="м3/ч" :min="0"/>
       </div>
     </div>
     <div class="row">
@@ -233,7 +233,7 @@ export default {
 
     onMounted(() => {
       axios
-        .get(`${host}/app/database/AirDevice/360`).then((responseM) => {
+        .get(`${host}/app/database/AirDevice/720`).then((responseM) => {
           for (let index = responseM.data.length - 1; index >= 0; index -= 1) {
             dataValues.push(responseM.data[index]);
           }

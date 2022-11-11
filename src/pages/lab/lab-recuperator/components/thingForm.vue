@@ -1,5 +1,5 @@
 <template >
-    <div>
+  <div>
     <q-card class="my-card bg-secondary text-white">
       <q-card-section>
         <div class="text-h6">Оборудование</div>
@@ -8,59 +8,31 @@
       <q-separator dark />
 
       <q-card-section class="my-card bg-white text-black">
-            <q-item class="flex wrap q-gutter-md">
-                <div class=" widthField ">
-                        <q-radio v-model="radio" checked-icon="task_alt" unchecked-icon="panorama_fish_eye" val="RPX" label="RPX" />
-                        <q-select
-                        v-model="RPXfield"
-                        transition-show="flip-up"
-                        transition-hide="flip-down"
-                        :color=color
-                        outlined
-                        :options="optionsRPX"
-                        label="RPX"
-                        class="text-black"
-                        hint="RPX"
-                        />
-                </div>
-                <div class=" widthField">
-                        <q-radio v-model="radio" checked-icon="task_alt" unchecked-icon="panorama_fish_eye" val="RRK" label="RRK" />
-                        <q-select
-                        v-model="RRKfield"
-                        transition-show="flip-up"
-                        transition-hide="flip-down"
-                        :color=color
-                        outlined
-                        :options="optionsRRK"
-                        label="RRK"
-                        class="text-black"
-                        hint="RRK"
-                        />
-                </div>
-                <div class=" widthField">
-                        <q-radio v-model="radio" checked-icon="task_alt" unchecked-icon="panorama_fish_eye" val="RPP" label="RPP" />
-                        <q-select
-                        v-model="RPPfield"
-                        transition-show="flip-up"
-                        transition-hide="flip-down"
-                        :color=color
-                        outlined
-                        :options="optionsRPP"
-                        label="RPP"
-                        class="text-black"
-                        hint="RPP"
-                        />
-                </div>
-
-            </q-item>
+        <q-item class="flex wrap q-gutter-md">
+          <div class=" widthField ">
+            <q-radio v-model="radio" checked-icon="task_alt" unchecked-icon="panorama_fish_eye" val="RPX" label="RPX" />
+            <q-select v-model="RPXfield" transition-show="flip-up" transition-hide="flip-down" :color=color outlined
+              :options="optionsRPX" label="RPX" class="text-black" hint="RPX" />
+          </div>
+          <div class=" widthField">
+            <q-radio v-model="radio" checked-icon="task_alt" unchecked-icon="panorama_fish_eye" val="RRK" label="RRK" />
+            <q-select v-model="RRKfield" transition-show="flip-up" transition-hide="flip-down" :color=color outlined
+              :options="optionsRRK" label="RRK" class="text-black" hint="RRK" />
+          </div>
+          <div class=" widthField">
+            <q-radio v-model="radio" checked-icon="task_alt" unchecked-icon="panorama_fish_eye" val="RPP" label="RPP" />
+            <q-select v-model="RPPfield" transition-show="flip-up" transition-hide="flip-down" :color=color outlined
+              :options="optionsRPP" label="RPP" class="text-black" hint="RPP" />
+          </div>
+        </q-item>
       </q-card-section>
       <q-separator dark />
 
       <q-card-actions class="bg-grey-4">
-        <q-btn color="teal"  >Применить</q-btn>
+        <q-btn color="teal">Применить</q-btn>
       </q-card-actions>
     </q-card>
-    </div>
+  </div>
 </template>
 <script>
 import { ref } from 'vue';
@@ -148,7 +120,7 @@ export default {
 };
 </script>
 <style scoped>
-.widthField{
-    min-width: 250px;
+.widthField {
+  min-width: 250px;
 }
 </style>

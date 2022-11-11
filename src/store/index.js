@@ -225,8 +225,18 @@ const validationNumber = [
 const validationNumberNoZero = [
   (val) => (val > 0) || 'Введите корректное значение',
 ];
+function convertToBinary(number) {
+  let num = number;
+  let binary = (num % 2).toString();
+  for (; num > 1;) {
+    num = parseInt(num / 2, 10);
+    binary = (num % 2) + (binary);
+  }
+  return binary;
+}
 export default {
   host,
+  convertToBinary,
   WebSocket_UpServer,
   WebSocket_Close,
   WebSocket_Send,

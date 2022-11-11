@@ -4,7 +4,7 @@
     </div>
 </template>
 <script>
-import MainRecup from './lab-recuperator/mainRecup.vue';
+import MainRecup from './main.vue';
 
 export default {
   name: 'shopLab',

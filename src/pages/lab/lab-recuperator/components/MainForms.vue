@@ -12,15 +12,15 @@
           <q-card-section class="col-6">
             <q-form class="q-gutter-sm">
               <q-select v-model="mode" transition-show="flip-up" transition-hide="flip-down" :color=color outlined
-                :options="optionsMode" label="Режим"/>
-              <q-input v-model="airP" :color=color type="number" outlined label="Номинальный объем воздуха (приток)" lazy-rules
-                :rules="[ val => (val && val.length > 0) && (+val < 3001) || 'Введите корректные данные']" />
-              <q-input v-model="airV" :color=color type="number" outlined label="Номинальный объем воздуха (вытяжка)" lazy-rules
-                :rules="[ val => (val && val.length > 0) && (+val < 3001) || 'Введите корректные данные']" />
+                :options="optionsMode" label="Режим" />
+              <q-input v-model="airP" :color=color type="number" outlined label="Номинальный объем воздуха (приток)"
+                lazy-rules :rules="[val => (val && val.length > 0) && (+val < 3001) || 'Введите корректные данные']" />
+              <q-input v-model="airV" :color=color type="number" outlined label="Номинальный объем воздуха (вытяжка)"
+                lazy-rules :rules="[val => (val && val.length > 0) && (+val < 3001) || 'Введите корректные данные']" />
               <q-select v-model="nomKoef" transition-show="flip-up" transition-hide="flip-down" :color=color outlined
                 :options="optionsNomKoef" label="Коэффициент номинала" />
               <q-select v-model="season" transition-show="flip-up" transition-hide="flip-down" :color=color outlined
-                :options="optionsSeason" label="Сезон"/>
+                :options="optionsSeason" label="Сезон" />
             </q-form>
           </q-card-section>
           <q-card-section class="col-6 text-h6 text-black">

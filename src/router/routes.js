@@ -9,12 +9,14 @@ const routes = [
       { path: '/plant', component: () => import('src/pages/plant/shopPlant.vue') },
       { path: '/vent', component: () => import('pages/vent/index.vue') },
       // ---------------------------------LAB-------------------------------------------------------------------
-      { path: '/lab/recup/setpoints', component: () => import('src/pages/lab/recup.vue') },
+      { path: '/lab/recup/main', component: () => import('src/pages/lab/main.vue') },
       { path: '/lab/recup/inflow', component: () => import('src/pages/lab/inflow.vue') },
       { path: '/lab/recup/outflow', component: () => import('src/pages/lab/outflow.vue') },
       { path: '/lab/recup/output', component: () => import('src/pages/lab/output.vue') },
       { path: '/lab/recup/tests', component: () => import('src/pages/lab/tests.vue') },
+      { path: '/lab/recup/calibration', component: () => import('src/pages/lab/calibration.vue') },
       { path: '/lab/recup/charts', component: () => import('src/pages/lab/charts.vue') },
+      { path: '/lab/recup/alarms', component: () => import('src/pages/lab/alarms.vue') },
       { path: '/lab/recup-online', component: () => import('src/pages/lab/lab-recuperator/recupOnline.vue') },
       { path: '/lab/recup-history', component: () => import('src/pages/lab/lab-recuperator/recupHistory.vue') },
       // -----------------------------------GENPRICE------------------------------------------------------------

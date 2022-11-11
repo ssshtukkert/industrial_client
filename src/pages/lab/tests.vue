@@ -212,13 +212,13 @@
                 <div class="col-6 text-grey">
                   Температура средняя:
                   <div class="text-h6 text-white">
-                    {{ 0 }} °С
+                    {{ T_11 }} °С
                   </div>
                 </div>
                 <div class="col-6 text-grey">
                   Влажность средняя:
                   <div class="text-h6 text-white">
-                    {{ 0 }} %
+                    {{ Rh_11 }} %
                   </div>
                 </div>
               </div>
@@ -340,13 +340,13 @@
                 <div class="col-6 text-grey">
                   Температура средняя:
                   <div class="text-h6 text-white">
-                    {{ 0 }} °С
+                    {{ T_12 }} °С
                   </div>
                 </div>
                 <div class="col-6 text-grey">
                   Влажность средняя:
                   <div class="text-h6 text-white">
-                    {{ 0 }} %
+                    {{ Rh_12 }} %
                   </div>
                 </div>
               </div>
@@ -661,13 +661,13 @@
                 <div class="col-6 text-grey">
                   Температура средняя:
                   <div class="text-h6 text-white">
-                    {{ 0 }} °С
+                    {{ T_21 }} °С
                   </div>
                 </div>
                 <div class="col-6 text-grey">
                   Влажность средняя:
                   <div class="text-h6 text-white">
-                    {{ 0 }} %
+                    {{ Rh_21 }} %
                   </div>
                 </div>
               </div>
@@ -795,13 +795,13 @@
                 <div class="col-6 text-grey">
                   Температура средняя:
                   <div class="text-h6 text-white">
-                    {{ 0 }} °С
+                    {{ T_22 }} °С
                   </div>
                 </div>
                 <div class="col-6 text-grey">
                   Влажность средняя:
                   <div class="text-h6 text-white">
-                    {{ 0 }} %
+                    {{ Rh_22 }} %
                   </div>
                 </div>
               </div>
@@ -864,7 +864,7 @@
       <div class="row">
         <div class="col-6">
           <Chart :ref="charts[0]" name='Перепад (11-22)' :parameters="[{ name: 'Давление', color: 'white' }]"
-            typeChart="line" chartId="chart0" colorDefault="yellow" :legend="false" classTitle="text-h6" :height="80"
+            typeChart="line" chartId="chart0" colorDefault="yellow" :legend="false" classTitle="text-h6" :height="80" :max="100000" :min="0"
             valueMeasure="Па" />
         </div>
         <div class="col-6">
@@ -935,7 +935,7 @@
               <div class="col-6">
                 <div class="text-h6">
                   Состояние записи:
-                  {{ "Готов к останову" }}
+                  {{ statusWrite }}
                 </div>
               </div>
               <div class="col-6">
@@ -955,10 +955,11 @@
                   @update:model-value="updateAutoWrite" />
               </div>
               <div class="col-3">
-                <q-input v-model="countRegisterWrite" color="white" type="number" outlined label-color="white"
-                  @update:model-value="updateCountRegisterWrite" input-class="text-h6 text-white"
-                  label="Количество регистраций" lazy-rules
-                  :rules="[val => (val && val > 0) || 'Введите корректные данные']" style="width: 178px;" />
+                <q-input ref="comp_countRegisterWrite" v-model="countRegisterWrite" color="white"
+                  input-class="text-h6 text-white" outlined label-color="white"
+                  @update:model-value="updateCountRegisterWrite" type="number" label="Количество регистраций"
+                  :rules="[val => (val >= 0) && (+val <= 10000) || 'Введите корректные данные']" style="width: 178px;"
+                  @focus="focus_countRegisterWrite = true" @blur="updateCountRegisterWrite" @keydown.enter.prevent="updateCountRegisterWrite" />
               </div>
               <div class="col-3">
                 <q-toggle v-model="pause" class="full-width" label="Пауза" @update:model-value="updatePause" />
@@ -968,13 +969,13 @@
               <div class="col-4">
                 <div class="text-h6">
                   Количество записей:
-                  {{ 123 }}
+                  {{ countWrite }}
                 </div>
               </div>
               <div class="col-4">
                 <div class="text-h6">
-                  Количество записей:
-                  {{ 23 }}
+                  Количество автозаписей:
+                  {{ countAutoWrite }}
                 </div>
               </div>
               <div class="col-4">
@@ -1154,6 +1155,8 @@
               </div>
             </div>
           </q-card-section>
+          <q-inner-loading :showing="!loadComplete" color="white" label-class="text-white"
+            label-style="font-size: 1.1em" />
         </q-card>
       </div>
     </q-card-section>
@@ -1176,6 +1179,7 @@ export default {
     const dataValues0 = [];
     const dataValues1 = [];
     const load = ref(0);
+    const loadComplete = ref(false);
     const {
       host, getCurrentTime, WebSocket_Create, WebSocket_Listen, WebSocket_Close, WebSocket_Send,
     } = inject('store');
@@ -1183,10 +1187,16 @@ export default {
     for (let index = 0; index < 2; index += 1) {
       charts.push(ref(null));
     }
-    const modeWrite = ref(true);
-    const autoWrite = ref(true);
-    const pause = ref(true);
-    const countRegisterWrite = ref(1);
+    const modeWrite = ref(false);
+    const autoWrite = ref(false);
+    const pause = ref(false);
+    const countRegisterWrite = ref(10);
+    const comp_countRegisterWrite = ref(null);
+    const focus_countRegisterWrite = ref(false);
+    const statusWrite = ref('FAIL');
+    const countWrite = ref(0);
+    const countAutoWrite = ref(0);
+
     const CodeStatus1 = ref([]);
     const CodeStatus2 = ref([]);
     // температура в лаборатории
@@ -1307,6 +1317,16 @@ export default {
     const SCo_t_nar = ref(0);
     const SCo_Rh_nar = ref(0);
     const SCo_Abs_nar = ref(0);
+
+    const T_11 = ref(0);
+    const T_12 = ref(0);
+    const T_21 = ref(0);
+    const T_22 = ref(0);
+    const Rh_11 = ref(0);
+    const Rh_12 = ref(0);
+    const Rh_21 = ref(0);
+    const Rh_22 = ref(0);
+
     function updateChart(index, value, setpoint, time, direct, update) {
       if (time) {
         charts[index].value.pushValues([{ value }], time, direct, update);
@@ -1356,21 +1376,22 @@ export default {
       }
       return binary;
     }
-    function getByteArray(number, count) {
-      const res = convertToBinary(number).split('');
-      while (res < count) {
-        res.unshift(0);
-      }
-      res.reverse();
-      return res;
-    }
     function listen(json) {
       const mes = json.message;
       if (json.id === 2) {
+        console.log(mes);
         if (json.type === 'sendDataRecup') {
           // const status = mes.CodeStatus1.value;
-          CodeStatus1.value = getByteArray(mes.CodeStatus1.value, 10);
-          CodeStatus2.value = getByteArray(mes.CodeStatus2.value, 14);
+          CodeStatus1.value = convertToBinary(mes.CodeStatus1.value).split('');
+          while (CodeStatus1.value.length < 10) {
+            CodeStatus1.value.unshift(Number(0));
+          }
+          CodeStatus1.value.reverse();
+          CodeStatus2.value = convertToBinary(mes.CodeStatus2.value).split('');
+          while (CodeStatus2.value.length < 14) {
+            CodeStatus2.value.unshift(Number(0));
+          }
+          CodeStatus2.value.reverse();
           // IntCodeStatus1: (по порядку первые 10 бит)
           // Приток в режиме да/нет
           // 0 "Смешение",
@@ -1519,8 +1540,9 @@ export default {
           Hc_22.value = mes.Hc_22.value;
           Hc_Lab.value = mes.Hc_Lab.value;
           Rh_Lab.value = mes.Rh_Lab.value;
+
+          loadComplete.value = true;
         } else if (json.type === 'sendAirDevices') {
-          console.log(mes);
           if (dataValues1.length === 0) {
             updateChart(1, mes.SCo_reg_m3h_vyt_reciever.value, null, mes.time, true, true);
           } else {
@@ -1535,12 +1557,24 @@ export default {
           SCo_t_nar.value = mes.SCo_t_nar.value;
           SCo_Rh_nar.value = mes.SCo_Rh_nar.value;
           SCo_Abs_nar.value = mes.SCo_Abs_nar.value;
+
+          // запись
+          statusWrite.value = 'FAIL';
+          countWrite.value = mes.Count_WritedData.value;
+          countAutoWrite.value = mes.cyclic_index.value;
+
+          modeWrite.value = mes.StateSwitchWrite.value;
+          autoWrite.value = mes.AutoWrite.value;
+          pause.value = mes.SetPause.value;
+          if (!focus_countRegisterWrite.value) {
+            countRegisterWrite.value = mes.SetsAutoWrite.value;
+          }
         }
       }
     }
-    function updateCountRegisterWrite(value) {
+    function updateCountRegisterWrite() {
       WebSocket_Send('recup', {
-        id: 2, type: 'countRegisterWrite', value, timestamp: getCurrentTime(),
+        id: 2, type: 'countRegisterWrite', value: countRegisterWrite.value, timestamp: getCurrentTime(),
       });
     }
     function updateModeWrite(value) {
@@ -1699,7 +1733,20 @@ export default {
       modeWrite,
       autoWrite,
       pause,
-
+      loadComplete,
+      T_11,
+      T_12,
+      T_21,
+      T_22,
+      Rh_11,
+      Rh_12,
+      Rh_21,
+      Rh_22,
+      comp_countRegisterWrite,
+      focus_countRegisterWrite,
+      countWrite,
+      countAutoWrite,
+      statusWrite,
     };
   },
 };
@@ -1708,6 +1755,6 @@ export default {
 table,
 th,
 td {
-  border: 1px solid rgb(255, 255, 255);
+  border: 1px solid rgb(100, 100, 100);
 }
 </style>

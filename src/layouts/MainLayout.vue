@@ -92,7 +92,7 @@ export default defineComponent({
               children: [
                 {
                   label: 'Установки',
-                  to: '/lab/recup/setpoints',
+                  to: '/lab/recup/main',
                 },
                 {
                   label: 'Подготовка воздуха Приток',
@@ -116,11 +116,11 @@ export default defineComponent({
                 },
                 {
                   label: 'Калибровка',
-                  to: '/home',
+                  to: '/lab/recup/calibration',
                 },
                 {
                   label: 'Журнал аварий',
-                  to: '/home',
+                  to: '/lab/recup/alarms',
                 },
               ],
             },

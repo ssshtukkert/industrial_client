@@ -4,85 +4,101 @@
       <div class="text-h6">Графики</div>
     </q-card-section>
     <div class="row">
-      <Chart :ref="charts[0]" name='Т_TMA1-6_21 °С' :parameters="[
-        { name: 'T_ТМА1_21', color: 'red' },
-        { name: 'T_ТМА2_21', color: 'green' },
-        { name: 'T_ТМА3_21', color: 'blue' },
-        { name: 'T_ТМА4_21', color: 'yellow' },
-        { name: 'T_ТМА5_21', color: 'white' },
-        { name: 'T_ТМА6_21', color: 'orange' },
-      ]" typeChart="line" chartId="chart0" :legend="true" classTitle="text-h6" :height="70" />
-    </div>
-    <div class="row">
-      <Chart :ref="charts[1]" name='Rh_TMA1-6_21 %' :parameters="[
-        { name: 'Rh_ТМА1_21', color: 'red' },
-        { name: 'Rh_ТМА2_21', color: 'green' },
-        { name: 'Rh_ТМА3_21', color: 'blue' },
-        { name: 'Rh_ТМА4_21', color: 'yellow' },
-        { name: 'Rh_ТМА5_21', color: 'white' },
-        { name: 'Rh_ТМА6_21', color: 'orange' },
-      ]" typeChart="line" chartId="chart1" :legend="true" classTitle="text-h6" :height="70" />
-    </div>
-    <div class="row">
-      <Chart :ref="charts[2]" name='Т_TMA13-18_22 °С' :parameters="[
-        { name: 'T_ТМА13_22', color: 'red' },
-        { name: 'T_ТМА14_22', color: 'green' },
-        { name: 'T_ТМА15_22', color: 'blue' },
-        { name: 'T_ТМА16_22', color: 'yellow' },
-        { name: 'T_ТМА17_22', color: 'white' },
-        { name: 'T_ТМА18_22', color: 'orange' },
-      ]" typeChart="line" chartId="chart2" :legend="true" classTitle="text-h6" :height="70" />
-    </div>
-    <div class="row">
-      <Chart :ref="charts[3]" name='Rh_TMA13-18_22 %' :parameters="[
-        { name: 'Rh_ТМА13_22', color: 'red' },
-        { name: 'Rh_ТМА14_22', color: 'green' },
-        { name: 'Rh_ТМА15_22', color: 'blue' },
-        { name: 'Rh_ТМА16_22', color: 'yellow' },
-        { name: 'Rh_ТМА17_22', color: 'white' },
-        { name: 'Rh_ТМА18_22', color: 'orange' },
-      ]" typeChart="line" chartId="chart3" :legend="true" classTitle="text-h6" :height="70" />
-    </div>
-    <div class="row">
-      <Chart :ref="charts[4]" name='Т_TMA19-24_11 °С' :parameters="[
-        { name: 'T_ТМА19_22', color: 'red' },
-        { name: 'T_ТМА20_22', color: 'green' },
-        { name: 'T_ТМА21_22', color: 'blue' },
-        { name: 'T_ТМА22_22', color: 'yellow' },
-        { name: 'T_ТМА23_22', color: 'white' },
-        { name: 'T_ТМА24_22', color: 'orange' },
-      ]" typeChart="line" chartId="chart4" :legend="true" classTitle="text-h6" :height="70" />
-    </div>
-    <div class="row">
-      <Chart :ref="charts[5]" name='Rh_TMA19-24_11 %' :parameters="[
-        { name: 'Rh_ТМА19_22', color: 'red' },
-        { name: 'Rh_ТМА20_22', color: 'green' },
-        { name: 'Rh_ТМА21_22', color: 'blue' },
-        { name: 'Rh_ТМА22_22', color: 'yellow' },
-        { name: 'Rh_ТМА23_22', color: 'white' },
-        { name: 'Rh_ТМА24_22', color: 'orange' },
-      ]" typeChart="line" chartId="chart5" :legend="true" classTitle="text-h6" :height="70" />
-    </div>
-    <div class="row">
-      <Chart :ref="charts[6]" name='Т_TMA7-12_12 °С' :parameters="[
-        { name: 'T_ТМА7_22', color: 'red' },
-        { name: 'T_ТМА8_22', color: 'green' },
-        { name: 'T_ТМА9_22', color: 'blue' },
-        { name: 'T_ТМА10_22', color: 'yellow' },
-        { name: 'T_ТМА11_22', color: 'white' },
-        { name: 'T_ТМА12_22', color: 'orange' },
-      ]" typeChart="line" chartId="chart6" :legend="true" classTitle="text-h6" :height="70" />
-    </div>
-    <div class="row">
-      <Chart :ref="charts[7]" name='Rh_TMA7-12_12 %' :parameters="[
-        { name: 'Rh_ТМА7_22', color: 'red' },
-        { name: 'Rh_ТМА8_22', color: 'green' },
-        { name: 'Rh_ТМА9_22', color: 'blue' },
-        { name: 'Rh_ТМА10_22', color: 'yellow' },
-        { name: 'Rh_ТМА11_22', color: 'white' },
-        { name: 'Rh_ТМА12_22', color: 'orange' },
-      ]" typeChart="line" chartId="chart7" :legend="true" classTitle="text-h6" :height="70" />
-    </div>
+        <div class="col-6">
+          <Chart :ref="charts[0]" name='Т_TMA1-6_21 °С' :parameters="[
+            { name: 'T_ТМА1_21', color: 'red' },
+            { name: 'T_ТМА2_21', color: 'green' },
+            { name: 'T_ТМА3_21', color: 'blue' },
+            { name: 'T_ТМА4_21', color: 'yellow' },
+            { name: 'T_ТМА5_21', color: 'white' },
+            { name: 'T_ТМА6_21', color: 'orange' },
+          ]" typeChart="line" chartId="chart0" :legend="true" classTitle="text-h6" :height="70"
+            :hoverTooltip="hoverTooltip" />
+        </div>
+        <div class="col-6">
+          <Chart :ref="charts[1]" name='Rh_TMA1-6_21 %' :parameters="[
+          { name: 'Rh_ТМА1_21', color: 'red' },
+          { name: 'Rh_ТМА2_21', color: 'green' },
+          { name: 'Rh_ТМА3_21', color: 'blue' },
+          { name: 'Rh_ТМА4_21', color: 'yellow' },
+          { name: 'Rh_ТМА5_21', color: 'white' },
+          { name: 'Rh_ТМА6_21', color: 'orange' },
+        ]" typeChart="line" chartId="chart1" :legend="true" classTitle="text-h6" :height="70"
+          :hoverTooltip="hoverTooltip" />
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-6">
+          <Chart :ref="charts[2]" name='Т_TMA13-18_22 °С' :parameters="[
+          { name: 'T_ТМА13_22', color: 'red' },
+          { name: 'T_ТМА14_22', color: 'green' },
+          { name: 'T_ТМА15_22', color: 'blue' },
+          { name: 'T_ТМА16_22', color: 'yellow' },
+          { name: 'T_ТМА17_22', color: 'white' },
+          { name: 'T_ТМА18_22', color: 'orange' },
+        ]" typeChart="line" chartId="chart2" :legend="true" classTitle="text-h6" :height="70"
+          :hoverTooltip="hoverTooltip" />
+        </div>
+        <div class="col-6">
+          <Chart :ref="charts[3]" name='Rh_TMA13-18_22 %' :parameters="[
+          { name: 'Rh_ТМА13_22', color: 'red' },
+          { name: 'Rh_ТМА14_22', color: 'green' },
+          { name: 'Rh_ТМА15_22', color: 'blue' },
+          { name: 'Rh_ТМА16_22', color: 'yellow' },
+          { name: 'Rh_ТМА17_22', color: 'white' },
+          { name: 'Rh_ТМА18_22', color: 'orange' },
+        ]" typeChart="line" chartId="chart3" :legend="true" classTitle="text-h6" :height="70"
+          :hoverTooltip="hoverTooltip" />
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-6">
+          <Chart :ref="charts[4]" name='Т_TMA19-24_11 °С' :parameters="[
+          { name: 'T_ТМА19_22', color: 'red' },
+          { name: 'T_ТМА20_22', color: 'green' },
+          { name: 'T_ТМА21_22', color: 'blue' },
+          { name: 'T_ТМА22_22', color: 'yellow' },
+          { name: 'T_ТМА23_22', color: 'white' },
+          { name: 'T_ТМА24_22', color: 'orange' },
+        ]" typeChart="line" chartId="chart4" :legend="true" classTitle="text-h6" :height="70"
+          :hoverTooltip="hoverTooltip" />
+        </div>
+        <div class="col-6">
+          <Chart :ref="charts[5]" name='Rh_TMA19-24_11 %' :parameters="[
+          { name: 'Rh_ТМА19_22', color: 'red' },
+          { name: 'Rh_ТМА20_22', color: 'green' },
+          { name: 'Rh_ТМА21_22', color: 'blue' },
+          { name: 'Rh_ТМА22_22', color: 'yellow' },
+          { name: 'Rh_ТМА23_22', color: 'white' },
+          { name: 'Rh_ТМА24_22', color: 'orange' },
+        ]" typeChart="line" chartId="chart5" :legend="true" classTitle="text-h6" :height="70"
+          :hoverTooltip="hoverTooltip" />
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-6">
+          <Chart :ref="charts[6]" name='Т_TMA7-12_12 °С' :parameters="[
+          { name: 'T_ТМА7_22', color: 'red' },
+          { name: 'T_ТМА8_22', color: 'green' },
+          { name: 'T_ТМА9_22', color: 'blue' },
+          { name: 'T_ТМА10_22', color: 'yellow' },
+          { name: 'T_ТМА11_22', color: 'white' },
+          { name: 'T_ТМА12_22', color: 'orange' },
+        ]" typeChart="line" chartId="chart6" :legend="true" classTitle="text-h6" :height="70"
+          :hoverTooltip="hoverTooltip" />
+        </div>
+        <div class="col-6">
+          <Chart :ref="charts[7]" name='Rh_TMA7-12_12 %' :parameters="[
+          { name: 'Rh_ТМА7_22', color: 'red' },
+          { name: 'Rh_ТМА8_22', color: 'green' },
+          { name: 'Rh_ТМА9_22', color: 'blue' },
+          { name: 'Rh_ТМА10_22', color: 'yellow' },
+          { name: 'Rh_ТМА11_22', color: 'white' },
+          { name: 'Rh_ТМА12_22', color: 'orange' },
+        ]" typeChart="line" chartId="chart7" :legend="true" classTitle="text-h6" :height="70"
+          :hoverTooltip="hoverTooltip" />
+        </div>
+      </div>
   </q-page>
 </template>
 
@@ -101,6 +117,7 @@ export default {
   setup() {
     document.title = 'Графики';
     const charts = [];
+    const info = ref('');
     const dataValues = [];
     const load = ref(0);
     for (let index = 0; index < 8; index += 1) {
@@ -114,6 +131,18 @@ export default {
         charts[index].value.pushValues(values, time, direct, update);
       } else {
         charts[index].value.pushValues(values, getCurrentTime(), direct, update);
+      }
+    }
+    function hoverTooltip(tooltipModel) {
+      info.value = '';
+      if (tooltipModel.title) {
+        info.value += `\n${tooltipModel.title}`;
+      }
+      if (tooltipModel.body) {
+        for (let index = 0; index < tooltipModel.body.length; index += 1) {
+          const element = tooltipModel.body[index];
+          info.value += `\n${element.lines}`;
+        }
       }
     }
     function shift() {
@@ -311,7 +340,7 @@ export default {
 
     onMounted(() => {
       axios
-        .get(`${host}/app/database/DataRecup/360`).then((responseM) => {
+        .get(`${host}/app/database/DataRecup/720`).then((responseM) => {
           for (let index = responseM.data.length - 1; index >= 0; index -= 1) {
             dataValues.push(responseM.data[index]);
           }
@@ -328,6 +357,8 @@ export default {
       Chart,
       charts,
       load,
+      info,
+      hoverTooltip,
     };
   },
 };

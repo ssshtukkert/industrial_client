@@ -7,7 +7,7 @@
     <q-card-section align="center" style="padding: 0px;">
       <canvas style="background-color: rgb(60, 60, 60);" :height="height" :id="chartId" v-show="vis"></canvas>
     </q-card-section>
-    <q-inner-loading :showing="!vis" color="teal" label-class="text-teal" label-style="font-size: 1.1em" />
+    <q-inner-loading :showing="!vis" color="white" label-class="text-white" label-style="font-size: 1.1em" />
   </q-card>
 </template>
 
@@ -89,6 +89,9 @@ export default defineComponent({
       type: String,
       default: '',
     },
+    hoverTooltip: {
+      type: Function,
+    },
   },
   mounted() {
     this.myChart = this.createChart(this.chartId, this.typeChart);
@@ -122,22 +125,16 @@ export default defineComponent({
           ],
         },
         options: {
-          // hover: {
-          //   onHover(e) {
-          //     const point = this.getElementAtEvent(e);
-          //     console.log(e);
-          //     if (point.length) e.target.style.cursor = 'pointer';
-          //     else e.target.style.cursor = 'default';
-          //   },
-          // },
           tooltips: {
             enabled: true,
             mode: 'index',
             intersect: false,
             position: 'nearest',
             bodyFontSize: 10,
-            xPadding: 10,
-            yPadding: 10,
+            // custom: this.hoverTooltip,
+            // custom(tooltipModel) {
+            //   console.log(tooltipModel.dataPoints);
+            // },
           },
           scales: {
             gridLines: 'red',
@@ -191,20 +188,20 @@ export default defineComponent({
               radius: 1,
             },
           },
-          animation: {
-            duration: 0,
-          },
+          animation: false,
         },
       });
     },
     setMax(value) {
       this.myChart.options.scales.yAxes[0].ticks.suggestedMax = value;
+      this.myChart.options.scales.yAxes[0].ticks.max = value + 10;
     },
     setStep(value) {
       this.myChart.options.scales.yAxes[0].ticks.stepSize = value;
     },
     setMin(value) {
       this.myChart.options.scales.yAxes[0].ticks.suggestedMin = value;
+      this.myChart.options.scales.yAxes[0].ticks.min = value - 10;
     },
     setVisible(val) {
       this.vis = val;

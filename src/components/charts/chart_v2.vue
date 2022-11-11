@@ -18,7 +18,7 @@
       </div>
       <canvas style="background-color: rgb(60, 60, 60);" :height="height" :id="chartId" v-show="vis"></canvas>
     </q-card-section>
-    <q-inner-loading :showing="!vis" color="teal" label-class="text-teal" label-style="font-size: 1.1em"/>
+    <q-inner-loading :showing="!vis" color="white" label-class="text-white" label-style="font-size: 1.1em"/>
   </q-card>
 </template>
 
@@ -86,11 +86,11 @@ export default defineComponent({
     },
     max: {
       type: Number,
-      default: 0,
+      default: 10000,
     },
     step: {
       type: Number,
-      default: 10,
+      default: 5,
     },
     parameter: {
       type: String,
@@ -190,20 +190,30 @@ export default defineComponent({
               radius: 1,
             },
           },
-          animation: {
-            duration: 0,
-          },
+          animation: false,
         },
       });
     },
     setMax(value) {
-      this.myChart.options.scales.yAxes[0].ticks.suggestedMax = value;
+      if (value < this.ma) {
+        this.myChart.options.scales.yAxes[0].ticks.suggestedMax = value;
+        this.myChart.options.scales.yAxes[0].ticks.max = value + 10;
+      } else {
+        this.myChart.options.scales.yAxes[0].ticks.suggestedMax = this.ma;
+        this.myChart.options.scales.yAxes[0].ticks.max = this.ma;
+      }
     },
     setStep(value) {
       this.myChart.options.scales.yAxes[0].ticks.stepSize = value;
     },
     setMin(value) {
-      this.myChart.options.scales.yAxes[0].ticks.suggestedMin = value;
+      if (value > this.mi) {
+        this.myChart.options.scales.yAxes[0].ticks.suggestedMin = value;
+        this.myChart.options.scales.yAxes[0].ticks.min = value - 10;
+      } else {
+        this.myChart.options.scales.yAxes[0].ticks.suggestedMin = this.mi;
+        this.myChart.options.scales.yAxes[0].ticks.min = this.mi;
+      }
     },
     setValue(val) {
       this.v = val;
@@ -263,7 +273,7 @@ export default defineComponent({
         const max = Math.max.apply(null, this.myChart.data.datasets[i].data);
         const min = Math.min.apply(null, this.myChart.data.datasets[i].data);
         this.setMax(max * 1.003);
-        this.setMin(min * 0.997);
+        this.setMin(min * 1.003);
         const old_min = 0;
         const old_max = this.myChart.height;
         const new_min = min;
