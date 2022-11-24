@@ -19,6 +19,11 @@
         </q-input>
       </q-card-actions>
     </template>
+    <template v-slot:pagination>
+      <div class="text-h6">
+       Количество элементов: {{ rows.length }}
+      </div>
+    </template>
     <template v-slot:header-cell="props">
       <q-th :props="props">
         <div class="text-h6">{{ props.col.label }}</div>

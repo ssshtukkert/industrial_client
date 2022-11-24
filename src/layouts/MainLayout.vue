@@ -166,6 +166,17 @@ export default defineComponent({
                 },
               ],
             },
+            {
+              label: 'Подбор ЩУ',
+              selectable: false,
+              node: '/services/productoptions',
+              children: [
+                {
+                  label: 'Конфигурации',
+                  to: '/services/productoptions/configurations',
+                },
+              ],
+            },
           ],
         },
       ],

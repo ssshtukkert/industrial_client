@@ -256,7 +256,7 @@ export default {
       return 'НЕТ';
     }
     function getcolor(value) {
-      if (Number(value) === 0) return 'text-yellow';
+      if (Number(value) === 0) return 'text-green';
       return 'text-red';
     }
     function convertToBinary(number) {

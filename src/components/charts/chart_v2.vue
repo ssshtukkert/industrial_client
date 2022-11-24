@@ -1,30 +1,55 @@
 <template>
-  <q-card class="full-width" style="background-color: rgb(60, 60, 60); padding: 5px; min-height: 200px; min-width: 120px;" >
-    <q-card-section class="text-white" style="background-color: rgb(80, 80, 80);">
-      <div :class="classTitle+' text-left'">{{ nam }}</div>
+  <q-card class="full-width"
+    style="background-color: rgb(60, 60, 60); padding: 5px; min-height: 200px; min-width: 120px;">
+    <q-card-section class="text-white" style="background-color: rgb(80, 80, 80); height: 120px;">
+      <div class="row">
+        <div :class="classTitle + ' text-left'">{{ nam }}</div>
+      </div>
+      <div class="row">
+        <div class="col-6">
+          <slot name="topLabel"/>
+        </div>
+        <div align="right" class="col-6">
+          <q-btn padding="xs" color="rgb(60,60,60)" icon="search" @click="viewChart" />
+        </div>
+      </div>
     </q-card-section>
     <q-card-section align="center" style="padding: 0px;">
       <div class="row" v-show="vis" style="padding: 5px;">
         <div class="col-6">
           <q-badge style="background-color: rgb(80, 80, 80);">
-            <div class="text-h6">{{ v }} {{ valueMeasure }}</div>
+            <div :class="classValue">{{ v }} {{ valueMeasure }}</div>
           </q-badge>
         </div>
         <div class="col-6" v-show="s != ''">
           <q-badge style="background-color: rgb(80, 80, 80);">
-            <div class="text-h6">Уст: {{ s }} {{ valueMeasure }}</div>
+            <div :class="classSetpoint">Уст: {{ s }} {{ valueMeasure }}</div>
           </q-badge>
         </div>
       </div>
       <canvas style="background-color: rgb(60, 60, 60);" :height="height" :id="chartId" v-show="vis"></canvas>
     </q-card-section>
-    <q-inner-loading :showing="!vis" color="white" label-class="text-white" label-style="font-size: 1.1em"/>
+    <q-inner-loading :showing="!vis" color="white" label-class="text-white" label-style="font-size: 1.1em" />
+    <q-dialog v-model="view" ref="dialog" persistent  @show="beforeShow" full-height full-width>
+      <q-card class="text-white" style="background-color: rgb(60, 60, 60);">
+        <q-bar>
+          <div :class="classTitle + ' text-left'">{{ nam }}</div>
+          <q-space />
+          <q-btn dense flat icon="close" v-close-popup>
+            <q-tooltip class="bg-white text-primary">Закрыть</q-tooltip>
+          </q-btn>
+        </q-bar>
+        <q-card-section align="center" style="padding: 0px;">
+          <canvas style="background-color: rgb(60, 60, 60); height: 45vh; width: 50vw;" id="double"></canvas>
+        </q-card-section>
+      </q-card>
+    </q-dialog>
   </q-card>
 </template>
 
 <script>
 import Chart from 'chart.js';
-import { defineComponent } from 'vue';
+import { defineComponent, ref } from 'vue';
 
 export default defineComponent({
 
@@ -80,17 +105,13 @@ export default defineComponent({
       type: String,
       default: 'text-h6',
     },
-    min: {
-      type: Number,
-      default: 0,
+    classValue: {
+      type: String,
+      default: 'text-h8',
     },
-    max: {
-      type: Number,
-      default: 10000,
-    },
-    step: {
-      type: Number,
-      default: 5,
+    classSetpoint: {
+      type: String,
+      default: 'text-h8',
     },
     parameter: {
       type: String,
@@ -106,13 +127,13 @@ export default defineComponent({
     this.setParameters(this.parameters);
   },
   data(props) {
+    const view = ref(false);
     return {
+      view,
       v: props.value,
       s: props.setpoint,
       vis: props.visible,
       nam: props.name,
-      ma: props.max,
-      mi: props.min,
     };
   },
   methods: {
@@ -149,7 +170,6 @@ export default defineComponent({
                 bounds: 'ticks',
                 ticks: {
                   beginAtZero: true,
-                  min: 0,
                   maxRotation: 0,
                   autoSkip: true,
                   autoSkipPadding: 64,
@@ -166,16 +186,17 @@ export default defineComponent({
             ],
             yAxes: [
               {
+                bounds: 'ticks',
                 ticks: {
-                  suggestedMin: this.min,
-                  suggestedMax: this.max,
-                  stepSize: this.step,
+                  maxRotation: 0,
+                  autoSkip: true,
+                  autoSkipPadding: 15,
                   fontColor: 'white',
                 },
                 gridLines: {
                   color: 'grey-4',
                 },
-                offset: false,
+                offset: true,
               },
             ],
           },
@@ -194,27 +215,6 @@ export default defineComponent({
         },
       });
     },
-    setMax(value) {
-      if (value < this.ma) {
-        this.myChart.options.scales.yAxes[0].ticks.suggestedMax = value;
-        this.myChart.options.scales.yAxes[0].ticks.max = value + 10;
-      } else {
-        this.myChart.options.scales.yAxes[0].ticks.suggestedMax = this.ma;
-        this.myChart.options.scales.yAxes[0].ticks.max = this.ma;
-      }
-    },
-    setStep(value) {
-      this.myChart.options.scales.yAxes[0].ticks.stepSize = value;
-    },
-    setMin(value) {
-      if (value > this.mi) {
-        this.myChart.options.scales.yAxes[0].ticks.suggestedMin = value;
-        this.myChart.options.scales.yAxes[0].ticks.min = value - 10;
-      } else {
-        this.myChart.options.scales.yAxes[0].ticks.suggestedMin = this.mi;
-        this.myChart.options.scales.yAxes[0].ticks.min = this.mi;
-      }
-    },
     setValue(val) {
       this.v = val;
     },
@@ -232,6 +232,26 @@ export default defineComponent({
       this.myChart.data.labels = [];
       this.myChart.data.datasets[0].data = [];
       this.myChart.data.datasets[0].backgroundColor = [];
+    },
+    setParametersDouble(parameters) {
+      for (let i = 0; i < parameters.length; i += 1) {
+        const { name, color } = parameters[i];
+        const newData = {
+          label: name,
+          backgroundColor: color,
+          borderColor: color,
+          data: [],
+          fill: false,
+          tension: 0,
+        };
+        if (this.myChartDouble.data.datasets.length < i + 1) {
+          this.myChartDouble.data.datasets.push(newData);
+        } else {
+          this.myChartDouble.data.datasets[i] = newData;
+        }
+      }
+      this.myChartDouble.data.labels.length = 0;
+      this.myChartDouble.update();
     },
     // добавление нового параметра в график ПРОВЕРЕНО
     setParameters(parameters) {
@@ -255,8 +275,32 @@ export default defineComponent({
       this.myChart.update();
     },
     update() {
+      if (this.myChartDouble) {
+        this.myChartDouble.update();
+      }
       this.myChart.update();
       this.setVisible(true);
+    },
+    pushValuesDouble(values, timeline, direct, update) {
+      if (this.myChartDouble.data.datasets[0].data.length >= this.countMax) {
+        this.deleteFirstDouble();
+      }
+      for (let i = 0; i < values.length; i += 1) {
+        const { value } = values[i];
+        if (direct) {
+          this.myChartDouble.data.datasets[i].data.push(Number(value));
+        } else {
+          this.myChartDouble.data.datasets[i].data.unshift(Number(value));
+        }
+      }
+      if (direct) {
+        this.myChartDouble.data.labels.push(timeline);
+      } else {
+        this.myChartDouble.data.labels.unshift(timeline);
+      }
+      if (update === true) {
+        this.myChartDouble.update();
+      }
     },
     // добавление данных в массив параметра ПРОВЕРЕНО
     pushValues(values, timeline, direct, update) {
@@ -270,19 +314,6 @@ export default defineComponent({
         } else {
           this.myChart.data.datasets[i].data.unshift(Number(value));
         }
-        const max = Math.max.apply(null, this.myChart.data.datasets[i].data);
-        const min = Math.min.apply(null, this.myChart.data.datasets[i].data);
-        this.setMax(max * 1.003);
-        this.setMin(min * 1.003);
-        const old_min = 0;
-        const old_max = this.myChart.height;
-        const new_min = min;
-        const new_max = max;
-
-        const old_range = old_max - old_min;
-        const new_range = new_max - new_min;
-        const converted = (((Number(value) - old_min) * new_range) / old_range) + new_min;
-        this.setStep(converted);
         if (direct) {
           this.setValue(Number(value));
         } else {
@@ -299,6 +330,9 @@ export default defineComponent({
         if (!this.getVisible()) {
           this.setVisible(true);
         }
+        if (this.myChartDouble) {
+          this.pushValuesDouble(values, timeline, direct, update);
+        }
       }
     },
     // удаление данных в массив параметра ПРОВЕРЕНО
@@ -308,10 +342,21 @@ export default defineComponent({
       }
       this.myChart.data.labels.shift();
     },
+    deleteFirstDouble() {
+      for (let i = 0; i < this.myChartDouble.data.datasets.length; i += 1) {
+        this.myChartDouble.data.datasets[i].data.shift();
+      }
+      this.myChartDouble.data.labels.shift();
+    },
+    viewChart() {
+      this.view = true;
+    },
+    beforeShow() {
+      this.myChartDouble = this.createChart('double', this.typeChart);
+      this.setParametersDouble(this.parameters);
+      this.myChartDouble.data = this.myChart.data;
+      this.myChartDouble.update();
+    },
   },
 });
 </script>
-
-<style>
-
-</style>

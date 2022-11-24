@@ -7,31 +7,43 @@
       <div class="row">
         <div class="col-3 text-grey">
           ДавлПритокДо (21)
-          <div class="text-h6 text-white">
+          <div v-if="calibration1 == 0" class="text-h6 text-white">
             {{ pa1 }} Па
           </div>
-            <q-btn color="teal" label="Корректировка РА1" @click="calibration(1)"/>
+          <div v-if="calibration1 > 0" class="text-h6 text-white">
+            Калибровка: {{ calibration1 }}
+          </div>
+            <q-btn type="submit" :loading="calibration1 > 0" color="teal" label="Корректировка РА1" @click="calibration(1)"/>
         </div>
         <div class="col-3 text-grey">
           ДавлВытяжкаПосле (12)
-          <div class="text-h6 text-white">
+          <div v-if="calibration2 == 0" class="text-h6 text-white">
             {{ pa2 }} Па
           </div>
-          <q-btn color="teal" label="Корректировка РА2" @click="calibration(2)"/>
+          <div v-if="calibration2 > 0" class="text-h6 text-white">
+            Калибровка: {{ calibration2 }}
+          </div>
+          <q-btn type="submit" :loading="calibration2 > 0" color="teal" label="Корректировка РА2" @click="calibration(2)"/>
         </div>
         <div class="col-3 text-grey">
           ДавлПритокПосле (22)
-          <div class="text-h6 text-white">
+          <div v-if="calibration3 == 0" class="text-h6 text-white">
             {{ pa3 }} Па
           </div>
-          <q-btn color="teal" label="Корректировка РА3" @click="calibration(3)"/>
+          <div v-if="calibration3 > 0" class="text-h6 text-white">
+            Калибровка:  {{ calibration3 }}
+          </div>
+          <q-btn type="submit" :loading="calibration3 > 0" color="teal" label="Корректировка РА3" @click="calibration(3)"/>
         </div>
         <div class="col-3 text-grey">
           ДавлВытяжкаДо (11)
-          <div class="text-h6 text-white">
+          <div v-if="calibration4 == 0" class="text-h6 text-white">
             {{ pa4 }} Па
           </div>
-          <q-btn color="teal" label="Корректировка РА4" @click="calibration(4)"/>
+          <div v-if="calibration4 > 0" class="text-h6 text-white">
+            Калибровка: {{ calibration4 }}
+          </div>
+          <q-btn type="submit" :loading="calibration4 > 0" color="teal" label="Корректировка РА4" @click="calibration(4)"/>
         </div>
       </div>
     </q-card-section>
@@ -51,6 +63,10 @@ export default {
     const pa2 = ref(0);
     const pa3 = ref(0);
     const pa4 = ref(0);
+    const calibration1 = ref(0);
+    const calibration2 = ref(0);
+    const calibration3 = ref(0);
+    const calibration4 = ref(0);
     const {
       WebSocket_Create, WebSocket_Listen, WebSocket_Close, WebSocket_Send, getCurrentTime,
     } = inject('store');
@@ -58,6 +74,15 @@ export default {
       WebSocket_Send('recup', {
         id: 2, type: 'calibration', value: pa, timestamp: getCurrentTime(),
       });
+      if (pa === 1) {
+        calibration1.value = 15;
+      } else if (pa === 2) {
+        calibration2.value = 15;
+      } else if (pa === 3) {
+        calibration3.value = 15;
+      } else if (pa === 4) {
+        calibration4.value = 15;
+      }
     }
     function listen(json) {
       const mes = json.message;
@@ -68,6 +93,12 @@ export default {
           pa3.value = mes.Pressure_22.value;
           pa4.value = mes.Pressure_11.value;
           console.log(mes);
+        } else if (json.type === 'sendAirDevices') {
+          console.log(mes);
+          calibration1.value = mes.calibration1.value;
+          calibration2.value = mes.calibration2.value;
+          calibration3.value = mes.calibration3.value;
+          calibration4.value = mes.calibration4.value;
         }
       }
     }
@@ -85,6 +116,10 @@ export default {
       pa3,
       pa4,
       calibration,
+      calibration1,
+      calibration2,
+      calibration3,
+      calibration4,
     };
   },
 };

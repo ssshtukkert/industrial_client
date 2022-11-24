@@ -5,98 +5,90 @@
     </q-card-section>
     <div class="row">
         <div class="col-6">
-          <Chart :ref="charts[0]" name='Т_TMA1-6_21 °С' :parameters="[
-            { name: 'T_ТМА1_21', color: 'red' },
-            { name: 'T_ТМА2_21', color: 'green' },
-            { name: 'T_ТМА3_21', color: 'blue' },
-            { name: 'T_ТМА4_21', color: 'yellow' },
-            { name: 'T_ТМА5_21', color: 'white' },
-            { name: 'T_ТМА6_21', color: 'orange' },
-          ]" typeChart="line" chartId="chart0" :legend="true" classTitle="text-h6" :height="70"
-            :hoverTooltip="hoverTooltip" />
+          <Chart :ref="charts[0]" name='Т_21(1-6) °С' :parameters="[
+            { name: 'T21_1', color: 'red' },
+            { name: 'T21_2', color: 'green' },
+            { name: 'T21_3', color: 'blue' },
+            { name: 'T21_4', color: 'yellow' },
+            { name: 'T21_5', color: 'white' },
+            { name: 'T21_6', color: 'orange' },
+          ]" chartId="chart0" :legend="true" classTitle="text-h6" :height="70"/>
         </div>
         <div class="col-6">
-          <Chart :ref="charts[1]" name='Rh_TMA1-6_21 %' :parameters="[
-          { name: 'Rh_ТМА1_21', color: 'red' },
-          { name: 'Rh_ТМА2_21', color: 'green' },
-          { name: 'Rh_ТМА3_21', color: 'blue' },
-          { name: 'Rh_ТМА4_21', color: 'yellow' },
-          { name: 'Rh_ТМА5_21', color: 'white' },
-          { name: 'Rh_ТМА6_21', color: 'orange' },
-        ]" typeChart="line" chartId="chart1" :legend="true" classTitle="text-h6" :height="70"
-          :hoverTooltip="hoverTooltip" />
+          <Chart :ref="charts[1]" name='Rh_21(1-6) %' :parameters="[
+          { name: 'Rh21_1', color: 'red' },
+          { name: 'Rh21_2', color: 'green' },
+          { name: 'Rh21_3', color: 'blue' },
+          { name: 'Rh21_4', color: 'yellow' },
+          { name: 'Rh21_5', color: 'white' },
+          { name: 'Rh21_6', color: 'orange' },
+        ]" chartId="chart1" :legend="true" classTitle="text-h6" :height="70"/>
         </div>
       </div>
       <div class="row">
         <div class="col-6">
-          <Chart :ref="charts[2]" name='Т_TMA13-18_22 °С' :parameters="[
-          { name: 'T_ТМА13_22', color: 'red' },
-          { name: 'T_ТМА14_22', color: 'green' },
-          { name: 'T_ТМА15_22', color: 'blue' },
-          { name: 'T_ТМА16_22', color: 'yellow' },
-          { name: 'T_ТМА17_22', color: 'white' },
-          { name: 'T_ТМА18_22', color: 'orange' },
-        ]" typeChart="line" chartId="chart2" :legend="true" classTitle="text-h6" :height="70"
-          :hoverTooltip="hoverTooltip" />
+          <Chart :ref="charts[2]" name='Т_22(13-18) °С' :parameters="[
+          { name: 'T22_13', color: 'red' },
+          { name: 'T22_14', color: 'green' },
+          { name: 'T22_15', color: 'blue' },
+          { name: 'T22_16', color: 'yellow' },
+          { name: 'T22_17', color: 'white' },
+          { name: 'T22_18', color: 'orange' },
+        ]" chartId="chart2" :legend="true" classTitle="text-h6" :height="70"/>
         </div>
         <div class="col-6">
-          <Chart :ref="charts[3]" name='Rh_TMA13-18_22 %' :parameters="[
-          { name: 'Rh_ТМА13_22', color: 'red' },
-          { name: 'Rh_ТМА14_22', color: 'green' },
-          { name: 'Rh_ТМА15_22', color: 'blue' },
-          { name: 'Rh_ТМА16_22', color: 'yellow' },
-          { name: 'Rh_ТМА17_22', color: 'white' },
-          { name: 'Rh_ТМА18_22', color: 'orange' },
-        ]" typeChart="line" chartId="chart3" :legend="true" classTitle="text-h6" :height="70"
-          :hoverTooltip="hoverTooltip" />
+          <Chart :ref="charts[3]" name='Rh_22(13-18) %' :parameters="[
+          { name: 'Rh22_13', color: 'red' },
+          { name: 'Rh22_14', color: 'green' },
+          { name: 'Rh22_15', color: 'blue' },
+          { name: 'Rh22_16', color: 'yellow' },
+          { name: 'Rh22_17', color: 'white' },
+          { name: 'Rh22_18', color: 'orange' },
+        ]" chartId="chart3" :legend="true" classTitle="text-h6" :height="70"/>
         </div>
       </div>
       <div class="row">
         <div class="col-6">
-          <Chart :ref="charts[4]" name='Т_TMA19-24_11 °С' :parameters="[
-          { name: 'T_ТМА19_22', color: 'red' },
-          { name: 'T_ТМА20_22', color: 'green' },
-          { name: 'T_ТМА21_22', color: 'blue' },
-          { name: 'T_ТМА22_22', color: 'yellow' },
-          { name: 'T_ТМА23_22', color: 'white' },
-          { name: 'T_ТМА24_22', color: 'orange' },
-        ]" typeChart="line" chartId="chart4" :legend="true" classTitle="text-h6" :height="70"
-          :hoverTooltip="hoverTooltip" />
+          <Chart :ref="charts[4]" name='Т_11(19-24) °С' :parameters="[
+          { name: 'T11_19', color: 'red' },
+          { name: 'T11_20', color: 'green' },
+          { name: 'T11_21', color: 'blue' },
+          { name: 'T11_22', color: 'yellow' },
+          { name: 'T11_23', color: 'white' },
+          { name: 'T11_24', color: 'orange' },
+        ]" chartId="chart4" :legend="true" classTitle="text-h6" :height="70"/>
         </div>
         <div class="col-6">
-          <Chart :ref="charts[5]" name='Rh_TMA19-24_11 %' :parameters="[
-          { name: 'Rh_ТМА19_22', color: 'red' },
-          { name: 'Rh_ТМА20_22', color: 'green' },
-          { name: 'Rh_ТМА21_22', color: 'blue' },
-          { name: 'Rh_ТМА22_22', color: 'yellow' },
-          { name: 'Rh_ТМА23_22', color: 'white' },
-          { name: 'Rh_ТМА24_22', color: 'orange' },
-        ]" typeChart="line" chartId="chart5" :legend="true" classTitle="text-h6" :height="70"
-          :hoverTooltip="hoverTooltip" />
+          <Chart :ref="charts[5]" name='Rh_11(19-24) %' :parameters="[
+          { name: 'Rh11_19', color: 'red' },
+          { name: 'Rh11_20', color: 'green' },
+          { name: 'Rh11_21', color: 'blue' },
+          { name: 'Rh11_22', color: 'yellow' },
+          { name: 'Rh11_23', color: 'white' },
+          { name: 'Rh11_24', color: 'orange' },
+        ]" chartId="chart5" :legend="true" classTitle="text-h6" :height="70"/>
         </div>
       </div>
       <div class="row">
         <div class="col-6">
-          <Chart :ref="charts[6]" name='Т_TMA7-12_12 °С' :parameters="[
-          { name: 'T_ТМА7_22', color: 'red' },
-          { name: 'T_ТМА8_22', color: 'green' },
-          { name: 'T_ТМА9_22', color: 'blue' },
-          { name: 'T_ТМА10_22', color: 'yellow' },
-          { name: 'T_ТМА11_22', color: 'white' },
-          { name: 'T_ТМА12_22', color: 'orange' },
-        ]" typeChart="line" chartId="chart6" :legend="true" classTitle="text-h6" :height="70"
-          :hoverTooltip="hoverTooltip" />
+          <Chart :ref="charts[6]" name='Т_12(7-12) °С' :parameters="[
+          { name: 'T12_7', color: 'red' },
+          { name: 'T12_8', color: 'green' },
+          { name: 'T12_9', color: 'blue' },
+          { name: 'T12_10', color: 'yellow' },
+          { name: 'T12_11', color: 'white' },
+          { name: 'T12_12', color: 'orange' },
+        ]" chartId="chart6" :legend="true" classTitle="text-h6" :height="70"/>
         </div>
         <div class="col-6">
-          <Chart :ref="charts[7]" name='Rh_TMA7-12_12 %' :parameters="[
-          { name: 'Rh_ТМА7_22', color: 'red' },
-          { name: 'Rh_ТМА8_22', color: 'green' },
-          { name: 'Rh_ТМА9_22', color: 'blue' },
-          { name: 'Rh_ТМА10_22', color: 'yellow' },
-          { name: 'Rh_ТМА11_22', color: 'white' },
-          { name: 'Rh_ТМА12_22', color: 'orange' },
-        ]" typeChart="line" chartId="chart7" :legend="true" classTitle="text-h6" :height="70"
-          :hoverTooltip="hoverTooltip" />
+          <Chart :ref="charts[7]" name='Rh_12(7-12) %' :parameters="[
+          { name: 'Rh12_7', color: 'red' },
+          { name: 'Rh12_8', color: 'green' },
+          { name: 'Rh12_9', color: 'blue' },
+          { name: 'Rh12_10', color: 'yellow' },
+          { name: 'Rh12_11', color: 'white' },
+          { name: 'Rh12_12', color: 'orange' },
+        ]" chartId="chart7" :legend="true" classTitle="text-h6" :height="70"/>
         </div>
       </div>
   </q-page>
@@ -133,18 +125,18 @@ export default {
         charts[index].value.pushValues(values, getCurrentTime(), direct, update);
       }
     }
-    function hoverTooltip(tooltipModel) {
-      info.value = '';
-      if (tooltipModel.title) {
-        info.value += `\n${tooltipModel.title}`;
-      }
-      if (tooltipModel.body) {
-        for (let index = 0; index < tooltipModel.body.length; index += 1) {
-          const element = tooltipModel.body[index];
-          info.value += `\n${element.lines}`;
-        }
-      }
-    }
+    // function hoverTooltip(tooltipModel) {
+    //   info.value = '';
+    //   if (tooltipModel.title) {
+    //     info.value += `\n${tooltipModel.title}`;
+    //   }
+    //   if (tooltipModel.body) {
+    //     for (let index = 0; index < tooltipModel.body.length; index += 1) {
+    //       const element = tooltipModel.body[index];
+    //       info.value += `\n${element.lines}`;
+    //     }
+    //   }
+    // }
     function shift() {
       if (dataValues.length > 0) {
         const mes = dataValues[dataValues.length - 1];
@@ -358,7 +350,7 @@ export default {
       charts,
       load,
       info,
-      hoverTooltip,
+      // hoverTooltip,
     };
   },
 };

@@ -3,176 +3,185 @@
     <q-card-section class="text-white" style="background-color: rgb(80, 80, 80);">
       <div class="text-h6">Подготовка воздуха (Приток)</div>
     </q-card-section>
+    <div class="row justify-center">
+      <div class="col-4">
+        <Chart :ref="charts[2]" name='Теплоцентраль, °С' :parameters="[{ name: 'Температура', color: 'rgb(97, 138, 199)' }]"
+          chartId="chart2" colorDefault="black" :legend="false" classTitle="text-h8" :height="70" valueMeasure="°С" />
+      </div>
+    </div>
+
     <div class="row">
-      <div class="col-4">
-        <Chart :ref="charts[0]" name='Температура наружняя, °С' :parameters="[{ name: 'Температура', color: 'white' }]"
-          typeChart="line" chartId="chart0" colorDefault="black" :legend="false" classTitle="text-h8" :height="70"
-          valueMeasure="°С" :min="-40"/>
+      <div class="col-6">
+        <Chart :ref="charts[0]" name='Температура наружняя, °С' :parameters="[{ name: 'Температура', color: 'rgb(97, 138, 199)' }]"
+          chartId="chart0" colorDefault="black" :legend="false" classTitle="text-h8" :height="50" valueMeasure="°С" />
       </div>
-      <div class="col-4">
-        <Chart :ref="charts[1]" name='Температура помещение, °С' :parameters="[{ name: 'Температура', color: 'white' }]"
-          typeChart="line" chartId="chart1" colorDefault="black" :legend="false" classTitle="text-h8" :height="70"
-          valueMeasure="°С" />
-      </div>
-      <div class="col-4">
-        <Chart :ref="charts[2]" name='Теплоцентраль, °С' :parameters="[{ name: 'Температура', color: 'white' }]"
-          typeChart="line" chartId="chart2" colorDefault="black" :legend="false" classTitle="text-h8" :min="20"
-          :max="50" :height="70" valueMeasure="°С" />
+      <div class="col-6">
+        <Chart :ref="charts[3]" name='Влажность наружная, г/кг'
+          :parameters="[{ name: 'Влагосодержание', color: 'rgb(97, 138, 199)' }]" chartId="chart3" colorDefault="black"
+          :legend="false" classTitle="text-h8" :height="50" valueMeasure="г/кг" />
       </div>
     </div>
     <div class="row">
       <div class="col-6">
-        <Chart :ref="charts[3]" name='Влажность наружная, г/кг'
-          :parameters="[{ name: 'Влагосодержание', color: 'white' }]" typeChart="line" chartId="chart3"
-          colorDefault="black" :legend="false" classTitle="text-h8" :max="20" :min="0" :height="50"
-          valueMeasure="г/кг" />
+        <Chart :ref="charts[1]" name='Температура помещение, °С' :parameters="[{ name: 'Температура', color: 'rgb(97, 138, 199)' }]"
+          chartId="chart1" colorDefault="black" :legend="false" classTitle="text-h8" :height="50" valueMeasure="°С" />
       </div>
       <div class="col-6">
         <Chart :ref="charts[4]" name='Влажность помещение, г/кг'
-          :parameters="[{ name: 'Влагосодержание', color: 'white' }]" typeChart="line" chartId="chart4"
-          colorDefault="black" :legend="false" classTitle="text-h8" :height="50" valueMeasure="г/кг" />
+          :parameters="[{ name: 'Влагосодержание', color: 'rgb(97, 138, 199)' }]" chartId="chart4" colorDefault="black"
+          :legend="false" classTitle="text-h8" :height="50" valueMeasure="г/кг" />
       </div>
     </div>
     <div class="row">
       <div class="col-2">
-        <Chart :ref="charts[5]" name='Смешение Приток1, °С' :parameters="[{ name: 'Температура', color: 'white' }]"
-          typeChart="line" chartId="chart5" colorDefault="black" :legend="false" classTitle="text-h8"
-          valueMeasure="°С" />
+        <Chart_v3 :ref="charts[5]" name='Температура смешения Приток1, °С'
+          :parameters="[{ name: 'Температура', color: 'rgb(97, 138, 199)' }, { name: 'Уставка:', color: 'white' }]" chartId="chart5" colorDefault="black" :legend="false"
+          classTitle="text-h8" valueMeasure="°С" />
       </div>
       <div class="col-2">
-        <Chart :ref="charts[6]" name='АбсВлСмешПриток1' :parameters="[{ name: 'Влагосодержание', color: 'white' }]"
-          typeChart="line" chartId="chart6" colorDefault="black" :legend="false" classTitle="text-h8" :max="20" :min="0"
-          valueMeasure="г/кг" />
+        <Chart :ref="charts[6]" name='Абсолютная влажность воздуха смешения Приток1, г/кг'
+          :parameters="[{ name: 'Влагосодержание', color: 'rgb(97, 138, 199)' }]" chartId="chart6" colorDefault="black"
+          :legend="false" classTitle="text-h8" valueMeasure="г/кг" />
       </div>
       <div class="col-2">
-        <Chart :ref="charts[7]" name='Вокал Приток1, °С' :parameters="[{ name: 'Температура', color: 'white' }]"
-          typeChart="line" chartId="chart7" colorDefault="black" :legend="false" classTitle="text-h8" :max="50" :min="0"
-          valueMeasure="°С" />
+        <Chart_v3 :ref="charts[7]" name='Температура воздуха после водяного калорифера Приток1, °С'
+          :parameters="[{ name: 'Температура:', color: 'rgb(97, 138, 199)' }, { name: 'Уставка:', color: 'white' }]"
+          chartId="chart7" colorDefault="black" :legend="false" classTitle="text-h8" valueMeasure="°С" />
       </div>
       <div class="col-2">
-        <Chart :ref="charts[8]" name='ЭКал1 Приток1, °С' :parameters="[{ name: 'Температура', color: 'white' }]"
-          typeChart="line" chartId="chart8" colorDefault="black" :legend="false" classTitle="text-h8" :min="0"
-          valueMeasure="°С" />
+        <Chart_v3 :ref="charts[8]"
+          name='Температура воздуха после электрического калорифера перед увлажнителем Приток1, °С'
+          :parameters="[{ name: 'Температура', color: 'rgb(97, 138, 199)' }, { name: 'Уставка:', color: 'white' }]" chartId="chart8" colorDefault="black" :legend="false"
+          classTitle="text-h8" valueMeasure="°С" />
+      </div>
+
+      <div class="col-2">
+        <Chart_v3 :ref="charts[9]" name='Абсолютная влажность воздуха после увлажнителя Приток1, г/кг'
+          :parameters="[{ name: 'Влагосодержание', color: 'rgb(97, 138, 199)' }, { name: 'Уставка:', color: 'white' }]" chartId="chart9" colorDefault="black"
+          :legend="false" classTitle="text-h8" valueMeasure="г/кг" />
       </div>
       <div class="col-2">
-        <Chart :ref="charts[9]" name='Влажность Приток1' :parameters="[{ name: 'Влагосодержание', color: 'white' }]"
-          typeChart="line" chartId="chart9" colorDefault="black" :legend="false" classTitle="text-h8"
-          valueMeasure="г/кг" />
-      </div>
-      <div class="col-2">
-        <Chart :ref="charts[10]" name='Вент Приток1' :parameters="[{ name: 'Расход', color: 'white' }]" typeChart="line"
-          chartId="chart10" colorDefault="black" :legend="false" classTitle="text-h8" valueMeasure="м3/ч" />
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-3">
-        <Chart :ref="charts[11]" name='УпрСмешПриток1' :parameters="[{ name: 'Производительность', color: 'white' }]"
-          typeChart="line" chartId="chart11" colorDefault="black" :legend="false" classTitle="text-h8" :min="0"
-          :max="100" valueMeasure="%" />
-      </div>
-      <div class="col-3">
-        <Chart :ref="charts[12]" name='УпрВокалПриток1' :parameters="[{ name: 'Производительность', color: 'white' }]"
-          typeChart="line" chartId="chart12" colorDefault="black" :legend="false" classTitle="text-h8" :min="0"
-          :max="100" valueMeasure="%" />
-      </div>
-      <div class="col-3">
-        <Chart :ref="charts[13]" name='УпрЭКал1 Приток1' :parameters="[{ name: 'Производительность', color: 'white' }]"
-          typeChart="line" chartId="chart13" colorDefault="black" :legend="false" classTitle="text-h8" :min="0"
-          :max="100" valueMeasure="%" />
-      </div>
-      <div class="col-3">
-        <Chart :ref="charts[14]" name='УпрЭКал2 Приток1' :parameters="[{ name: 'Производительность', color: 'white' }]"
-          typeChart="line" chartId="chart14" colorDefault="black" :legend="false" classTitle="text-h8" :min="0"
-          :max="100" valueMeasure="%" />
+        <Chart_v3 :ref="charts[10]" name='Расход воздуха вентилятора Приток1, м3/ч'
+          :parameters="[{ name: 'Расход', color: 'rgb(97, 138, 199)' }, { name: 'Уставка:', color: 'white' }]" chartId="chart10" colorDefault="black" :legend="false"
+          classTitle="text-h8" valueMeasure="м3/ч" />
       </div>
     </div>
     <div class="row">
       <div class="col-2">
-        <Chart :ref="charts[15]" name='УпрВент Приток1' :parameters="[{ name: 'Производительность', color: 'white' }]"
-          typeChart="line" chartId="chart15" colorDefault="black" :legend="false" classTitle="text-h8" :min="0"
-          :max="100" valueMeasure="%" />
+        <Chart :ref="charts[11]" name='Процент открытия клапана смешения Приток1, %'
+          :parameters="[{ name: 'Производительность', color: 'rgb(97, 138, 199)' }]" chartId="chart11" colorDefault="black"
+          :legend="false" classTitle="text-h8" valueMeasure="%" />
       </div>
       <div class="col-2">
-        <Chart :ref="charts[16]" name='Смешение Приток2, °С' :parameters="[{ name: 'Температура', color: 'white' }]"
-          typeChart="line" chartId="chart16" colorDefault="black" :legend="false" classTitle="text-h8"
-          valueMeasure="°С" />
+
       </div>
       <div class="col-2">
-        <Chart :ref="charts[17]" name='ЭКал Приток2, °С' :parameters="[{ name: 'Температура', color: 'white' }]"
-          typeChart="line" chartId="chart17" colorDefault="black" :legend="false" classTitle="text-h8"
-          valueMeasure="°С" />
+        <Chart :ref="charts[12]" name='Управление водяного калорифера Приток1, %'
+          :parameters="[{ name: 'Производительность', color: 'rgb(97, 138, 199)' }]" chartId="chart12" colorDefault="black"
+          :legend="false" classTitle="text-h8" valueMeasure="%" />
       </div>
       <div class="col-2">
-        <Chart :ref="charts[18]" name='Вент Приток2' :parameters="[{ name: 'Расход', color: 'white' }]" typeChart="line"
+        <Chart :ref="charts[13]" name='Управление калорифером перед увлажнителем Приток1, %'
+          :parameters="[{ name: 'Производительность', color: 'rgb(97, 138, 199)' }]" chartId="chart13" colorDefault="black"
+          :legend="false" classTitle="text-h8" valueMeasure="%" />
+      </div>
+
+      <div class="col-2">
+        <Chart :ref="charts[14]" name='Управление калорифером после вентилятора Приток1, %'
+          :parameters="[{ name: 'Производительность', color: 'rgb(97, 138, 199)' }]" chartId="chart14" colorDefault="black"
+          :legend="false" classTitle="text-h8" valueMeasure="%" />
+      </div>
+      <div class="col-2">
+        <Chart :ref="charts[15]" name='Управление вентилятором Приток1' :parameters="[{ name: 'Производительность', color: 'rgb(97, 138, 199)' }]"
+          chartId="chart15" colorDefault="black" :legend="false" classTitle="text-h8" valueMeasure="%" />
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-2">
+        <Chart_v3 :ref="charts[16]" name='Температура смешения Приток2, °С' :parameters="[{ name: 'Температура', color: 'rgb(97, 138, 199)' }, { name: 'Уставка:', color: 'white' }]"
+          chartId="chart16" colorDefault="black" :legend="false" classTitle="text-h8" valueMeasure="°С" />
+      </div>
+      <div class="col-2">
+        <Chart :ref="charts[17]" name='Температура воздуха в канале 11 перед рекуператором, °С' :parameters="[{ name: 'Температура:', color: 'rgb(97, 138, 199)' }, { name: 'Уставка:', color: 'white' }]"
+          chartId="chart17" colorDefault="black" :legend="false" classTitle="text-h8" valueMeasure="°С" />
+      </div>
+      <div class="col-2">
+        <Chart_v3 :ref="charts[18]" name='Расход воздуха вентилятора Приток2, м3/ч' :parameters="[{ name: 'Расход', color: 'rgb(97, 138, 199)' }, { name: 'Уставка:', color: 'white' }]"
           chartId="chart18" colorDefault="black" :legend="false" classTitle="text-h8" valueMeasure="м3/ч" />
       </div>
+    </div>
+    <div class="row">
       <div class="col-2">
-        <Chart :ref="charts[19]" name='УпрСмеш Приток2' :parameters="[{ name: 'Производительность', color: 'white' }]"
-          typeChart="line" chartId="chart19" colorDefault="black" :legend="false" classTitle="text-h8" :min="0"
-          :max="100" valueMeasure="%" />
+        <Chart :ref="charts[19]" name='Процент открытия клапана смешения Приток2, %'
+          :parameters="[{ name: 'Производительность', color: 'rgb(97, 138, 199)' }]" chartId="chart19" colorDefault="black"
+          :legend="false" classTitle="text-h8" valueMeasure="%" />
       </div>
       <div class="col-2">
-        <Chart :ref="charts[20]" name='УпрЭкал Приток2' :parameters="[{ name: 'Производительность', color: 'white' }]"
-          typeChart="line" chartId="chart20" colorDefault="black" :legend="false" classTitle="text-h8" :min="0"
-          :max="100" valueMeasure="%" />
+        <Chart :ref="charts[20]" name='Управление электрическим калорифером перед вентилятором Приток2, %'
+          :parameters="[{ name: 'Производительность', color: 'rgb(97, 138, 199)' }]" chartId="chart20" colorDefault="black"
+          :legend="false" classTitle="text-h8" valueMeasure="%" />
+      </div>
+      <div class="col-2">
+        <Chart :ref="charts[31]" name='Управление вентилятора Приток2, %'
+          :parameters="[{ name: 'Производительность', color: 'rgb(97, 138, 199)' }]" chartId="chart31" colorDefault="black"
+          :legend="false" classTitle="text-h8" valueMeasure="%" />
       </div>
     </div>
     <div class="row">
       <div class="col-2">
-        <Chart :ref="charts[21]" name='ВыходТиВПриток1 (Выход), °С'
-          :parameters="[{ name: 'Температура', color: 'white' }]" typeChart="line" chartId="chart21"
-          colorDefault="black" :legend="false" classTitle="text-h8" valueMeasure="°С" />
+        <Chart :ref="charts[21]" name='Температура на выходе Приток1, °С'
+          :parameters="[{ name: 'Температура', color: 'rgb(97, 138, 199)' }]" chartId="chart21" colorDefault="black" :legend="false"
+          classTitle="text-h8" valueMeasure="°С" />
       </div>
       <div class="col-2">
-        <Chart :ref="charts[22]" name='ВыходТиВПриток1 (Отн.Вл)' :parameters="[{ name: 'Температура', color: 'white' }]"
-          typeChart="line" chartId="chart22" colorDefault="black" :legend="false" classTitle="text-h8"
-          valueMeasure="г/кг" />
+        <Chart :ref="charts[22]" name='Относительная влажность на выходе Приток1, %'
+          :parameters="[{ name: 'Влагосодержание', color: 'rgb(97, 138, 199)' }]" chartId="chart22" colorDefault="black" :legend="false"
+          classTitle="text-h8" valueMeasure="%" />
       </div>
       <div class="col-2">
-        <Chart :ref="charts[23]" name='ВыходТиВПриток1 (Абс.Вл)' :parameters="[{ name: 'Температура', color: 'white' }]"
-          typeChart="line" chartId="chart23" colorDefault="black" :legend="false" classTitle="text-h8"
-          valueMeasure="г/кг" />
+        <Chart :ref="charts[23]" name='Абсолютная влажность на выходе Приток1, г/кг'
+          :parameters="[{ name: 'Влагосодержание', color: 'rgb(97, 138, 199)' }]" chartId="chart23" colorDefault="black" :legend="false"
+          classTitle="text-h8" valueMeasure="г/кг" />
       </div>
       <div class="col-2">
-        <Chart :ref="charts[24]" name='ВыходТиВПриток2 (Выход), °С'
-          :parameters="[{ name: 'Температура', color: 'white' }]" typeChart="line" chartId="chart24" colorDefault="teal"
-          :legend="false" classTitle="text-h8" valueMeasure="°С" />
+        <Chart :ref="charts[24]" name='Температура на выходе Приток2, °С'
+          :parameters="[{ name: 'Температура', color: 'rgb(97, 138, 199)' }]" chartId="chart24" colorDefault="teal" :legend="false"
+          classTitle="text-h8" valueMeasure="°С" />
       </div>
       <div class="col-2">
-        <Chart :ref="charts[25]" name='ВыходТиВПриток2 (Отн.Вл)' :parameters="[{ name: 'Температура', color: 'white' }]"
-          typeChart="line" chartId="chart25" colorDefault="black" :legend="false" classTitle="text-h8"
-          valueMeasure="г/кг" />
+        <Chart :ref="charts[25]" name='Относительная влажность на выходе Приток2, %'
+          :parameters="[{ name: 'Температура', color: 'rgb(97, 138, 199)' }]" chartId="chart25" colorDefault="black" :legend="false"
+          classTitle="text-h8" valueMeasure="%" />
       </div>
       <div class="col-2">
-        <Chart :ref="charts[26]" name='ВыходТиВПриток2 (Абс.Вл)' :parameters="[{ name: 'Температура', color: 'white' }]"
-          typeChart="line" chartId="chart26" colorDefault="black" :legend="false" classTitle="text-h8"
-          valueMeasure="г/кг" />
+        <Chart :ref="charts[26]" name='Абсолютная влажность на выходе Приток2, г/кг'
+          :parameters="[{ name: 'Температура', color: 'rgb(97, 138, 199)' }]" chartId="chart26" colorDefault="black" :legend="false"
+          classTitle="text-h8" valueMeasure="г/кг" />
       </div>
     </div>
     <div class="row">
-      <div class="col-4">
-        <Chart :ref="charts[27]" name='ВыходПриток (Температура), °С'
-          :parameters="[{ name: 'Температура', color: 'white' }]" typeChart="line" chartId="chart27"
-          colorDefault="black" :legend="false" classTitle="text-h8" valueMeasure="°С" />
+      <div class="col-2">
+        <Chart :ref="charts[27]" name='Выход Притока (Температура), °С'
+        :parameters="[{ name: 'Температура:', color: 'rgb(97, 138, 199)' }, { name: 'Уставка:', color: 'white' }]"
+        chartId="chart27" colorDefault="black" :legend="false"
+          classTitle="text-h8" valueMeasure="°С" />
       </div>
-      <div class="col-4">
-        <Chart :ref="charts[28]" name='ВыходПриток (Отн.Вл)' :parameters="[{ name: 'Влажность', color: 'white' }]"
-          typeChart="line" chartId="chart28" colorDefault="black" :legend="false" classTitle="text-h8"
-          valueMeasure="%" />
+      <div class="col-2">
+        <Chart_v3 :ref="charts[28]" name='Выход Притока (Отн.Вл), %' :parameters="[{ name: 'Влажность', color: 'rgb(97, 138, 199)' }, { name: 'Уставка:', color: 'white' }]"
+          chartId="chart28" colorDefault="black" :legend="false" classTitle="text-h8" valueMeasure="%" />
       </div>
-      <div class="col-4">
-        <Chart :ref="charts[29]" name='ВыходПриток (Абс.Вл)' :parameters="[{ name: 'Температура', color: 'white' }]"
-          typeChart="line" chartId="chart29" colorDefault="black" :legend="false" classTitle="text-h8"
-          valueMeasure="г/кг" />
+      <div class="col-2">
+        <Chart_v3 :ref="charts[29]" name='Выход Притока (Абс.Вл), г/кг'
+          :parameters="[{ name: 'Температура', color: 'rgb(97, 138, 199)' }, { name: 'Уставка:', color: 'white' }]" chartId="chart29" colorDefault="black" :legend="false"
+          classTitle="text-h8" valueMeasure="г/кг" />
       </div>
-    </div>
-    <div class="row">
-      <div class="col-12">
-        <Chart_v3 :ref="charts[30]" name='Температура влажного термометра Приток 1, °С'
-          :parameters="[{ name: 'Set_TwT_21', color: 'white' }, { name: 'Data_TwT_21', color: 'red' }]" typeChart="line"
-          chartId="chart30" colorDefault="black" :legend="true" classTitle="text-h8" valueMeasure="°С" :height="70" />
+      <div class="col-6">
+        <Chart_v3 :ref="charts[30]" name='Температура влажного термометра Приток, °С'
+          :parameters="[{ name: 'Температура:', color: 'rgb(97, 138, 199)' }, { name: 'Уставка:', color: 'white' }, { name: 'Уставка + 0.3', color: 'green' }, { name: 'Уставка - 0.3', color: 'green' }]"
+          chartId="chart30" colorDefault="black" :legend="true" classTitle="text-h8"  classSetpoint="text-h6" classValue="text-h6" valueMeasure="°С" :height="60"/>
       </div>
     </div>
+
   </q-page>
 </template>
 
@@ -196,7 +205,7 @@ export default {
     const charts = [];
     const dataValues = [];
     const load = ref(0);
-    for (let index = 0; index < 31; index += 1) {
+    for (let index = 0; index < 32; index += 1) {
       charts.push(ref(null));
     }
     const {
@@ -219,6 +228,19 @@ export default {
         charts[index].value.pushValues(values, getCurrentTime(), direct, update);
       }
     }
+    function updateChartv3Set(index, values, value, setpoint, time, direct, update) {
+      if (time) {
+        charts[index].value.pushValues(values, time, direct, update);
+      } else {
+        charts[index].value.pushValues(values, getCurrentTime(), direct, update);
+      }
+      if (setpoint) {
+        charts[index].value.setSetpoint(Number(setpoint).toFixed(2));
+      }
+      if (value) {
+        charts[index].value.setValue(Number(value).toFixed(2));
+      }
+    }
     function shift() {
       if (dataValues.length > 0) {
         const mes = dataValues[dataValues.length - 1];
@@ -227,21 +249,35 @@ export default {
         updateChart(2, mes.SCo_t_tset, null, mes.time, false, false);
         updateChart(3, mes.SCo_Abs_nar, null, mes.time, false, false);
         updateChart(4, mes.Hc_Lab, null, mes.time, false, false);
-        updateChart(5, mes.SCo_t_smesh_pr1, null, mes.time, false, false);
+        // updateChart(5, mes.SCo_t_smesh_pr1, null, mes.time, false, false);
+        updateChartv3(5, [{ value: mes.SCo_t_smesh_pr1 },
+          { value: mes.Set_SCo_t_smesh_pr1 }], mes.time, false, false);
         updateChart(6, mes.SCo_Hc_ecal1_pr1, null, mes.time, false, false);
-        updateChart(7, mes.SCo_t_vokal_pr1, null, mes.time, false, false);
-        updateChart(8, mes.SCo_t_ekal1_pr1, null, mes.time, false, false);
-        updateChart(9, mes.Hc_21_Pr, null, mes.time, false, false);
-        updateChart(10, mes.SCo_m3h_pr1, null, mes.time, false, false);
+        updateChartv3(7, [{ value: mes.SCo_t_vokal_pr1 },
+          { value: mes.Set_SCo_t_vokal_pr1 }], mes.time, false, false);
+        // updateChart(8, mes.SCo_t_ekal1_pr1, null, mes.time, false, false);
+        updateChartv3(8, [{ value: mes.SCo_t_ekal1_pr1 },
+          { value: mes.Set_SCo_t_ekal1_pr1 }], mes.time, false, false);
+        // updateChart(9, mes.Hc_21_Pr, null, mes.time, false, false);
+        updateChartv3(9, [{ value: mes.Hc_21_Pr },
+          { value: mes.Set_Hc_21_Pr }], mes.time, false, false);
+        // updateChart(10, mes.SCo_m3h_pr1, null, mes.time, false, false);
+        updateChartv3(10, [{ value: mes.SCo_m3h_pr1 },
+          { value: mes.Set_SCo_m3h_pr1 }], mes.time, false, false);
         updateChart(11, mes.SCo_reg_smesh_pr1, null, mes.time, false, false);
         updateChart(12, mes.SCo_reg_vokal_pr1, null, mes.time, false, false);
         updateChart(13, mes.SCo_reg_ekal1_pr1, null, mes.time, false, false);
         updateChart(14, mes.SCo_reg_ekal2_pr1, null, mes.time, false, false);
         updateChart(15, mes.SCo_reg_m3h_pr1, null, mes.time, false, false);
-        updateChart(16, mes.SCo_t_smesh_pr2, null, mes.time, false, false);
-        updateChart(16, mes.SCo_t_smesh_pr2, null, mes.time, false, false);
-        updateChart(17, mes.T_21_Pr, null, mes.time, false, false);
-        updateChart(18, mes.SCo_m3h_pr2, null, mes.time, false, false);
+        // updateChart(16, mes.SCo_t_smesh_pr2, null, mes.time, false, false);
+        updateChartv3(16, [{ value: mes.SCo_t_smesh_pr2 },
+          { value: mes.Set_SCo_t_smesh_pr2 }], mes.time, false, false);
+        // updateChart(17, mes.T_21_Pr, null, mes.time, false, false);
+        updateChartv3(17, [{ value: mes.T_21_Pr },
+          { value: mes.Set_T_21_Pr }], mes.time, false, false);
+        // updateChart(18, mes.SCo_m3h_pr2, null, mes.time, false, false);
+        updateChartv3(18, [{ value: mes.SCo_m3h_pr2 },
+          { value: mes.Set_SCo_m3h_pr2 }], mes.time, false, false);
         updateChart(19, mes.SCo_reg_smesh_pr2, null, mes.time, false, false);
         updateChart(20, mes.SCo_reg_ekal_pr2, null, mes.time, false, false);
         updateChart(21, mes.SCo_t_pr1, null, mes.time, false, false);
@@ -250,20 +286,23 @@ export default {
         updateChart(24, mes.SCo_t_pr2, null, mes.time, false, false);
         updateChart(25, mes.SCo_Rh_pr2, null, mes.time, false, false);
         updateChart(26, mes.SCo_Hc_pr2, null, mes.time, false, false);
-        updateChart(27, mes.T_21_Pr, null, mes.time, false, false);
-        updateChart(28, mes.Rh_21_Pr, null, mes.time, false, false);
-        updateChart(29, mes.Hc_21_Pr, null, mes.time, false, false);
-        const valuesTwT = [];
-        valuesTwT.push(
-          { value: mes.TwT_11 },
-          { value: mes.TwT_21 },
-        );
-        updateChartv3(30, valuesTwT, mes.time, false, false);
+        // updateChart(27, mes.T_21_Pr, null, mes.time, false, false);
+        updateChartv3(27, [{ value: mes.T_21_Pr },
+          { value: mes.Set_T_21_Pr }], mes.time, false, false);
+        // updateChart(28, mes.Rh_21_Pr, null, mes.time, false, false);
+        updateChartv3(28, [{ value: mes.Rh_21_Pr },
+          { value: mes.Set_Rh_21_Pr }], mes.time, false, false);
+        // updateChart(29, mes.Hc_21_Pr, null, mes.time, false, false);
+        updateChartv3(29, [{ value: mes.Hc_21_Pr }, { value: mes.Set_Hc_21_Pr }], mes.time, false, false);
+        updateChart(31, mes.SCo_reg_m3h_pr2, null, mes.time, false, false);
+        const setMax = mes.Set_TwT_21 + 0.3;
+        const setMin = mes.Set_TwT_21 - 0.3;
+        updateChartv3(30, [{ value: mes.TwT_21 }, { value: mes.Set_TwT_21 }, { value: setMax }, { value: setMin }], mes.time, false, false);
         dataValues.pop();
         load.value = dataValues.length;
         setImmediate(shift);
       } else {
-        for (let index = 0; index < 31; index += 1) {
+        for (let index = 0; index < charts.lenght; index += 1) {
           charts[index].value.update();
         }
       }
@@ -272,27 +311,43 @@ export default {
       const mes = json.message;
       if (json.id === 2) {
         if (json.type === 'sendAirDevices') {
+          console.log(mes);
           if (dataValues.length === 0) {
             updateChart(0, mes.SCo_t_nar.value, null, mes.time, true, true);
             updateChart(1, mes.T_Lab.value, null, mes.time, true, true);
             updateChart(2, mes.SCo_t_tset.value, null, mes.time, true, true);
             updateChart(3, mes.SCo_Abs_nar.value, null, mes.time, true, true);
             updateChart(4, mes.Hc_Lab.value, null, mes.time, true, true);
-            updateChart(5, mes.SCo_t_smesh_pr1.value, mes.SCo_t_smesh_pr1.setpoint, mes.time, true, true);
+            // updateChart(5, mes.SCo_t_smesh_pr1.value, mes.SCo_t_smesh_pr1.setpoint, mes.time, true, true);
+            updateChartv3Set(5, [{ value: mes.SCo_t_smesh_pr1.value },
+              { value: mes.SCo_t_smesh_pr1.setpoint }], mes.SCo_t_smesh_pr1.value, mes.SCo_t_smesh_pr1.setpoint, mes.time, true, true);
             updateChart(6, mes.SCo_Hc_ecal1_pr1.value, null, mes.time, true, true);
-            updateChart(7, mes.SCo_t_vokal_pr1.value, mes.SCo_t_vokal_pr1.setpoint, mes.time, true, true);
-            updateChart(8, mes.SCo_t_ekal1_pr1.value, mes.SCo_t_ekal1_pr1.setpoint, mes.time, true, true);
-            updateChart(9, mes.Hc_21_Pr.value, mes.Hc_21_Pr.setpoint, mes.time, true, true);
-            updateChart(10, mes.SCo_m3h_pr1.value, mes.SCo_m3h_pr1.setpoint, mes.time, true, true);
+            // updateChart(7, mes.SCo_t_vokal_pr1.value, mes.SCo_t_vokal_pr1.setpoint, mes.time, true, true);
+            updateChartv3Set(7, [{ value: mes.SCo_t_vokal_pr1.value },
+              { value: mes.SCo_t_vokal_pr1.setpoint }], mes.SCo_t_vokal_pr1.value, mes.SCo_t_vokal_pr1.setpoint, mes.time, true, true);
+            // updateChart(8, mes.SCo_t_ekal1_pr1.value, mes.SCo_t_ekal1_pr1.setpoint, mes.time, true, true);
+            updateChartv3Set(8, [{ value: mes.SCo_t_ekal1_pr1.value },
+              { value: mes.SCo_t_ekal1_pr1.setpoint }], mes.SCo_t_ekal1_pr1.value, mes.SCo_t_ekal1_pr1.setpoint, mes.time, true, true);
+            // updateChart(9, mes.Hc_21_Pr.value, mes.Hc_21_Pr.setpoint, mes.time, true, true);
+            updateChartv3Set(9, [{ value: mes.Hc_21_Pr.value },
+              { value: mes.Hc_21_Pr.setpoint }], mes.Hc_21_Pr.value, mes.Hc_21_Pr.setpoint, mes.time, true, true);
+            // updateChart(10, mes.SCo_m3h_pr1.value, mes.SCo_m3h_pr1.setpoint, mes.time, true, true);
+            updateChartv3Set(10, [{ value: mes.SCo_m3h_pr1.value },
+              { value: mes.SCo_m3h_pr1.setpoint }], mes.SCo_m3h_pr1.value, mes.SCo_m3h_pr1.setpoint, mes.time, true, true);
             updateChart(11, mes.SCo_reg_smesh_pr1.value, null, mes.time, true, true);
             updateChart(12, mes.SCo_reg_vokal_pr1.value, null, mes.time, true, true);
             updateChart(13, mes.SCo_reg_ekal1_pr1.value, null, mes.time, true, true);
             updateChart(14, mes.SCo_reg_ekal2_pr1.value, null, mes.time, true, true);
             updateChart(15, mes.SCo_reg_m3h_pr1.value, null, mes.time, true, true);
-            updateChart(16, mes.SCo_t_smesh_pr2.value, null, mes.time, true, true);
-            updateChart(16, mes.SCo_t_smesh_pr2.value, mes.SCo_t_smesh_pr2.setpoint, mes.time, true, true);
-            updateChart(17, mes.T_21_Pr.value, mes.T_21_Pr.setpoint, mes.time, true, true);
-            updateChart(18, mes.SCo_m3h_pr2.value, mes.SCo_m3h_pr2.setpoint, mes.time, true, true);
+            // updateChart(16, mes.SCo_t_smesh_pr2.value, mes.SCo_t_smesh_pr2.setpoint, mes.time, true, true);
+            updateChartv3Set(16, [{ value: mes.SCo_t_smesh_pr2.value },
+              { value: mes.SCo_t_smesh_pr2.setpoint }], mes.SCo_t_smesh_pr2.value, mes.SCo_t_smesh_pr2.setpoint, mes.time, true, true);
+            // updateChart(17, mes.T_21_Pr.value, mes.T_21_Pr.setpoint, mes.time, true, true);
+            updateChartv3Set(17, [{ value: mes.T_21_Pr.value },
+              { value: mes.T_21_Pr.setpoint }], mes.T_21_Pr.value, mes.T_21_Pr.setpoint, mes.time, true, true);
+            // updateChart(18, mes.SCo_m3h_pr2.value, mes.SCo_m3h_pr2.setpoint, mes.time, true, true);
+            updateChartv3Set(18, [{ value: mes.SCo_m3h_pr2.value },
+              { value: mes.SCo_m3h_pr2.setpoint }], mes.SCo_m3h_pr2.value, mes.SCo_m3h_pr2.setpoint, mes.time, true, true);
             updateChart(19, mes.SCo_reg_smesh_pr2.value, null, mes.time, true, true);
             updateChart(20, mes.SCo_reg_ekal_pr2.value, null, mes.time, true, true);
             updateChart(21, mes.SCo_t_pr1.value, null, mes.time, true, true);
@@ -301,15 +356,20 @@ export default {
             updateChart(24, mes.SCo_t_pr2.value, null, mes.time, true, true);
             updateChart(25, mes.SCo_Rh_pr2.value, null, mes.time, true, true);
             updateChart(26, mes.SCo_Hc_pr2.value, null, mes.time, true, true);
-            updateChart(27, mes.T_21_Pr.value, mes.T_21_Pr.setpoint, mes.time, true, true);
-            updateChart(28, mes.Rh_21_Pr.value, mes.Rh_21_Pr.setpoint, mes.time, true, true);
-            updateChart(29, mes.Hc_21_Pr.value, mes.Hc_21_Pr.setpoint, mes.time, true, true);
-            const valuesTwT = [];
-            valuesTwT.push(
-              { value: mes.TwT_11.value },
-              { value: mes.TwT_21.value },
-            );
-            updateChartv3(30, valuesTwT, mes.time, false, false);
+            // updateChart(27, mes.T_21_Pr.value, mes.T_21_Pr.setpoint, mes.time, true, true);
+            updateChartv3Set(27, [{ value: mes.T_21_Pr.value },
+              { value: mes.T_21_Pr.setpoint }], mes.T_21_Pr.value, mes.T_21_Pr.setpoint, mes.time, true, true);
+            // updateChart(28, mes.Rh_21_Pr.value, mes.Rh_21_Pr.setpoint, mes.time, true, true);
+            updateChartv3Set(28, [{ value: mes.Rh_21_Pr.value },
+              { value: mes.Rh_21_Pr.setpoint }], mes.Rh_21_Pr.value, mes.Rh_21_Pr.setpoint, mes.time, true, true);
+            // updateChart(29, mes.Hc_21_Pr.value, mes.Hc_21_Pr.setpoint, mes.time, true, true);
+            updateChartv3Set(29, [{ value: mes.Hc_21_Pr.value },
+              { value: mes.Hc_21_Pr.setpoint }], mes.Hc_21_Pr.value, mes.Hc_21_Pr.setpoint, mes.time, true, true);
+            updateChart(31, mes.SCo_reg_m3h_pr2.value, mes.SCo_reg_m3h_pr2.setpoint, mes.time, true, true);
+            const setMax = Number(mes.TwT_21.setpoint) + 0.3;
+            const setMin = Number(mes.TwT_21.setpoint) - 0.3;
+            updateChartv3Set(30, [{ value: mes.TwT_21.value },
+              { value: mes.TwT_21.setpoint }, { value: setMax }, { value: setMin }], mes.TwT_21.value, mes.TwT_21.setpoint, mes.time, true, true);
           } else {
             const obj = {};
             // eslint-disable-next-line no-restricted-syntax, guard-for-in

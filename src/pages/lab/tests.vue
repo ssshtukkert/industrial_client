@@ -20,7 +20,7 @@
             <q-card-section class="text-grey">
               Плотность 11:
               <div class="text-h6 text-white">
-                {{ Plotnost_11 }}
+                {{ Plotnost_11 }} кг/м3
               </div>
             </q-card-section>
           </q-card>
@@ -37,19 +37,19 @@
                 <div class="col-4 text-grey">
                   Скор13:
                   <div class="text-h6 text-white">
-                    {{ Speed_11_13 }}
+                    {{ Speed_11_13 }} м/с
                   </div>
                 </div>
                 <div class="col-3 text-grey">
                   Скор5:
                   <div class="text-h6 text-white">
-                    {{ Speed_12_5 }}
+                    {{ Speed_12_5 }} м/с
                   </div>
                 </div>
                 <div class="col-5 text-grey">
                   СкорСрВытДо:
                   <div class="text-h6 text-white">
-                    {{ Speed_11_Sr }}
+                    {{ Speed_11_Sr }} м/с
                   </div>
                 </div>
               </div>
@@ -57,19 +57,19 @@
                 <div class="col-4 text-grey">
                   Скор14:
                   <div class="text-h6 text-white">
-                    {{ Speed_11_14 }}
+                    {{ Speed_11_14 }} м/с
                   </div>
                 </div>
                 <div class="col-3 text-grey">
                   Скор6:
                   <div class="text-h6 text-white">
-                    {{ Speed_12_6 }}
+                    {{ Speed_12_6 }} м/с
                   </div>
                 </div>
                 <div class="col-5 text-grey">
                   m3ВытяжкаДо 11:
                   <div class="text-h6 text-white">
-                    {{ m3h_11 }}
+                    {{ m3h_11 }} м3/ч
                   </div>
                 </div>
               </div>
@@ -77,19 +77,19 @@
                 <div class="col-4 text-grey">
                   Скор15:
                   <div class="text-h6 text-white">
-                    {{ Speed_11_15 }}
+                    {{ Speed_11_15 }} м/с
                   </div>
                 </div>
                 <div class="col-3 text-grey">
                   Скор7:
                   <div class="text-h6 text-white">
-                    {{ Speed_12_7 }}
+                    {{ Speed_12_7 }} м/с
                   </div>
                 </div>
                 <div class="col-5 text-grey">
                   МассРасхВытДо11:
                   <div class="text-h6 text-white">
-                    {{ mass_11 }}
+                    {{ mass_11 }} кг/с
                   </div>
                 </div>
               </div>
@@ -97,19 +97,19 @@
                 <div class="col-4 text-grey">
                   Скор16:
                   <div class="text-h6 text-white">
-                    {{ Speed_11_16 }}
+                    {{ Speed_11_16 }} м/с
                   </div>
                 </div>
                 <div class="col-3 text-grey">
                   Скор8:
                   <div class="text-h6 text-white">
-                    {{ Speed_12_8 }}
+                    {{ Speed_12_8 }} м/с
                   </div>
                 </div>
                 <div class="col-5 text-grey">
                   ДавлВытяжкаДо11:
                   <div class="text-h6 text-white">
-                    {{ Pressure_11 }}
+                    {{ Pressure_11 }} Па
                   </div>
                 </div>
               </div>
@@ -234,9 +234,9 @@
             </q-card-section>
             <q-card-section>
               <div class="row">
-                <div class="col-12">
+                <div class="col-12 text-grey">
                   Перепад вытяжка (11-12):
-                  <div class="text-h6">
+                  <div class="text-h6 text-white">
                     {{ deltap_11_12 }} Па
                   </div>
                 </div>
@@ -362,26 +362,26 @@
             </q-card-section>
             <q-card-section>
               <div class="row">
-                <div class="col-12">
+                <div class="col-12 text-grey">
                   m3Вытяжка После 12:
-                  <div class="text-h6">
-                    {{ m3h_12 }}
+                  <div class="text-h6 text-white">
+                    {{ m3h_12 }} м3/ч
                   </div>
                 </div>
               </div>
               <div class="row">
-                <div class="col-12">
+                <div class="col-12 text-grey">
                   МассРасхВыт После 12:
-                  <div class="text-h6">
-                    {{ mass_12 }}
+                  <div class="text-h6 text-white">
+                    {{ mass_12 }} кг/с
                   </div>
                 </div>
               </div>
               <div class="row">
-                <div class="col-12">
+                <div class="col-12  text-grey">
                   ДавлВытяжка После (12):
-                  <div class="text-h6">
-                    {{ Pressure_12 }}
+                  <div class="text-h6 text-white">
+                    {{ Pressure_12 }} Па
                   </div>
                 </div>
               </div>
@@ -398,7 +398,7 @@
             <q-card-section class="text-grey">
               Плотность 12:
               <div class="text-h6 text-white">
-                {{ Plotnost_12 }}
+                {{ Plotnost_12 }} кг/м3
               </div>
             </q-card-section>
           </q-card>
@@ -433,12 +433,6 @@
                   </div>
                 </div>
                 <div class="col-2 text-grey">
-                  Тепловой баланс контроллер:
-                  <div class="text-h6 text-white">
-                    {{ 0 }}
-                  </div>
-                </div>
-                <div class="col-2 text-grey">
                   Температурный КПД:
                   <div class="text-h6 text-white">
                     {{ KPD_T }} %
@@ -463,7 +457,7 @@
             <q-card-section class="text-grey">
               Плотность 21:
               <div class="text-h6 text-white">
-                {{ Plotnost_21 }}
+                {{ Plotnost_21 }} кг/м3
               </div>
             </q-card-section>
           </q-card>
@@ -480,19 +474,19 @@
                 <div class="col-4 text-grey">
                   Скор1:
                   <div class="text-h6 text-white">
-                    {{ Speed_21_1 }}
+                    {{ Speed_21_1 }} м/с
                   </div>
                 </div>
                 <div class="col-3 text-grey">
                   Скор9:
                   <div class="text-h6 text-white">
-                    {{ Speed_22_9 }}
+                    {{ Speed_22_9 }} м/с
                   </div>
                 </div>
                 <div class="col-5 text-grey">
                   СкорСрПрДо 21:
                   <div class="text-h6 text-white">
-                    {{ Speed_21_Sr }}
+                    {{ Speed_21_Sr }} м/с
                   </div>
                 </div>
               </div>
@@ -500,19 +494,19 @@
                 <div class="col-4 text-grey">
                   Скор2:
                   <div class="text-h6 text-white">
-                    {{ Speed_21_2 }}
+                    {{ Speed_21_2 }} м/с
                   </div>
                 </div>
                 <div class="col-3 text-grey">
                   Скор10:
                   <div class="text-h6 text-white">
-                    {{ Speed_22_10 }}
+                    {{ Speed_22_10 }} м/с
                   </div>
                 </div>
                 <div class="col-5 text-grey">
                   m3ПритокДо 21:
                   <div class="text-h6 text-white">
-                    {{ m3h_21 }}
+                    {{ m3h_21 }} м3/ч
                   </div>
                 </div>
               </div>
@@ -520,19 +514,19 @@
                 <div class="col-4 text-grey">
                   Скор3:
                   <div class="text-h6 text-white">
-                    {{ Speed_21_3 }}
+                    {{ Speed_21_3 }} м/с
                   </div>
                 </div>
                 <div class="col-3 text-grey">
                   Скор11:
                   <div class="text-h6 text-white">
-                    {{ Speed_22_11 }}
+                    {{ Speed_22_11 }} м/с
                   </div>
                 </div>
                 <div class="col-5 text-grey">
                   МассРасхПритокДо21:
                   <div class="text-h6 text-white">
-                    {{ mass_21 }}
+                    {{ mass_21 }} кг/с
                   </div>
                 </div>
               </div>
@@ -540,19 +534,19 @@
                 <div class="col-4 text-grey">
                   Скор4:
                   <div class="text-h6 text-white">
-                    {{ Speed_21_4 }}
+                    {{ Speed_21_4 }} м/с
                   </div>
                 </div>
                 <div class="col-3 text-grey">
                   Скор12:
                   <div class="text-h6 text-white">
-                    {{ Speed_22_12 }}
+                    {{ Speed_22_12 }} м/с
                   </div>
                 </div>
                 <div class="col-5 text-grey">
                   ДавлПритокДо 21:
                   <div class="text-h6 text-white">
-                    {{ Pressure_21 }}
+                    {{ Pressure_21 }} Па
                   </div>
                 </div>
               </div>
@@ -820,7 +814,7 @@
                 <div class="col-12 text-grey">
                   m3Приток После:
                   <div class="text-h6 text-white">
-                    {{ m3h_22 }}
+                    {{ m3h_22 }} м3/ч
                   </div>
                 </div>
               </div>
@@ -829,7 +823,7 @@
                 <div class="col-12 text-grey">
                   МассРасхПр После:
                   <div class="text-h6 text-white">
-                    {{ mass_22 }}
+                    {{ mass_22 }} кг/с
                   </div>
                 </div>
               </div>
@@ -838,7 +832,7 @@
                 <div class="col-12 text-grey">
                   ДавлПриток После (22):
                   <div class="text-h6 text-white">
-                    {{ Pressure_22 }}
+                    {{ Pressure_22 }} Па
                   </div>
                 </div>
               </div>
@@ -855,7 +849,7 @@
             <q-card-section class="text-grey">
               Плотность 22:
               <div class="text-h6 text-white">
-                {{ Plotnost_22 }}
+                {{ Plotnost_22 }} кг/м3
               </div>
             </q-card-section>
           </q-card>
@@ -863,13 +857,13 @@
       </div>
       <div class="row">
         <div class="col-6">
-          <Chart :ref="charts[0]" name='Перепад (11-22)' :parameters="[{ name: 'Давление', color: 'white' }]"
-            typeChart="line" chartId="chart0" colorDefault="yellow" :legend="false" classTitle="text-h6" :height="80" :max="100000" :min="0"
+          <Chart :ref="charts[0]" name='Перепад (11-22), Па' :parameters="[{ name: 'Давление', color: 'rgb(97, 138, 199)' }]"
+            chartId="chart0" colorDefault="yellow" :legend="false" classTitle="text-h6" :height="80"
             valueMeasure="Па" />
         </div>
         <div class="col-6">
-          <Chart :ref="charts[1]" name='Управление ресивер Вытяжки'
-            :parameters="[{ name: 'Производительность', color: 'white' }]" typeChart="line" chartId="chart1"
+          <Chart :ref="charts[1]" name='Управление ресивер Вытяжки, %'
+            :parameters="[{ name: 'Производительность', color: 'rgb(97, 138, 199)' }]" chartId="chart1"
             colorDefault="yellow" :legend="false" classTitle="text-h6" :height="80" valueMeasure="%" />
         </div>
       </div>
@@ -911,13 +905,13 @@
       </q-card-section>
       <q-card-section class="row">
         <div class="col-6 text-grey">
-          Наружная отн. влага:
+          Наружная относительная влажность:
           <div class="text-h6 text-white">
             {{ SCo_Rh_nar }} %
           </div>
         </div>
         <div class="col-6 text-grey">
-          Помещение отн. влага:
+          Помещение относительная влажность:
           <div class="text-h6 text-white">
             {{ Rh_Lab }} %
           </div>
@@ -935,13 +929,17 @@
               <div class="col-6">
                 <div class="text-h6">
                   Состояние записи:
-                  {{ statusWrite }}
+                  <div :class="getcolorStatus(statusWrite === 'Готов к останову' || statusWrite === 'Запись' || statusWrite === 'Запись/Готов к останову')">
+                    {{ statusWrite }}
+                  </div>
                 </div>
               </div>
               <div class="col-6">
                 <div class="text-h6">
                   Состояние БД:
-                  {{ "ОК" }}
+                  <div :class="getcolorStatus(statusBD === 'OK')">
+                    {{ statusBD }}
+                  </div>
                 </div>
               </div>
             </div>
@@ -959,7 +957,8 @@
                   input-class="text-h6 text-white" outlined label-color="white"
                   @update:model-value="updateCountRegisterWrite" type="number" label="Количество регистраций"
                   :rules="[val => (val >= 0) && (+val <= 10000) || 'Введите корректные данные']" style="width: 178px;"
-                  @focus="focus_countRegisterWrite = true" @blur="updateCountRegisterWrite" @keydown.enter.prevent="updateCountRegisterWrite" />
+                  @focus="focus_countRegisterWrite = true" @blur="updateCountRegisterWrite"
+                  @keydown.enter.prevent="updateCountRegisterWrite" />
               </div>
               <div class="col-3">
                 <q-toggle v-model="pause" class="full-width" label="Пауза" @update:model-value="updatePause" />
@@ -968,19 +967,19 @@
             <div class="row">
               <div class="col-4">
                 <div class="text-h6">
-                  Количество записей:
-                  {{ countWrite }}
-                </div>
-              </div>
-              <div class="col-4">
-                <div class="text-h6">
-                  Количество автозаписей:
+                  Всего записей:
                   {{ countAutoWrite }}
                 </div>
               </div>
               <div class="col-4">
                 <div class="text-h6">
-                  <q-btn color="teal" label="Скачать отчёт"
+                  Количество текущих регистраций:
+                  {{ countWrite }}
+                </div>
+              </div>
+              <div class="col-4">
+                <div class="text-h6">
+                  <q-btn :disable="modeWrite" color="teal" label="Скачать отчёт"
                     href="http://10.154.152.88:3001/download/local/cyclic_pressures.xlsx" target="_self" />
                 </div>
               </div>
@@ -1035,11 +1034,11 @@
                   </q-tr>
                   <q-tr>
                     <q-td>РежимУдВытяжка</q-td>
-                    <q-td :class="getcolor(CodeStatus2[5])">{{ parsebool(CodeStatus2[5]) }}</q-td>
+                    <q-td :class="getcolor(CodeStatus2[6])">{{ parsebool(CodeStatus2[6]) }}</q-td>
                   </q-tr>
                   <q-tr>
                     <q-td>РежимРесивер</q-td>
-                    <q-td :class="getcolor(CodeStatus2[6])">{{ parsebool(CodeStatus2[6]) }}</q-td>
+                    <q-td :class="getcolor(CodeStatus2[5])">{{ parsebool(CodeStatus2[5]) }}</q-td>
                   </q-tr>
                   <q-tr>
                     <q-td>ФиксРежимУдПриток</q-td>
@@ -1149,7 +1148,7 @@
                   </q-tr>
                   <q-tr>
                     <q-td>РежимУдВытяжка</q-td>
-                    <q-td :class="getcolor(CodeStatus2[4])">{{ parsebool(CodeStatus2[5]) }}</q-td>
+                    <q-td :class="getcolor(CodeStatus2[6])">{{ parsebool(CodeStatus2[6]) }}</q-td>
                   </q-tr>
                 </table>
               </div>
@@ -1188,12 +1187,16 @@ export default {
       charts.push(ref(null));
     }
     const modeWrite = ref(false);
+    const lock_modeWrite = ref(0);
     const autoWrite = ref(false);
+    const lock_autoWrite = ref(0);
     const pause = ref(false);
+    const lock_pause = ref(0);
     const countRegisterWrite = ref(10);
     const comp_countRegisterWrite = ref(null);
     const focus_countRegisterWrite = ref(false);
     const statusWrite = ref('FAIL');
+    const statusBD = ref('ERROR');
     const countWrite = ref(0);
     const countAutoWrite = ref(0);
 
@@ -1340,7 +1343,7 @@ export default {
     function shift0() {
       if (dataValues0.length > 0) {
         const mes = dataValues0[dataValues0.length - 1];
-        updateChart(0, mes.deltap_11_12, null, mes.time, false, false);
+        updateChart(0, mes.deltap_11_22, null, mes.time, false, false);
         dataValues0.pop();
         load.value = dataValues0.length;
         setImmediate(shift0);
@@ -1364,7 +1367,11 @@ export default {
       return 'НЕТ';
     }
     function getcolor(value) {
-      if (value === '1') return 'text-yellow';
+      if (value === '1') return 'text-green';
+      return 'text-orange';
+    }
+    function getcolorStatus(value) {
+      if (value === true) return 'text-green';
       return 'text-red';
     }
     function convertToBinary(number) {
@@ -1422,7 +1429,7 @@ export default {
           // 12 "Т вытяжка в режиме",
           // 13 "Вл вытяжка в режиме"
           if (dataValues0.length === 0) {
-            updateChart(0, mes.deltap_11_12.value, null, mes.time, true, true);
+            updateChart(0, mes.deltap_11_22.value, null, mes.time, true, true);
           } else {
             const obj = {};
             // eslint-disable-next-line no-restricted-syntax, guard-for-in
@@ -1521,6 +1528,15 @@ export default {
           Pressure_21.value = mes.Pressure_21.value;
           Pressure_22.value = mes.Pressure_22.value;
 
+          T_11.value = mes.T_11.value;
+          T_12.value = mes.T_12.value;
+          T_21.value = mes.T_21.value;
+          T_22.value = mes.T_22.value;
+          Rh_11.value = mes.Rh_11.value;
+          Rh_12.value = mes.Rh_12.value;
+          Rh_21.value = mes.Rh_21.value;
+          Rh_22.value = mes.Rh_22.value;
+
           KPD_T.value = mes.KPD_T.value;
           KPD_H.value = mes.KPD_H.value;
           m3h_11.value = mes.m3h_11.value;
@@ -1559,13 +1575,36 @@ export default {
           SCo_Abs_nar.value = mes.SCo_Abs_nar.value;
 
           // запись
-          statusWrite.value = 'FAIL';
+          if (mes.TextStatusWrite) {
+            statusWrite.value = mes.TextStatusWrite.value;
+          } else {
+            statusWrite.value = 'ERROR';
+          }
+          statusBD.value = mes.StatusBD.value;
+          // OK - зеленым цветом, connected - оранжевый
           countWrite.value = mes.Count_WritedData.value;
           countAutoWrite.value = mes.cyclic_index.value;
 
-          modeWrite.value = mes.StateSwitchWrite.value;
-          autoWrite.value = mes.AutoWrite.value;
-          pause.value = mes.SetPause.value;
+          if (lock_autoWrite.value > 0) {
+            lock_autoWrite.value -= 1;
+          } else {
+            autoWrite.value = mes.AutoWrite.value;
+          }
+          if (lock_pause.value > 0) {
+            lock_pause.value -= 1;
+          } else {
+            if (pause.value !== mes.SetPause.value) {
+              WebSocket_Send('recup', {
+                id: 2, type: 'pause', value: !pause.value, timestamp: getCurrentTime(),
+              });
+            }
+            pause.value = mes.SetPause.value;
+          }
+          if (lock_modeWrite.value > 0) {
+            lock_modeWrite.value -= 1;
+          } else {
+            modeWrite.value = mes.StateSwitchWrite.value;
+          }
           if (!focus_countRegisterWrite.value) {
             countRegisterWrite.value = mes.SetsAutoWrite.value;
           }
@@ -1578,16 +1617,19 @@ export default {
       });
     }
     function updateModeWrite(value) {
+      lock_modeWrite.value = 2;
       WebSocket_Send('recup', {
         id: 2, type: 'modeWrite', value, timestamp: getCurrentTime(),
       });
     }
     function updateAutoWrite(value) {
+      lock_autoWrite.value = 2;
       WebSocket_Send('recup', {
         id: 2, type: 'autoWrite', value, timestamp: getCurrentTime(),
       });
     }
     function updatePause(value) {
+      lock_pause.value = 2;
       WebSocket_Send('recup', {
         id: 2, type: 'pause', value, timestamp: getCurrentTime(),
       });
@@ -1733,6 +1775,7 @@ export default {
       modeWrite,
       autoWrite,
       pause,
+      lock_pause,
       loadComplete,
       T_11,
       T_12,
@@ -1747,6 +1790,10 @@ export default {
       countWrite,
       countAutoWrite,
       statusWrite,
+      statusBD,
+      lock_modeWrite,
+      getcolorStatus,
+      lock_autoWrite,
     };
   },
 };

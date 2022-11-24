@@ -3,33 +3,29 @@
     <q-card-section class="text-white" style="background-color: rgb(80, 80, 80);">
       <div class="text-h6">Подготовка воздуха (Удаляемые)</div>
     </q-card-section>
-    <!-- <div v-show="load === 0"> -->
     <div class="row">
       <div class="col-6">
-        <Chart :ref="charts[0]" name='Вент Приточный' :parameters="[{ name: 'Расход', color: 'white' }]"
-          typeChart="line" chartId="chart0" colorDefault="yellow" :legend="false" classTitle="text-h8" :height="80"
+        <Chart_v3 :ref="charts[0]" name='Расход вентилятора Приточного, м3/ч' :parameters="[{ name: 'Расход', color: 'rgb(97, 138, 199)' }, { name: 'Уставка', color: 'white' }]" classValue="text-h6" classSetpoint="text-h6"
+          chartId="chart0" colorDefault="yellow" :legend="false" classTitle="text-h8" :height="80"
           valueMeasure="м3/ч" />
       </div>
       <div class="col-6">
-        <Chart :ref="charts[1]" name='Управление Вент Приточный'
-          :parameters="[{ name: 'Производительность, %', color: 'white' }]" typeChart="line" chartId="chart1"
+        <Chart :ref="charts[1]" name='Управление вентилятором Приточным, %'
+          :parameters="[{ name: 'Производительность, %', color: 'rgb(97, 138, 199)' }]" chartId="chart1" classValue="text-h6" classSetpoint="text-h6"
           colorDefault="black" :legend="false" classTitle="text-h8" valueMeasure="%" :height="80"/>
       </div>
     </div>
     <div class="row">
       <div class="col-6">
-        <Chart :ref="charts[2]" name='Вент Вытяжка' :parameters="[{ name: 'Расход', color: 'white' }]" typeChart="line"
+        <Chart_v3 :ref="charts[2]" name='Расход вентилятора Вытяжка, м3/ч' :parameters="[{ name: 'Расход', color: 'rgb(97, 138, 199)' }, { name: 'Уставка', color: 'white' }]" classValue="text-h6" classSetpoint="text-h6"
           chartId="chart2" colorDefault="black" :legend="false" classTitle="text-h8" valueMeasure="м3/ч" :height="80"/>
       </div>
       <div class="col-6">
-        <Chart :ref="charts[3]" name='Управление Вент Вытяжка'
-          :parameters="[{ name: 'Производительность, %', color: 'white' }]" typeChart="line" chartId="chart3"
+        <Chart :ref="charts[3]" name='Управление вентилятором Вытяжка, %'
+          :parameters="[{ name: 'Производительность, %', color: 'rgb(97, 138, 199)' }]" chartId="chart3" classValue="text-h6" classSetpoint="text-h6"
           colorDefault="black" :legend="false" classTitle="text-h8" valueMeasure="%" :height="80"/>
       </div>
     </div>
-    <!-- </div> -->
-    <!-- <q-inner-loading :showing="load > 0" color="white" :label="`Загрузка данных...${180 - load}/180`"
-      label-class="text-white" label-style="font-size: 1.1em" /> -->
   </q-page>
 </template>
 
@@ -38,12 +34,14 @@ import {
   inject, ref, onMounted, onBeforeUnmount,
 } from 'vue';
 import Chart from 'src/components/charts/chart_v2.vue';
+import Chart_v3 from 'src/components/charts/chart_v3.vue';
 import axios from 'axios';
 
 export default {
   name: 'Output',
   components: {
     Chart,
+    Chart_v3,
   },
   setup() {
     document.title = 'Подготовка воздуха (Удаляемые)';
@@ -66,12 +64,36 @@ export default {
         charts[index].value.setSetpoint(Number(setpoint).toFixed(2));
       }
     }
+    function updateChartv3(index, values, time, direct, update) {
+      if (time) {
+        charts[index].value.pushValues(values, time, direct, update);
+      } else {
+        charts[index].value.pushValues(values, getCurrentTime(), direct, update);
+      }
+    }
+    function updateChartv3Set(index, values, value, setpoint, time, direct, update) {
+      if (time) {
+        charts[index].value.pushValues(values, time, direct, update);
+      } else {
+        charts[index].value.pushValues(values, getCurrentTime(), direct, update);
+      }
+      if (setpoint) {
+        charts[index].value.setSetpoint(Number(setpoint).toFixed(2));
+      }
+      if (value) {
+        charts[index].value.setValue(Number(value).toFixed(2));
+      }
+    }
     function shift() {
       if (dataValues.length > 0) {
         const mes = dataValues[dataValues.length - 1];
-        updateChart(0, mes.m3h_21_UdalPr, null, mes.time, false, false);
+        // updateChart(0, mes.m3h_21_UdalPr, null, mes.time, false, false);
+        updateChartv3(0, [{ value: mes.m3h_21_UdalPr },
+          { value: mes.Set_m3h_21_UdalPr }], mes.time, false, false);
         updateChart(1, mes.SCo_reg_m3h_udalpr, null, mes.time, false, false);
-        updateChart(2, mes.m3h_11_UdalVyt, null, mes.time, false, false);
+        // updateChart(2, mes.m3h_11_UdalVyt, null, mes.time, false, false);
+        updateChartv3(2, [{ value: mes.m3h_11_UdalVyt },
+          { value: mes.Set_m3h_11_UdalVyt }], mes.time, false, false);
         updateChart(3, mes.SCo_reg_m3h_udelvyt, null, mes.time, false, false);
         dataValues.pop();
         load.value = dataValues.length;
@@ -88,9 +110,13 @@ export default {
         if (json.type === 'sendAirDevices') {
           console.log(mes);
           if (dataValues.length === 0) {
-            updateChart(0, mes.m3h_21_UdalPr.value, mes.m3h_21_UdalPr.setpoint, mes.time, true, true);
+            // updateChart(0, mes.m3h_21_UdalPr.value, mes.m3h_21_UdalPr.setpoint, mes.time, true, true);
+            updateChartv3Set(0, [{ value: mes.m3h_21_UdalPr.value },
+              { value: mes.m3h_21_UdalPr.setpoint }], mes.m3h_21_UdalPr.value, mes.m3h_21_UdalPr.setpoint, mes.time, true, true);
             updateChart(1, mes.SCo_reg_m3h_udalpr.value, null, mes.time, true, true);
-            updateChart(2, mes.m3h_11_UdalVyt.value, mes.m3h_11_UdalVyt.setpoint, mes.time, true, true);
+            // updateChart(2, mes.m3h_11_UdalVyt.value, mes.m3h_11_UdalVyt.setpoint, mes.time, true, true);
+            updateChartv3Set(2, [{ value: mes.m3h_11_UdalVyt.value },
+              { value: mes.m3h_11_UdalVyt.setpoint }], mes.m3h_11_UdalVyt.value, mes.m3h_11_UdalVyt.setpoint, mes.time, true, true);
             updateChart(3, mes.SCo_reg_m3h_udelvyt.value, null, mes.time, true, true);
           } else {
             const obj = {};
@@ -124,6 +150,7 @@ export default {
     });
     return {
       Chart,
+      Chart_v3,
       charts,
       load,
     };

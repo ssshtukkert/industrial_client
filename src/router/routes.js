@@ -26,6 +26,8 @@ const routes = [
       { path: '/services/genprice/references/materials_categories', component: () => import('src/pages/services/genprice/materials/categories.vue') },
       { path: '/services/genprice/references/materials_measures', component: () => import('src/pages/services/genprice/materials/measures.vue') },
       { path: '/services/genprice/settings', component: () => import('src/pages/services/genprice/settings.vue') },
+      { path: '/services/productoptions/configurations', component: () => import('src/pages/services/productoptions/configurations.vue') },
+      { path: '/services/productoptions/configurations/:id', component: () => import('src/pages/services/productoptions/configuration.vue') },
       { path: '/farm/execute', component: () => import('src/pages/farm/index.vue') },
     ],
   },

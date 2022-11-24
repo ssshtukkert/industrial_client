@@ -1,7 +1,7 @@
 <template>
   <div class="q-pa-md row items-start q-gutter-md">
     <q-page class="full-width" style="margin: 0px; background-color: rgb(60, 60, 60);">
-      <div class="row" v-show="load">
+      <div class="row">
         <div class="col-6">
           <q-card class="text-white" style="margin: 10px;">
             <q-card-section style="background-color: rgb(80, 80, 80);">
@@ -9,19 +9,27 @@
             </q-card-section>
             <q-card-section class="row text-white" style="background-color: rgb(60, 60, 60);">
               <div class="col-4">
-                <div class="flex column items-center" v-if="on == false">
-                  <q-icon name="info" color="white" size="100px" />
+                <div class="flex column items-center" v-if="on == 0">
+                  <q-icon name="remove_circle_outline" color="yellow" size="100px" />
                   <div>Дежурный</div>
                 </div>
-                <div class="flex column items-center" v-if="on">
+                <div class="flex column items-center" v-if="on == 1">
+                  <q-icon name="priority_high" color="green" size="100px" />
+                  <div>Подготовка</div>
+                </div>
+                <div class="flex column items-center" v-if="on == 2">
                   <q-icon name="emoji_objects" color="green" size="100px" />
-                  <div>В работе</div>
+                  <div>Работа</div>
+                </div>
+                <div class="flex column items-center" v-if="on == 3">
+                  <q-icon name="waves" color="green" size="100px" />
+                  <div>Останов/Продувка</div>
                 </div>
               </div>
               <div class="col-4" v-if="alarm">
                 <div class="flex column items-center">
                   <div>
-                    <q-icon name="warning" color="red" size="100px" />
+                    <q-icon name="warning" color="red" size="100px" @click="goAlarm" />
                   </div>
                   <div>Авария</div>
                 </div>
@@ -29,7 +37,7 @@
               <div class="col-4" v-if="filter">
                 <div class="flex column items-center">
                   <div>
-                    <q-icon name="warning" color="yellow" size="100px" />
+                    <q-icon name="warning" color="yellow" size="100px" @click="goAlarm" />
                   </div>
                   <div>Фильтр</div>
                 </div>
@@ -49,7 +57,7 @@
             <q-card-section class="row text-white" style="background-color: rgb(60, 60, 60);">
               <div class="col-4">
                 <div class="flex column items-center" v-if="onforce == false">
-                  <q-icon name="info" color="white" size="100px" />
+                  <q-icon name="remove_circle_outline" color="yellow" size="100px" />
                   <div>Дежурный</div>
                 </div>
                 <div class="flex column items-center" v-if="onforce">
@@ -61,7 +69,6 @@
           </q-card>
         </div>
       </div>
-
       <div v-show="load">
         <q-card class="text-white" style="margin: 10px;">
           <q-card-section style="background-color: rgb(80, 80, 80);">
@@ -111,13 +118,13 @@
                   {{ setMass }}
                 </div>
                 <div class="text-h8 text-grey">
-                  Уставка влагосодержания:
+                  Уставка влагосодержания Приток, г/кг:
                 </div>
                 <div class="text-h6 text-white">
                   {{ Hc_21_Pr }}
                 </div>
                 <div class="text-h8 text-grey">
-                  УстВлТерм Приток, °С:
+                  Уставка влажного термометра Приток, °С:
                 </div>
                 <div class="text-h6 text-white">
                   {{ TwT_21 }}
@@ -129,7 +136,7 @@
                   {{ Hc_11_Vyt }}
                 </div>
                 <div class="text-h8 text-grey">
-                  УстВлТерм Вытяжка, °С:
+                  Уставка влажного термометра Вытяжка, °С:
                 </div>
                 <div class="text-h6 text-white">
                   {{ TwT_11 }}
@@ -144,13 +151,12 @@
           <q-card-section style="background-color: rgb(80, 80, 80);">
             <div class="text-h6">Параметры выбранного режима</div>
           </q-card-section>
-
           <q-card-section class="row text-white" style="background-color: rgb(60, 60, 60);">
             <q-card-section class="col-4" style="background-color: rgb(60, 60, 60);">
               <q-input ref="comp_stendPritokTemp" v-model="stendPritokTemp" type="number"
                 label="Стенд Приток температура" color="white" input-class="text-h6 text-white" outlined
-                label-color="grey" :rules="[val => (val >= -50) && (+val <= 100) || 'Введите корректные данные']" @focus="focus_stendPritokTemp = true" @blur="accept"
-                @keydown.enter.prevent="accept" />
+                label-color="grey" :rules="[val => (val >= -50) && (+val <= 100) || 'Введите корректные данные']"
+                @focus="focus_stendPritokTemp = true" @blur="accept" @keydown.enter.prevent="accept" />
               <q-input ref="comp_stendPritokHum" v-model="stendPritokHum" type="number" label="Стенд Приток влажность"
                 color="white" input-class="text-h6 text-white" outlined label-color="grey"
                 :rules="[val => (val >= 0) && (+val <= 100) || 'Введите корректные данные']"
@@ -165,43 +171,46 @@
                 @focus="focus_stendVytHum = true" @blur="accept" @keydown.enter.prevent="accept" />
             </q-card-section>
             <q-card-section class="col-4" style="background-color: rgb(60, 60, 60);">
-              <q-input ref="comp_setSmeshPritok1" v-model="setSmeshPritok1" type="number" label="Уст Смешение Приток 1"
-                color="white" input-class="text-h6 text-white" outlined label-color="grey"
-                :rules="[val => (val >= -50) && (+val <= 100) || 'Введите корректные данные']"
+              <q-input ref="comp_setSmeshPritok1" v-model="setSmeshPritok1" type="number"
+                label="Уставка Смешение Приток 1" color="white" input-class="text-h6 text-white" outlined
+                label-color="grey" :rules="[val => (val >= -50) && (+val <= 100) || 'Введите корректные данные']"
                 @focus="focus_setSmeshPritok1 = true" @blur="accept" @keydown.enter.prevent="accept" />
-              <q-input ref="comp_setM3Pritok1" v-model="setM3Pritok1" type="number" label="Уст м3 Приток1"
+              <q-input ref="comp_setM3Pritok1" v-model="setM3Pritok1" type="number" label="Уставка м3 Приток1"
                 color="white" input-class="text-h6 text-white" outlined label-color="grey"
                 :rules="[val => (val >= 0) && (+val <= 10000) || 'Введите корректные данные']"
                 @focus="focus_setM3Pritok1 = true" @blur="accept" @keydown.enter.prevent="accept" />
-              <q-input ref="comp_setTOutPritok1" v-model="setTOutPritok1" type="number" label="Уст Т выход Приток1*"
+              <q-input ref="comp_setTOutPritok1" v-model="setTOutPritok1" type="number" label="Уставка Т выход Приток1*"
                 color="white" input-class="text-h6 text-white" outlined label-color="grey"
                 :rules="[val => (val >= -50) && (+val <= 100) || 'Введите корректные данные']"
-                @focus="focus_setTOutPritok1 = true" @blur="accept" @keydown.enter.prevent="accept">
+                @focus="focus_setTOutPritok1 = true" @blur="accept" @keydown.enter.prevent="accept"
+                :readonly="!onPritok1 || !onPritok2">
                 <template v-slot:hint>
                   <div class="text-grey">
                     *При совместной работе Приток1 и Приток2
                   </div>
                 </template>
               </q-input>
-              <q-input ref="comp_setSmeshVyt" v-model="setSmeshVyt" type="number" label="Уст смешение Вытяжка"
+              <q-input ref="comp_setSmeshVyt" v-model="setSmeshVyt" type="number" label="Уставка смешение Вытяжка"
                 color="white" input-class="text-h6 text-white" outlined label-color="grey"
                 :rules="[val => (val >= -50) && (+val <= 100) || 'Введите корректные данные']"
                 @focus="focus_setSmeshVyt = true" @blur="accept" @keydown.enter.prevent="accept" />
-              <q-input ref="comp_setM3Vyt" v-model="setM3Vyt" type="number" label="Уст м3 Вытяжка"
-                color="white" input-class="text-h6 text-white" outlined label-color="grey"
+              <q-input ref="comp_setM3Vyt" v-model="setM3Vyt" type="number" label="Уставка м3 Вытяжка" color="white"
+                input-class="text-h6 text-white" outlined label-color="grey"
                 :rules="[val => (val >= 0) && (+val <= 10000) || 'Введите корректные данные']"
                 @focus="focus_setM3Vyt = true" @blur="accept" @keydown.enter.prevent="accept" />
-              <q-input ref="comp_setSmeshPritok2" v-model="setSmeshPritok2" type="number" label="Уст смешение Приток 2"
-                color="white" input-class="text-h6 text-white" outlined label-color="grey"
-                :rules="[val => (val >= -50) && (+val <= 100) || 'Введите корректные данные']"
+              <q-input ref="comp_setSmeshPritok2" v-model="setSmeshPritok2" type="number"
+                label="Уставка смешение Приток 2" color="white" input-class="text-h6 text-white" outlined
+                label-color="grey" :rules="[val => (val >= -50) && (+val <= 100) || 'Введите корректные данные']"
                 @focus="focus_setSmeshPritok2 = true" @blur="accept" @keydown.enter.prevent="accept" />
-              <q-input ref="comp_setM3Pritok2" v-model="setM3Pritok2" type="number" label="Уст м3 Приток2"
+              <q-input ref="comp_setM3Pritok2" v-model="setM3Pritok2" type="number" label="Уставка м3 Приток2"
                 color="white" input-class="text-h6 text-white" outlined label-color="grey"
                 :rules="[val => (val >= 0) && (+val <= 10000) || 'Введите корректные данные']"
                 @focus="focus_setM3Pritok2 = true" @blur="accept" @keydown.enter.prevent="accept" />
             </q-card-section>
             <q-card-section class="col-4" style="background-color: rgb(60, 60, 60);">
               <q-card-section>
+                <q-toggle v-model="kpdDelta" class="full-width" label="Падение/КПД"
+                  @update:model-value="accept_kpdDelta" />
                 <q-toggle v-model="autoParameter" class="full-width" label="АвтоПараметр"
                   @update:model-value="accept_autoParameter" />
                 <q-toggle v-model="onPritok1" class="full-width" label="Система Приток1"
@@ -222,7 +231,7 @@
               <q-card-section>
                 <q-input ref="comp_resetRecieverPritok1" v-model="resetRecieverPritok1" type="number" color="white"
                   input-class="text-h6 text-white" outlined label-color="grey" label="Сброс ресивера Приток (закрытие)"
-                   :rules="[val => (val >= 0) && (+val <= 10000) || 'Введите корректные данные']"
+                  :rules="[val => (val >= 0) && (+val <= 10000) || 'Введите корректные данные']"
                   @focus="focus_resetRecieverPritok1 = true" @blur="accept" @keydown.enter.prevent="accept" />
                 <q-input ref="comp_resetRecieverPritokVyt" v-model="resetRecieverPritokVyt" type="number" color="white"
                   input-class="text-h6 text-white" outlined label-color="grey" label="Сброс ресивера Вытяжка (закрытие)"
@@ -233,7 +242,6 @@
           </q-card-section>
         </q-card>
       </div>
-      <!-- <ThingForm :colorField=colorField :radioCheck=radioCheck style="margin: 10px;" /> -->
       <q-inner-loading :showing="load === false" color="white" label-class="text-white"
         label="Получение данных с щита управления" label-style="font-size: 1.1em" />
     </q-page>
@@ -246,14 +254,16 @@
 import {
   ref, inject, onMounted, onBeforeUnmount,
 } from 'vue';
+import { useRouter } from 'vue-router';
 
 export default {
   name: 'MainRecup',
   setup() {
+    const router = useRouter();
     document.title = 'Установки';
     const load = ref(false);
     // управление
-    const on = ref(false);
+    const on = ref(0);
     // блокировка кнопки пуск (блокировка включается ровно до следующего пакета данных)
     const onofLock = ref(false);
     const onforce = ref(false);
@@ -261,6 +271,7 @@ export default {
     const filter = ref(false);
     // свободный режим
     const autoParameter = ref(false);
+    const kpdDelta = ref(false);
     const onPritok1 = ref(false);
     const smPritok1 = ref(false);
     const onHumPritok1 = ref(false);
@@ -316,10 +327,12 @@ export default {
     const resetRecieverPritok1 = ref(0);
     const focus_resetRecieverPritok1 = ref(false);
     const comp_resetRecieverPritok1 = ref(null);
+    const lock_resetRecieverPritok1 = ref(0);
 
     const resetRecieverPritokVyt = ref(0);
     const focus_resetRecieverPritokVyt = ref(false);
     const comp_resetRecieverPritokVyt = ref(null);
+    const lock_resetRecieverPritokVyt = ref(0);
 
     // const optionsSeason = ['Лето', 'Зима'];
     const optionsMode = ['Вытяжка 25°С/<30%, Приток 5°С/~%', 'Вытяжка 20°С/50%, Приток 20°С/50%', 'Вытяжка 22°С/45%, Приток -5°С/~%',
@@ -362,9 +375,22 @@ export default {
         } else if (json.type === 'sendAirDevices') {
           console.log(mes);
           if (mes.rabota.value === 'СТОП') {
-            on.value = false;
-          } else if (mes.rabota.value === 'Работа') {
-            on.value = true;
+            // работу смотрим по вытяжному вентилятору
+            if (Number(mes.SCo_m3h_vyt.value) < 50) { // если в состоянии щита стоп работает вытяжной вентилятор
+              // то статус Дежурный
+              on.value = 0;
+            } else {
+              // то статус обновляется на ПРОДУВКА
+              on.value = 3;
+            }
+          } else if (mes.rabota.value === 'Работа') { // если в состоянии щита стоп работает вытяжной вентилятор
+            if (Number(mes.SCo_m3h_vyt.value) < 50) {
+              // то статус Подготовка
+              on.value = 1;
+            } else {
+              // то статус Работа
+              on.value = 2;
+            }
           }
           if (mes.workbox.value === 'СТОП') {
             onforce.value = false;
@@ -437,7 +463,7 @@ export default {
           // 13 "Заморозка входов Матрикс_А1",
           // 14 "Заморозка входов Матрикс_А4",
           // 15 "Резерв"
-          if (Number(a1[0]) === 1 || Number(a1[1]) === 1
+          alarm.value = Number(a1[0]) === 1 || Number(a1[1]) === 1
             || Number(a1[2]) === 1 || Number(a1[3]) === 1
             || Number(a1[4]) === 1 || Number(a1[5]) === 1
             || Number(a1[6]) === 1 || Number(a1[7]) === 1
@@ -451,7 +477,6 @@ export default {
             || Number(a2[7]) === 1 || Number(a2[8]) === 1
             || Number(a2[9]) === 1 || Number(a2[10]) === 1
             || Number(a2[11]) === 1 || Number(a2[12]) === 1
-            || Number(a2[14]) === 1 || Number(a2[15]) === 1
             || Number(a3[0]) === 1 || Number(a3[1]) === 1
             || Number(a3[2]) === 1 || Number(a3[3]) === 1
             || Number(a3[4]) === 1 || Number(a3[5]) === 1
@@ -459,13 +484,8 @@ export default {
             || Number(a3[8]) === 1 || Number(a3[9]) === 1
             || Number(a3[10]) === 1 || Number(a3[11]) === 1
             || Number(a3[12]) === 1 || Number(a3[13]) === 1
-            || Number(a3[14]) === 1
-          ) {
-            alarm.value = true;
-          }
-          if (Number(a2[13]) === 1 || Number(a2[14]) === 1 || Number(a2[15]) === 1) {
-            filter.value = true;
-          }
+            || Number(a3[14]) === 1;
+          filter.value = Number(a2[13]) === 1 || Number(a2[14]) === 1 || Number(a2[15]) === 1;
           const mesMode = optionsMode[mes.mode.value];
           mode.value = mesMode;
           airP.value = mes.m3h_21_UdalPr.setpoint;
@@ -481,10 +501,18 @@ export default {
           }
 
           if (!focus_resetRecieverPritokVyt.value) {
-            resetRecieverPritokVyt.value = mes.exRecieverVyt.setpoint;
+            if (lock_resetRecieverPritokVyt.value > 0) {
+              lock_resetRecieverPritokVyt.value -= 1;
+            } else {
+              resetRecieverPritokVyt.value = mes.exRecieverVyt.setpoint;
+            }
           }
           if (!focus_resetRecieverPritok1.value) {
-            resetRecieverPritok1.value = mes.exRecieverPr.setpoint;
+            if (lock_resetRecieverPritok1.value > 0) {
+              lock_resetRecieverPritok1.value -= 1;
+            } else {
+              resetRecieverPritok1.value = mes.exRecieverPr.setpoint;
+            }
           }
           if (!focus_setM3Pritok2.value) {
             setM3Pritok2.value = mes.SCo_m3h_pr2.setpoint;
@@ -527,6 +555,7 @@ export default {
           smVyt.value = mes.CodeSets.value[4] === 1;
           onHumVyt.value = mes.CodeSets.value[5] === 1;
           onPritok2.value = mes.CodeSets.value[6] === 1;
+          kpdDelta.value = mes.CodeSets.value[12] === 1;
           autoParameter.value = mes.CodeSets.value[13] === 1;
           setMass.value = mes.setMass.setpoint;
           Hc_21_Pr.value = mes.Hc_21_Pr.setpoint;
@@ -538,6 +567,7 @@ export default {
 
           // разблокировка органов управления
           load.value = true;
+          // снятие блокировки с кнопки запуска
           onofLock.value = false;
         }
       }
@@ -558,6 +588,9 @@ export default {
       compWidth.value.blur();
       compHeight.value.blur();
       compAirV.value.blur();
+    }
+    function goAlarm() {
+      router.push('/lab/recup/alarms');
     }
     function onof() {
       WebSocket_Send('recup', {
@@ -605,6 +638,11 @@ export default {
         id: 2, type: 'onPritok2', value: onPritok2.value, timestamp: getCurrentTime(),
       });
     }
+    function accept_kpdDelta() {
+      WebSocket_Send('recup', {
+        id: 2, type: 'kpdDelta', value: kpdDelta.value, timestamp: getCurrentTime(),
+      });
+    }
     function accept() {
       if (comp_stendPritokTemp.value.validate()
         && comp_stendPritokHum.value.validate()
@@ -635,6 +673,8 @@ export default {
           resetRecieverPritok1: Number(resetRecieverPritok1.value),
           resetRecieverPritokVyt: Number(resetRecieverPritokVyt.value),
         };
+        lock_resetRecieverPritok1.value = 2;
+        lock_resetRecieverPritokVyt.value = 2;
         WebSocket_Send('recup', {
           id: 2, type: 'acceptFreeMode', value, timestamp: getCurrentTime(),
         });
@@ -677,6 +717,7 @@ export default {
     });
     return {
       on,
+      accept_kpdDelta,
       acceptParameters,
       stendPritokTemp,
       stendPritokHum,
@@ -776,6 +817,10 @@ export default {
 
       focus_resetRecieverPritokVyt,
       comp_resetRecieverPritokVyt,
+      goAlarm,
+      kpdDelta,
+      lock_resetRecieverPritok1,
+      lock_resetRecieverPritokVyt,
     };
   },
 };

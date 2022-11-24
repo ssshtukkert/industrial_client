@@ -1,0 +1,20 @@
+<svg width="32" height="64" xmlns="http://www.w3.org/2000/svg">
+ <title>recuperator</title>
+
+ <g>
+  <title>Layer 1</title>
+  <line stroke="#000" stroke-width="2" fill="none" x1="-0.21578" y1="31.44958" x2="15.69782" y2="47.31777" id="svg_2"/>
+  <line stroke="#000" stroke-width="2" fill="none" x1="16.13628" y1="15.99278" x2="32.0283" y2="31.38933" id="svg_4"/>
+  <line stroke="#000" stroke-width="2" fill="none" x1="0.28417" y1="31.49499" x2="16.71707" y2="15.16101" id="svg_5"/>
+  <line stroke="#000" stroke-width="2" fill="none" x1="15.30451" y1="48.31993" x2="32.61008" y2="31.24051" id="svg_6"/>
+  <line fill="none" stroke="#000" x1="18.1947" y1="18.71031" x2="2.94401" y2="33.65393" id="svg_7"/>
+  <line fill="none" stroke="#000" x1="20.70827" y1="21.42858" x2="5.45758" y2="36.37221" id="svg_8"/>
+  <line fill="none" stroke="#000" x1="23.63666" y1="24.21476" x2="8.38597" y2="39.15839" id="svg_9"/>
+  <line fill="none" stroke="#000" x1="26.36035" y1="27.18302" x2="11.10966" y2="42.12664" id="svg_10"/>
+  <line fill="none" stroke="#000" x1="29.08403" y1="29.84421" x2="13.83335" y2="44.78784" id="svg_11"/>
+  <line id="svg_1" y2="14.9961" x2="16.18748" y1="0.05984" x1="31.93618" stroke="#000" fill="none"/>
+  <line stroke="#000" id="svg_3" y2="64.11701" x2="0.00133" y1="48.55581" x1="15.75002" fill="none"/>
+  <line stroke="#000" id="svg_12" y2="64.74196" x2="32.8111" y1="48.30583" x1="16.24998" fill="none"/>
+  <line stroke="#000" id="svg_14" y2="14.87111" x2="15.62503" y1="-0.06515" x1="-0.06117" fill="none"/>
+ </g>
+</svg>
