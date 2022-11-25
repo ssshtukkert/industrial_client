@@ -44,7 +44,7 @@
                     :rules="[val => val < 35 || 'Макс. уставка 35 °C', val => val > 18 || 'Мин. уставка 18 °C']">
                     <template v-slot:after>
                       <q-btn color='primary' label='Применить' :disabled="disabledChangeTKanVU1"
-                        @click="changeSetpointVU1"/>
+                        @click="changeSetpointVU1" />
                     </template>
                   </q-input>
                 </q-card-section>
@@ -52,7 +52,7 @@
                 <q-card-section>
                   <div class="text-h7">Статус:</div>
                   <q-badge :color="colorStatusVU1">
-                    <div class="text-h4">{{ statusVU1 }}</div>
+                    <div class="text-h6">{{ statusVU1 }}</div>
                   </q-badge>
                 </q-card-section>
                 <q-separator vertical inset v-show="warnMes" />
@@ -230,32 +230,32 @@
           </q-item>
           <q-item class="row">
             <q-card class="col bg-white">
-                <q-card-section class="bg-secondary text-white">
-                  <div class="row text-h6">Журнал аварий</div>
-                </q-card-section>
-                <q-card-section>
-                  <q-table ref="tableItem" class="my-sticky-header-table" bordered style="height: 400px"
-                    :columns="columns" :rows="rowsVU1" virtual-scroll v-model:pagination="pagination"
-                    :rows-per-page-options="[0]" no-data-label="Записи в журнале отсутствуют">
-                    <template v-slot:header="props">
-                      <q-tr :props="props">
-                        <q-th v-for="col in props.cols" :key="col.name" :props="props">
-                          <div class="text-h6">
-                            {{ col.label }}
-                          </div>
-
-                        </q-th>
-                      </q-tr>
-                    </template>
-                    <template v-slot:body-cell="props">
-                      <q-td :props="props">
+              <q-card-section class="bg-secondary text-white">
+                <div class="row text-h6">Журнал аварий</div>
+              </q-card-section>
+              <q-card-section>
+                <q-table ref="tableItem" class="my-sticky-header-table" bordered style="height: 400px"
+                  :columns="columns" :rows="rowsVU1" virtual-scroll v-model:pagination="pagination"
+                  :rows-per-page-options="[0]" no-data-label="Записи в журнале отсутствуют">
+                  <template v-slot:header="props">
+                    <q-tr :props="props">
+                      <q-th v-for="col in props.cols" :key="col.name" :props="props">
                         <div class="text-h6">
-                          {{props.value}}
+                          {{ col.label }}
                         </div>
-                      </q-td>
-                    </template>
-                  </q-table>
-                </q-card-section>
+
+                      </q-th>
+                    </q-tr>
+                  </template>
+                  <template v-slot:body-cell="props">
+                    <q-td :props="props">
+                      <div class="text-h6">
+                        {{ props.value }}
+                      </div>
+                    </q-td>
+                  </template>
+                </q-table>
+              </q-card-section>
             </q-card>
           </q-item>
         </div>
@@ -305,7 +305,7 @@
                 <q-card-section>
                   <div class="text-h7">Статус:</div>
                   <q-badge :color="colorStatusVU2">
-                    <div class="text-h4">{{ statusVU2 }}</div>
+                    <div class="text-h6">{{ statusVU2 }}</div>
                   </q-badge>
                 </q-card-section>
                 <q-separator vertical inset v-show="warnMes" />
@@ -348,8 +348,11 @@
               </q-card-section>
               <q-card class="row">
                 <q-card-section class="col-10">
-                  <Chart ref="chart3" name='Температура, °C' typeChart="line" barChartId="chart3" colorDefault="black">
-                  </Chart>
+                  <!-- <Chart ref="chart3" name='Температура, °C' typeChart="line" barChartId="chart3" colorDefault="black">
+                  </Chart> -->
+                  <Chart ref="chart3" name='Температура, °C'
+                    :parameters="[{ name: 'Темп. наружняя', color: 'blue' }, { name: 'Темп. притока', color: 'green' }, { name: 'Темп. вытяжки', color: 'yellow' }, { name: 'Темп. обр. воды', color: 'gray' }]"
+                    chartId="chart3" colorDefault="black" :legend="true" classTitle="text-h8" valueMeasure="°С" />
                 </q-card-section>
                 <q-card-section class="col-2">
                   <q-card-section class="bg-gray text-black">
@@ -375,9 +378,12 @@
               </q-card>
               <q-card class="row">
                 <q-card-section class="col-10">
-                  <Chart ref="chart4" name='Частота вентиляторов, Гц' typeChart="line" barChartId="chart4"
+                  <!-- <Chart ref="chart4" name='Частота вентиляторов, Гц' typeChart="line" barChartId="chart4"
                     colorDefault="black">
-                  </Chart>
+                  </Chart> -->
+                  <Chart ref="chart4" name='Частота вентиляторов, Гц'
+                    :parameters="[{ name: 'Частота прит. вент', color: 'blue' }, { name: 'Частота. выт. вент', color: 'red' }]"
+                    chartId="chart4" colorDefault="black" :legend="true" classTitle="text-h8" valueMeasure="°С" />
                 </q-card-section>
                 <q-card-section class="col-2">
                   <q-card-section class="bg-gray text-black">
@@ -393,14 +399,16 @@
               </q-card>
               <q-card class="row">
                 <q-card-section class="col-10">
-                  <Chart ref="chart6" name='Производительность, %' typeChart="line" barChartId="chart6"
-                    colorDefault="black">
-                  </Chart>
+                  <!-- <Chart ref="chart6" name='Производительность, %' typeChart="line" barChartId="chart6"
+                    colorDefault="black"> -->
+                  <Chart ref="chart6" name='Производительность, %'
+                    :parameters="[{ name: 'Произв. вод. кал', color: 'blue' }]" chartId="chart6" colorDefault="black"
+                    :legend="false" classTitle="text-h8" valueMeasure="°С" />
                 </q-card-section>
                 <q-card-section class="col-2">
                   <q-card-section class="bg-gray text-black">
                     <div class="text-h7">Произв. вод. кал., %,:</div>
-                    <div class="text-h4">{{ pWCVU2 }}</div>
+                    <div class="text-h4">{{ pWCVU2.toFixed(2) }}</div>
                   </q-card-section>
                 </q-card-section>
               </q-card>
@@ -411,68 +419,68 @@
               <q-card-section class="bg-secondary text-white">
                 <div class="row text-h6">Архивные данные</div>
               </q-card-section>
-                <q-card-section class="row">
-                  <q-card-section class="col">
-                    <div class="row text-h7">Начало:</div>
-                    <div class="q-pa-xsm" style="max-width: 300px">
-                      <q-input input-class="text-h6" filled v-model="dateStart" @update:model-value="updateRoutes">
-                        <template v-slot:prepend>
-                          <q-icon name="event" class="cursor-pointer">
-                            <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                              <q-date v-model="dateStart" mask="YYYY-MM-DD HH:mm:ss" @update:model-value="updateRoutes">
-                                <div class="row items-center justify-end">
-                                  <q-btn v-close-popup label="Закрыть" color="primary" flat />
-                                </div>
-                              </q-date>
-                            </q-popup-proxy>
-                          </q-icon>
-                        </template>
-                        <template v-slot:append>
-                          <q-icon name="access_time" class="cursor-pointer">
-                            <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                              <q-time v-model="dateStart" mask="YYYY-MM-DD HH:mm:ss" format24h
-                                @update:model-value="updateRoutes">
-                                <div class="row items-center justify-end">
-                                  <q-btn v-close-popup label="Закрыть" color="primary" flat />
-                                </div>
-                              </q-time>
-                            </q-popup-proxy>
-                          </q-icon>
-                        </template>
-                      </q-input>
-                    </div>
-                  </q-card-section>
-                  <q-card-section class="col">
-                    <div class="row text-h7">Конец:</div>
-                    <div class="q-pa-xsm" style="max-width: 300px">
-                      <q-input input-class="text-h6" filled v-model="dateEnd" @update:model-value="updateRoutes">
-                        <template v-slot:prepend>
-                          <q-icon name="event" class="cursor-pointer">
-                            <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                              <q-date v-model="dateEnd" mask="YYYY-MM-DD HH:mm:ss" @update:model-value="updateRoutes">
-                                <div class="row items-center justify-end">
-                                  <q-btn v-close-popup label="Закрыть" color="primary" flat />
-                                </div>
-                              </q-date>
-                            </q-popup-proxy>
-                          </q-icon>
-                        </template>
-                        <template v-slot:append>
-                          <q-icon name="access_time" class="cursor-pointer">
-                            <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                              <q-time v-model="dateEnd" mask="YYYY-MM-DD HH:mm:ss" format24h
-                                @update:model-value="updateRoutes">
-                                <div class="row items-center justify-end">
-                                  <q-btn v-close-popup label="Закрыть" color="primary" flat />
-                                </div>
-                              </q-time>
-                            </q-popup-proxy>
-                          </q-icon>
-                        </template>
-                      </q-input>
-                    </div>
-                  </q-card-section>
+              <q-card-section class="row">
+                <q-card-section class="col">
+                  <div class="row text-h7">Начало:</div>
+                  <div class="q-pa-xsm" style="max-width: 300px">
+                    <q-input input-class="text-h6" filled v-model="dateStart" @update:model-value="updateRoutes">
+                      <template v-slot:prepend>
+                        <q-icon name="event" class="cursor-pointer">
+                          <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                            <q-date v-model="dateStart" mask="YYYY-MM-DD HH:mm:ss" @update:model-value="updateRoutes">
+                              <div class="row items-center justify-end">
+                                <q-btn v-close-popup label="Закрыть" color="primary" flat />
+                              </div>
+                            </q-date>
+                          </q-popup-proxy>
+                        </q-icon>
+                      </template>
+                      <template v-slot:append>
+                        <q-icon name="access_time" class="cursor-pointer">
+                          <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                            <q-time v-model="dateStart" mask="YYYY-MM-DD HH:mm:ss" format24h
+                              @update:model-value="updateRoutes">
+                              <div class="row items-center justify-end">
+                                <q-btn v-close-popup label="Закрыть" color="primary" flat />
+                              </div>
+                            </q-time>
+                          </q-popup-proxy>
+                        </q-icon>
+                      </template>
+                    </q-input>
+                  </div>
                 </q-card-section>
+                <q-card-section class="col">
+                  <div class="row text-h7">Конец:</div>
+                  <div class="q-pa-xsm" style="max-width: 300px">
+                    <q-input input-class="text-h6" filled v-model="dateEnd" @update:model-value="updateRoutes">
+                      <template v-slot:prepend>
+                        <q-icon name="event" class="cursor-pointer">
+                          <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                            <q-date v-model="dateEnd" mask="YYYY-MM-DD HH:mm:ss" @update:model-value="updateRoutes">
+                              <div class="row items-center justify-end">
+                                <q-btn v-close-popup label="Закрыть" color="primary" flat />
+                              </div>
+                            </q-date>
+                          </q-popup-proxy>
+                        </q-icon>
+                      </template>
+                      <template v-slot:append>
+                        <q-icon name="access_time" class="cursor-pointer">
+                          <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                            <q-time v-model="dateEnd" mask="YYYY-MM-DD HH:mm:ss" format24h
+                              @update:model-value="updateRoutes">
+                              <div class="row items-center justify-end">
+                                <q-btn v-close-popup label="Закрыть" color="primary" flat />
+                              </div>
+                            </q-time>
+                          </q-popup-proxy>
+                        </q-icon>
+                      </template>
+                    </q-input>
+                  </div>
+                </q-card-section>
+              </q-card-section>
               <q-card-actions class="bg-grey-4">
                 <q-btn :href="routeVU2" target="_self" color="primary" label="Скачать .xlsx" />
               </q-card-actions>
@@ -483,28 +491,28 @@
               <q-card-section class="bg-secondary text-white">
                 <div class="row text-h6">Журнал аварий</div>
               </q-card-section>
-                <q-card-section>
-                  <q-table class="my-sticky-header-table" bordered binary-state-sort style="height: 400px" :columns="columns" :rows="rowsVU2"
-                    virtual-scroll v-model:pagination="pagination" :rows-per-page-options="[0]"
-                    no-data-label="Записи в журнале отсутствуют">
-                    <template v-slot:header="props">
-                      <q-tr :props="props">
-                        <q-th v-for="col in props.cols" :key="col.name" :props="props">
-                          <div class="text-h6">
-                            {{ col.label }}
-                          </div>
-                        </q-th>
-                      </q-tr>
-                    </template>
-                    <template v-slot:body-cell="props">
-                      <q-td :props="props">
+              <q-card-section>
+                <q-table class="my-sticky-header-table" bordered binary-state-sort style="height: 400px"
+                  :columns="columns" :rows="rowsVU2" virtual-scroll v-model:pagination="pagination"
+                  :rows-per-page-options="[0]" no-data-label="Записи в журнале отсутствуют">
+                  <template v-slot:header="props">
+                    <q-tr :props="props">
+                      <q-th v-for="col in props.cols" :key="col.name" :props="props">
                         <div class="text-h6">
-                          {{props.value}}
+                          {{ col.label }}
                         </div>
-                      </q-td>
-                    </template>
-                  </q-table>
-                </q-card-section>
+                      </q-th>
+                    </q-tr>
+                  </template>
+                  <template v-slot:body-cell="props">
+                    <q-td :props="props">
+                      <div class="text-h6">
+                        {{ props.value }}
+                      </div>
+                    </q-td>
+                  </template>
+                </q-table>
+              </q-card-section>
             </q-card>
           </q-item>
         </div>
@@ -548,7 +556,7 @@
   </q-dialog>
 </template>
 <script>
-import Chart from 'src/components/charts/chart.vue';
+import Chart from 'src/components/charts/chart_v3.vue';
 import axios from 'axios';
 import {
   ref, inject, onMounted, onBeforeUnmount,
@@ -776,7 +784,8 @@ export default {
                   warnMes.value = false;
                 }
                 if (mountChart[2] === true) {
-                  chart3.value.pushValues([{ value: json.tNar }, { value: json.tKan }, { value: json.tVyt }, { value: json.tWater }], json.timestamp);
+                  // chart3.value.pushValues([{ value: json.tNar }, { value: json.tKan }, { value: json.tVyt }, { value: json.tWater }], json.timestamp);
+                  chart3.value.pushValues([{ value: json.tNar }, { value: json.tKan }, { value: json.tVyt }, { value: json.tWater }], json.timestamp, true, true);
                 }
                 tKanVU2.value = json.tKan;
                 tNarVU2.value = json.tNar;
@@ -793,10 +802,12 @@ export default {
               const pwc = json.pWC;
               pWCVU2.value = pwc;
               if (mountChart[3] === true) {
-                chart4.value.pushValues([{ value: ppv }, { value: pvv }], json.timestamp);
+                // chart4.value.pushValues([{ value: ppv }, { value: pvv }], json.timestamp);
+                chart4.value.pushValues([{ value: ppv }, { value: pvv }], json.timestamp, true, true);
               }
               if (mountChart[5] === true) {
-                chart6.value.pushValues([{ value: pwc }], json.timestamp);
+                chart6.value.pushValues([{ value: pwc }], json.timestamp, true, true);
+                // chart6.value.pushValues([{ value: pwc }], json.timestamp);
               }
 
               checkIsUpdateTableJourmal('vu2_alarm', alarmsTriggerVU2, json, updateAlarmJournal, rowsVU2.value);
@@ -838,18 +849,18 @@ export default {
     }
     function updateTabPanels() {
       if (chart3.value != null && mountChart[2] === false) {
-        const parametresVU2 = [{ name: 'Темп. наружняя', color: 'blue' }, { name: 'Темп. притока', color: 'green' }, { name: 'Темп. вытяжки', color: 'yellow' }, { name: 'Темп. обр. воды', color: 'gray' }];
-        chart3.value.setParameters(parametresVU2);
+        // const parametresVU2 = [{ name: 'Темп. наружняя', color: 'blue' }, { name: 'Темп. притока', color: 'green' }, { name: 'Темп. вытяжки', color: 'yellow' }, { name: 'Темп. обр. воды', color: 'gray' }];
+        // chart3.value.setParameters(parametresVU2);
         mountChart[2] = true;
       }
       if (chart4.value != null && mountChart[3] === false) {
-        const parametresPVU2 = [{ name: 'Частота прит. вент', color: 'blue' }, { name: 'Частота. выт. вент', color: 'red' }];
-        chart4.value.setParameters(parametresPVU2);
+        // const parametresPVU2 = [{ name: 'Частота прит. вент', color: 'blue' }, { name: 'Частота. выт. вент', color: 'red' }];
+        // chart4.value.setParameters(parametresPVU2);
         mountChart[3] = true;
       }
       if (chart6.value != null && mountChart[5] === false) {
-        const parametresPWVU2 = [{ name: 'Произв. вод. кал', color: 'blue' }];
-        chart6.value.setParameters(parametresPWVU2);
+        // const parametresPWVU2 = [{ name: 'Произв. вод. кал', color: 'blue' }];
+        // chart6.value.setParameters(parametresPWVU2);
         mountChart[5] = true;
       }
     }

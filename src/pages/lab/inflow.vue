@@ -5,15 +5,17 @@
     </q-card-section>
     <div class="row justify-center">
       <div class="col-4">
-        <Chart :ref="charts[2]" name='Теплоцентраль, °С' :parameters="[{ name: 'Температура', color: 'rgb(97, 138, 199)' }]"
-          chartId="chart2" colorDefault="black" :legend="false" classTitle="text-h8" :height="70" valueMeasure="°С" />
+        <Chart :ref="charts[2]" name='Теплоцентраль, °С'
+          :parameters="[{ name: 'Температура', color: 'rgb(97, 138, 199)' }]" chartId="chart2" colorDefault="black"
+          :legend="false" classTitle="text-h8" :height="70" valueMeasure="°С" />
       </div>
     </div>
 
     <div class="row">
       <div class="col-6">
-        <Chart :ref="charts[0]" name='Температура наружняя, °С' :parameters="[{ name: 'Температура', color: 'rgb(97, 138, 199)' }]"
-          chartId="chart0" colorDefault="black" :legend="false" classTitle="text-h8" :height="50" valueMeasure="°С" />
+        <Chart :ref="charts[0]" name='Температура наружняя, °С'
+          :parameters="[{ name: 'Температура', color: 'rgb(97, 138, 199)' }]" chartId="chart0" colorDefault="black"
+          :legend="false" classTitle="text-h8" :height="50" valueMeasure="°С" />
       </div>
       <div class="col-6">
         <Chart :ref="charts[3]" name='Влажность наружная, г/кг'
@@ -23,8 +25,9 @@
     </div>
     <div class="row">
       <div class="col-6">
-        <Chart :ref="charts[1]" name='Температура помещение, °С' :parameters="[{ name: 'Температура', color: 'rgb(97, 138, 199)' }]"
-          chartId="chart1" colorDefault="black" :legend="false" classTitle="text-h8" :height="50" valueMeasure="°С" />
+        <Chart :ref="charts[1]" name='Температура помещение, °С'
+          :parameters="[{ name: 'Температура', color: 'rgb(97, 138, 199)' }]" chartId="chart1" colorDefault="black"
+          :legend="false" classTitle="text-h8" :height="50" valueMeasure="°С" />
       </div>
       <div class="col-6">
         <Chart :ref="charts[4]" name='Влажность помещение, г/кг'
@@ -35,8 +38,8 @@
     <div class="row">
       <div class="col-2">
         <Chart_v3 :ref="charts[5]" name='Температура смешения Приток1, °С'
-          :parameters="[{ name: 'Температура', color: 'rgb(97, 138, 199)' }, { name: 'Уставка:', color: 'white' }]" chartId="chart5" colorDefault="black" :legend="false"
-          classTitle="text-h8" valueMeasure="°С" />
+          :parameters="[{ name: 'Температура', color: 'rgb(97, 138, 199)' }, { name: 'Уставка:', color: 'white' }]"
+          chartId="chart5" colorDefault="black" :legend="false" classTitle="text-h8" valueMeasure="°С" />
       </div>
       <div class="col-2">
         <Chart :ref="charts[6]" name='Абсолютная влажность воздуха смешения Приток1, г/кг'
@@ -46,139 +49,164 @@
       <div class="col-2">
         <Chart_v3 :ref="charts[7]" name='Температура воздуха после водяного калорифера Приток1, °С'
           :parameters="[{ name: 'Температура:', color: 'rgb(97, 138, 199)' }, { name: 'Уставка:', color: 'white' }]"
-          chartId="chart7" colorDefault="black" :legend="false" classTitle="text-h8" valueMeasure="°С" />
+          chartId="chart7" colorDefault="black" :legend="false" classTitle="text-h8" valueMeasure="°С">
+          <template v-slot:bottomLabel>
+            <div align="center">
+              <q-badge style="background-color: rgb(80, 80, 80);">
+                <div class="text-white text-h8">
+                  Обратный теплоноситель: {{ tObr }} °С
+                </div>
+              </q-badge>
+            </div>
+          </template>
+        </Chart_v3>
       </div>
       <div class="col-2">
         <Chart_v3 :ref="charts[8]"
           name='Температура воздуха после электрического калорифера перед увлажнителем Приток1, °С'
-          :parameters="[{ name: 'Температура', color: 'rgb(97, 138, 199)' }, { name: 'Уставка:', color: 'white' }]" chartId="chart8" colorDefault="black" :legend="false"
-          classTitle="text-h8" valueMeasure="°С" />
+          :parameters="[{ name: 'Температура', color: 'rgb(97, 138, 199)' }, { name: 'Уставка:', color: 'white' }]"
+          chartId="chart8" colorDefault="black" :legend="false" classTitle="text-h8" valueMeasure="°С" />
       </div>
 
       <div class="col-2">
         <Chart_v3 :ref="charts[9]" name='Абсолютная влажность воздуха после увлажнителя Приток1, г/кг'
-          :parameters="[{ name: 'Влагосодержание', color: 'rgb(97, 138, 199)' }, { name: 'Уставка:', color: 'white' }]" chartId="chart9" colorDefault="black"
-          :legend="false" classTitle="text-h8" valueMeasure="г/кг" />
+          :parameters="[{ name: 'Влагосодержание', color: 'rgb(97, 138, 199)' }, { name: 'Уставка:', color: 'white' }]"
+          chartId="chart9" colorDefault="black" :legend="false" classTitle="text-h8" valueMeasure="г/кг" />
       </div>
       <div class="col-2">
         <Chart_v3 :ref="charts[10]" name='Расход воздуха вентилятора Приток1, м3/ч'
-          :parameters="[{ name: 'Расход', color: 'rgb(97, 138, 199)' }, { name: 'Уставка:', color: 'white' }]" chartId="chart10" colorDefault="black" :legend="false"
-          classTitle="text-h8" valueMeasure="м3/ч" />
+          :parameters="[{ name: 'Расход', color: 'rgb(97, 138, 199)' }, { name: 'Уставка:', color: 'white' }]"
+          chartId="chart10" colorDefault="black" :legend="false" classTitle="text-h8" valueMeasure="м3/ч" />
       </div>
     </div>
     <div class="row">
       <div class="col-2">
         <Chart :ref="charts[11]" name='Процент открытия клапана смешения Приток1, %'
-          :parameters="[{ name: 'Производительность', color: 'rgb(97, 138, 199)' }]" chartId="chart11" colorDefault="black"
-          :legend="false" classTitle="text-h8" valueMeasure="%" />
+          :parameters="[{ name: 'Производительность', color: 'rgb(97, 138, 199)' }]" chartId="chart11"
+          colorDefault="black" :legend="false" classTitle="text-h8" valueMeasure="%" />
       </div>
       <div class="col-2">
 
       </div>
       <div class="col-2">
-        <Chart :ref="charts[12]" name='Управление водяного калорифера Приток1, %'
-          :parameters="[{ name: 'Производительность', color: 'rgb(97, 138, 199)' }]" chartId="chart12" colorDefault="black"
-          :legend="false" classTitle="text-h8" valueMeasure="%" />
+        <Chart :ref="charts[12]" name='Управление водяным калорифером Приток1, %'
+          :parameters="[{ name: 'Производительность', color: 'rgb(97, 138, 199)' }]" chartId="chart12"
+          colorDefault="black" :legend="false" classTitle="text-h8" valueMeasure="%">
+          <template v-slot:topLabel>
+            <div align="center">
+              <q-badge style="background-color: rgb(60, 60, 60);">
+                <div class="text-white text-h8">
+                  Режим: {{ stat }}
+                </div>
+              </q-badge>
+            </div>
+          </template>
+        </Chart>
       </div>
       <div class="col-2">
         <Chart :ref="charts[13]" name='Управление калорифером перед увлажнителем Приток1, %'
-          :parameters="[{ name: 'Производительность', color: 'rgb(97, 138, 199)' }]" chartId="chart13" colorDefault="black"
-          :legend="false" classTitle="text-h8" valueMeasure="%" />
+          :parameters="[{ name: 'Производительность', color: 'rgb(97, 138, 199)' }]" chartId="chart13"
+          colorDefault="black" :legend="false" classTitle="text-h8" valueMeasure="%" />
       </div>
 
       <div class="col-2">
         <Chart :ref="charts[14]" name='Управление калорифером после вентилятора Приток1, %'
-          :parameters="[{ name: 'Производительность', color: 'rgb(97, 138, 199)' }]" chartId="chart14" colorDefault="black"
-          :legend="false" classTitle="text-h8" valueMeasure="%" />
+          :parameters="[{ name: 'Производительность', color: 'rgb(97, 138, 199)' }]" chartId="chart14"
+          colorDefault="black" :legend="false" classTitle="text-h8" valueMeasure="%" />
       </div>
       <div class="col-2">
-        <Chart :ref="charts[15]" name='Управление вентилятором Приток1' :parameters="[{ name: 'Производительность', color: 'rgb(97, 138, 199)' }]"
-          chartId="chart15" colorDefault="black" :legend="false" classTitle="text-h8" valueMeasure="%" />
+        <Chart :ref="charts[15]" name='Управление вентилятором Приток1'
+          :parameters="[{ name: 'Производительность', color: 'rgb(97, 138, 199)' }]" chartId="chart15"
+          colorDefault="black" :legend="false" classTitle="text-h8" valueMeasure="%" />
       </div>
     </div>
     <div class="row">
       <div class="col-2">
-        <Chart_v3 :ref="charts[16]" name='Температура смешения Приток2, °С' :parameters="[{ name: 'Температура', color: 'rgb(97, 138, 199)' }, { name: 'Уставка:', color: 'white' }]"
+        <Chart_v3 :ref="charts[16]" name='Температура смешения Приток2, °С'
+          :parameters="[{ name: 'Температура', color: 'rgb(97, 138, 199)' }, { name: 'Уставка:', color: 'white' }]"
           chartId="chart16" colorDefault="black" :legend="false" classTitle="text-h8" valueMeasure="°С" />
       </div>
       <div class="col-2">
-        <Chart :ref="charts[17]" name='Температура воздуха в канале 11 перед рекуператором, °С' :parameters="[{ name: 'Температура:', color: 'rgb(97, 138, 199)' }, { name: 'Уставка:', color: 'white' }]"
+        <Chart :ref="charts[17]" name='Температура воздуха в канале 11 перед рекуператором, °С'
+          :parameters="[{ name: 'Температура:', color: 'rgb(97, 138, 199)' }, { name: 'Уставка:', color: 'white' }]"
           chartId="chart17" colorDefault="black" :legend="false" classTitle="text-h8" valueMeasure="°С" />
       </div>
       <div class="col-2">
-        <Chart_v3 :ref="charts[18]" name='Расход воздуха вентилятора Приток2, м3/ч' :parameters="[{ name: 'Расход', color: 'rgb(97, 138, 199)' }, { name: 'Уставка:', color: 'white' }]"
+        <Chart_v3 :ref="charts[18]" name='Расход воздуха вентилятора Приток2, м3/ч'
+          :parameters="[{ name: 'Расход', color: 'rgb(97, 138, 199)' }, { name: 'Уставка:', color: 'white' }]"
           chartId="chart18" colorDefault="black" :legend="false" classTitle="text-h8" valueMeasure="м3/ч" />
       </div>
     </div>
     <div class="row">
       <div class="col-2">
         <Chart :ref="charts[19]" name='Процент открытия клапана смешения Приток2, %'
-          :parameters="[{ name: 'Производительность', color: 'rgb(97, 138, 199)' }]" chartId="chart19" colorDefault="black"
-          :legend="false" classTitle="text-h8" valueMeasure="%" />
+          :parameters="[{ name: 'Производительность', color: 'rgb(97, 138, 199)' }]" chartId="chart19"
+          colorDefault="black" :legend="false" classTitle="text-h8" valueMeasure="%" />
       </div>
       <div class="col-2">
         <Chart :ref="charts[20]" name='Управление электрическим калорифером перед вентилятором Приток2, %'
-          :parameters="[{ name: 'Производительность', color: 'rgb(97, 138, 199)' }]" chartId="chart20" colorDefault="black"
-          :legend="false" classTitle="text-h8" valueMeasure="%" />
+          :parameters="[{ name: 'Производительность', color: 'rgb(97, 138, 199)' }]" chartId="chart20"
+          colorDefault="black" :legend="false" classTitle="text-h8" valueMeasure="%" />
       </div>
       <div class="col-2">
         <Chart :ref="charts[31]" name='Управление вентилятора Приток2, %'
-          :parameters="[{ name: 'Производительность', color: 'rgb(97, 138, 199)' }]" chartId="chart31" colorDefault="black"
-          :legend="false" classTitle="text-h8" valueMeasure="%" />
+          :parameters="[{ name: 'Производительность', color: 'rgb(97, 138, 199)' }]" chartId="chart31"
+          colorDefault="black" :legend="false" classTitle="text-h8" valueMeasure="%" />
       </div>
     </div>
     <div class="row">
       <div class="col-2">
         <Chart :ref="charts[21]" name='Температура на выходе Приток1, °С'
-          :parameters="[{ name: 'Температура', color: 'rgb(97, 138, 199)' }]" chartId="chart21" colorDefault="black" :legend="false"
-          classTitle="text-h8" valueMeasure="°С" />
+          :parameters="[{ name: 'Температура', color: 'rgb(97, 138, 199)' }]" chartId="chart21" colorDefault="black"
+          :legend="false" classTitle="text-h8" valueMeasure="°С" />
       </div>
       <div class="col-2">
         <Chart :ref="charts[22]" name='Относительная влажность на выходе Приток1, %'
-          :parameters="[{ name: 'Влагосодержание', color: 'rgb(97, 138, 199)' }]" chartId="chart22" colorDefault="black" :legend="false"
-          classTitle="text-h8" valueMeasure="%" />
+          :parameters="[{ name: 'Влагосодержание', color: 'rgb(97, 138, 199)' }]" chartId="chart22" colorDefault="black"
+          :legend="false" classTitle="text-h8" valueMeasure="%" />
       </div>
       <div class="col-2">
         <Chart :ref="charts[23]" name='Абсолютная влажность на выходе Приток1, г/кг'
-          :parameters="[{ name: 'Влагосодержание', color: 'rgb(97, 138, 199)' }]" chartId="chart23" colorDefault="black" :legend="false"
-          classTitle="text-h8" valueMeasure="г/кг" />
+          :parameters="[{ name: 'Влагосодержание', color: 'rgb(97, 138, 199)' }]" chartId="chart23" colorDefault="black"
+          :legend="false" classTitle="text-h8" valueMeasure="г/кг" />
       </div>
       <div class="col-2">
         <Chart :ref="charts[24]" name='Температура на выходе Приток2, °С'
-          :parameters="[{ name: 'Температура', color: 'rgb(97, 138, 199)' }]" chartId="chart24" colorDefault="teal" :legend="false"
-          classTitle="text-h8" valueMeasure="°С" />
+          :parameters="[{ name: 'Температура', color: 'rgb(97, 138, 199)' }]" chartId="chart24" colorDefault="teal"
+          :legend="false" classTitle="text-h8" valueMeasure="°С" />
       </div>
       <div class="col-2">
         <Chart :ref="charts[25]" name='Относительная влажность на выходе Приток2, %'
-          :parameters="[{ name: 'Температура', color: 'rgb(97, 138, 199)' }]" chartId="chart25" colorDefault="black" :legend="false"
-          classTitle="text-h8" valueMeasure="%" />
+          :parameters="[{ name: 'Температура', color: 'rgb(97, 138, 199)' }]" chartId="chart25" colorDefault="black"
+          :legend="false" classTitle="text-h8" valueMeasure="%" />
       </div>
       <div class="col-2">
         <Chart :ref="charts[26]" name='Абсолютная влажность на выходе Приток2, г/кг'
-          :parameters="[{ name: 'Температура', color: 'rgb(97, 138, 199)' }]" chartId="chart26" colorDefault="black" :legend="false"
-          classTitle="text-h8" valueMeasure="г/кг" />
+          :parameters="[{ name: 'Температура', color: 'rgb(97, 138, 199)' }]" chartId="chart26" colorDefault="black"
+          :legend="false" classTitle="text-h8" valueMeasure="г/кг" />
       </div>
     </div>
     <div class="row">
       <div class="col-2">
         <Chart :ref="charts[27]" name='Выход Притока (Температура), °С'
-        :parameters="[{ name: 'Температура:', color: 'rgb(97, 138, 199)' }, { name: 'Уставка:', color: 'white' }]"
-        chartId="chart27" colorDefault="black" :legend="false"
-          classTitle="text-h8" valueMeasure="°С" />
+          :parameters="[{ name: 'Температура:', color: 'rgb(97, 138, 199)' }, { name: 'Уставка:', color: 'white' }]"
+          chartId="chart27" colorDefault="black" :legend="false" classTitle="text-h8" valueMeasure="°С" />
       </div>
       <div class="col-2">
-        <Chart_v3 :ref="charts[28]" name='Выход Притока (Отн.Вл), %' :parameters="[{ name: 'Влажность', color: 'rgb(97, 138, 199)' }, { name: 'Уставка:', color: 'white' }]"
+        <Chart_v3 :ref="charts[28]" name='Выход Притока (Отн.Вл), %'
+          :parameters="[{ name: 'Влажность', color: 'rgb(97, 138, 199)' }, { name: 'Уставка:', color: 'white' }]"
           chartId="chart28" colorDefault="black" :legend="false" classTitle="text-h8" valueMeasure="%" />
       </div>
       <div class="col-2">
         <Chart_v3 :ref="charts[29]" name='Выход Притока (Абс.Вл), г/кг'
-          :parameters="[{ name: 'Температура', color: 'rgb(97, 138, 199)' }, { name: 'Уставка:', color: 'white' }]" chartId="chart29" colorDefault="black" :legend="false"
-          classTitle="text-h8" valueMeasure="г/кг" />
+          :parameters="[{ name: 'Температура', color: 'rgb(97, 138, 199)' }, { name: 'Уставка:', color: 'white' }]"
+          chartId="chart29" colorDefault="black" :legend="false" classTitle="text-h8" valueMeasure="г/кг" />
       </div>
       <div class="col-6">
         <Chart_v3 :ref="charts[30]" name='Температура влажного термометра Приток, °С'
           :parameters="[{ name: 'Температура:', color: 'rgb(97, 138, 199)' }, { name: 'Уставка:', color: 'white' }, { name: 'Уставка + 0.3', color: 'green' }, { name: 'Уставка - 0.3', color: 'green' }]"
-          chartId="chart30" colorDefault="black" :legend="true" classTitle="text-h8"  classSetpoint="text-h6" classValue="text-h6" valueMeasure="°С" :height="60"/>
+          chartId="chart30" colorDefault="black" :legend="true" classTitle="text-h8" classSetpoint="text-h6"
+          classValue="text-h6" valueMeasure="°С" :height="60" />
       </div>
     </div>
 
@@ -205,6 +233,9 @@ export default {
     const charts = [];
     const dataValues = [];
     const load = ref(0);
+    const tObr = ref(0);
+    const stat = ref('');
+    let CodeStatus1 = [];
     for (let index = 0; index < 32; index += 1) {
       charts.push(ref(null));
     }
@@ -307,6 +338,15 @@ export default {
         }
       }
     }
+    function convertToBinary(number) {
+      let num = number;
+      let binary = (num % 2).toString();
+      for (; num > 1;) {
+        num = parseInt(num / 2, 10);
+        binary = (num % 2) + (binary);
+      }
+      return binary;
+    }
     function listen(json) {
       const mes = json.message;
       if (json.id === 2) {
@@ -370,6 +410,7 @@ export default {
             const setMin = Number(mes.TwT_21.setpoint) - 0.3;
             updateChartv3Set(30, [{ value: mes.TwT_21.value },
               { value: mes.TwT_21.setpoint }, { value: setMax }, { value: setMin }], mes.TwT_21.value, mes.TwT_21.setpoint, mes.time, true, true);
+            tObr.value = mes.SCo_t_obr_vokal_pr1.value;
           } else {
             const obj = {};
             // eslint-disable-next-line no-restricted-syntax, guard-for-in
@@ -379,10 +420,20 @@ export default {
             dataValues.push(obj);
             shift();
           }
+        } else if (json.type === 'sendDataRecup') {
+          CodeStatus1 = convertToBinary(mes.CodeStatus1.value).split('');
+          while (CodeStatus1.length < 10) {
+            CodeStatus1.unshift(Number(0));
+          }
+          CodeStatus1.reverse();
+          if (CodeStatus1[5] === '1') {
+            stat.value = 'воздух';
+          } else {
+            stat.value = 'вода';
+          }
         }
       }
     }
-
     onMounted(() => {
       axios
         .get(`${host}/app/database/AirDevice/720`).then((responseM) => {
@@ -403,6 +454,8 @@ export default {
       Chart_v3,
       charts,
       load,
+      tObr,
+      stat,
     };
   },
 };

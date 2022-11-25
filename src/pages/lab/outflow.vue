@@ -276,20 +276,15 @@ export default {
             updateChart(2, mes.SCo_t_tset.value, null, mes.time, true, true);
             updateChart(3, mes.SCo_Abs_nar.value, null, mes.time, true, true);
             updateChart(4, mes.Hc_Lab.value, null, mes.time, true, true);
-            // updateChart(5, mes.SCo_t_smesh_vyt.value, mes.SCo_t_smesh_vyt.setpoint, mes.time, true, true);
             updateChartv3Set(5, [{ value: mes.SCo_t_smesh_vyt.value },
               { value: mes.SCo_t_smesh_vyt.setpoint }], mes.SCo_t_smesh_vyt.value, mes.SCo_t_smesh_vyt.setpoint, mes.time, true, true);
             updateChart(6, mes.SCo_Hc_ecal1_vyt.value, null, mes.time, true, true);
-            // updateChart(7, mes.SCo_t_vokal_vyt.value, mes.SCo_t_vokal_vyt.setpoint, mes.time, true, true);
             updateChartv3Set(7, [{ value: mes.SCo_t_vokal_vyt.value },
               { value: mes.SCo_t_vokal_vyt.setpoint }], mes.SCo_t_vokal_vyt.value, mes.SCo_t_vokal_vyt.setpoint, mes.time, true, true);
-            // updateChart(8, mes.SCo_t_ekal1_vyt.value, mes.SCo_t_ekal1_vyt.setpoint, mes.time, true, true);
             updateChartv3Set(8, [{ value: mes.SCo_t_ekal1_vyt.value },
               { value: mes.SCo_t_ekal1_vyt.setpoint }], mes.SCo_t_ekal1_vyt.value, mes.SCo_t_ekal1_vyt.setpoint, mes.time, true, true);
-            // updateChart(9, mes.Hc_11_Vyt.value, mes.Hc_11_Vyt.setpoint, mes.time, true, true);
             updateChartv3Set(9, [{ value: mes.Hc_11_Vyt.value },
               { value: mes.Hc_11_Vyt.setpoint }], mes.Hc_11_Vyt.value, mes.Hc_11_Vyt.setpoint, mes.time, true, true);
-            // updateChart(10, mes.SCo_m3h_vyt.value, mes.SCo_m3h_vyt.setpoint, mes.time, true, true);
             updateChartv3Set(10, [{ value: mes.SCo_m3h_vyt.value },
               { value: mes.SCo_m3h_vyt.setpoint }], mes.SCo_m3h_vyt.value, mes.SCo_m3h_vyt.setpoint, mes.time, true, true);
             updateChart(11, mes.SCo_reg_t_smesh_vyt.value, null, mes.time, true, true);
@@ -297,16 +292,12 @@ export default {
             updateChart(13, mes.SCo_reg_m3h_vyt.value, null, mes.time, true, true);
             updateChart(14, mes.SCo_reg_ekal1_vyt.value, null, mes.time, true, true);
             updateChart(15, mes.SCo_reg_ekal2_vyt.value, null, mes.time, true, true);
-            // updateChart(16, mes.T_11_Vyt.value, mes.T_11_Vyt.setpoint, mes.time, true, true);
             updateChartv3Set(16, [{ value: mes.T_11_Vyt.value },
               { value: mes.T_11_Vyt.setpoint }], mes.T_11_Vyt.value, mes.T_11_Vyt.setpoint, mes.time, true, true);
-            // updateChart(17, mes.Rh_11_Vyt.value, mes.Rh_11_Vyt.setpoint, mes.time, true, true);
             updateChartv3Set(17, [{ value: mes.Rh_11_Vyt.value },
               { value: mes.Rh_11_Vyt.setpoint }], mes.Rh_11_Vyt.value, mes.Rh_11_Vyt.setpoint, mes.time, true, true);
-            // updateChart(18, mes.Hc_11_Vyt.value, mes.Hc_11_Vyt.setpoint, mes.time, true, true);
             updateChartv3Set(18, [{ value: mes.Hc_11_Vyt.value },
               { value: mes.Hc_11_Vyt.setpoint }], mes.Hc_11_Vyt.value, mes.Hc_11_Vyt.setpoint, mes.time, true, true);
-            // updateChart(19, mes.TwT_11.value, mes.TwT_11.setpoint, mes.time, true, true);
             const setMax = Number(mes.TwT_11.setpoint) + 0.3;
             const setMin = Number(mes.TwT_11.setpoint) - 0.3;
             updateChartv3Set(19, [{ value: mes.TwT_11.value },

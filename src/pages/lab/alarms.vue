@@ -226,11 +226,45 @@
         </div>
       </div>
       <div class="row">
-        <q-btn color="teal" label="Сброс" v-show="!load" @click="reset"/>
+        <q-btn color="teal" label="Сброс" v-show="!load" @click="enterPassword(reset)" />
       </div>
       <q-inner-loading :showing="load" color="white" label-class="text-white" style="height: 60vh;"
         label-style="font-size: 1.1em" />
     </q-card-section>
+    <q-dialog v-model="changeDialog" ref="comp_inputPassword" persistent>
+      <q-card style="width: 700px; max-width: 80vw;">
+        <q-card-section style="background-color: rgb(80, 80, 80);">
+          <div class="text-h6 text-white">Авторизованный доступ</div>
+        </q-card-section>
+        <q-card-section class="row text-white" style="background-color: rgb(60, 60, 60);">
+          <q-card-section class="col-6">
+            Для внесения изменений в работу установки введите сервисный пароль:
+          </q-card-section>
+          <q-card-section class="col-6 q-pt-none">
+            <q-input ref="comp_inputPassword" v-model="inputPassword" clearable dark type="password" label="Пароль"
+              @clear="inputPassword = ''" color="white" input-class="text-h6 text-white" outlined label-color="grey" />
+          </q-card-section>
+        </q-card-section>
+        <q-card-actions align="right" style="background-color: rgb(80, 80, 80);">
+          <q-btn class="bg-teal text-white" label="Принять" @click="confirmPassword"
+            :disable="inputPassword.length == 0" />
+          <q-btn ref="confirmPass" class="bg-teal text-white" label="Отмена" v-close-popup @click="cancelConfirm" />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+    <q-dialog v-model="errorPasswordDialog" persistent transition-show="scale" transition-hide="scale">
+      <q-card class="bg-white text" style="width: 300px">
+        <q-card-section>
+          <div class="text-h6">Ошибка</div>
+        </q-card-section>
+        <q-card-section class="q-pt-none">
+          Неверный пароль
+        </q-card-section>
+        <q-card-actions align="right" class="bg-red text-white">
+          <q-btn flat label="OK" v-close-popup />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
   </q-page>
 </template>
 
@@ -243,12 +277,18 @@ export default {
   name: 'Calibration',
   setup() {
     document.title = 'Журнал аварий';
+    const changeDialog = ref(false);
+    const errorPasswordDialog = ref(false);
+    let password = '';
+    const inputPassword = ref(password);
+    const comp_inputPassword = ref(null);
+    const confirmPass = ref(null);
     const AlarmStatus1 = ref([]);
     const AlarmStatus2 = ref([]);
     const AlarmStatus3 = ref([]);
     const load = ref(true);
     const {
-      WebSocket_Create, WebSocket_Listen, WebSocket_Close, WebSocket_Send, getCurrentTime,
+      WebSocket_Create, WebSocket_Listen, WebSocket_Close, WebSocket_Send, getCurrentTime, TRUE_PASSWORD,
     } = inject('store');
 
     function parsebool(value) {
@@ -296,6 +336,28 @@ export default {
         id: 2, type: 'alarmsReset', value: true, timestamp: getCurrentTime(),
       });
     }
+    let varFunction = null;
+    function enterPassword(action) {
+      if (password !== TRUE_PASSWORD) {
+        changeDialog.value = true;
+        inputPassword.value = '';
+        console.log('введите пароль');
+        varFunction = action;
+      } else {
+        console.log('пароль введён');
+        action();
+      }
+    }
+    function confirmPassword() {
+      if (inputPassword.value === TRUE_PASSWORD) {
+        password = inputPassword.value;
+        console.log(password);
+        changeDialog.value = false;
+        varFunction();
+      } else {
+        errorPasswordDialog.value = true;
+      }
+    }
     onMounted(() => {
       // написать удаление элементов при размонтировании образа
       WebSocket_Create('recup', { getMain: 1 });
@@ -312,6 +374,16 @@ export default {
       parsebool,
       getcolor,
       load,
+      changeDialog,
+      errorPasswordDialog,
+      inputPassword,
+      comp_inputPassword,
+      confirmPass,
+      enterPassword,
+      confirmPassword,
+      ds: ref(() => {
+        console.log(1);
+      }),
     };
   },
 };

@@ -235,6 +235,7 @@ function convertToBinary(number) {
   return binary;
 }
 export default {
+  TRUE_PASSWORD: 'lab123',
   host,
   convertToBinary,
   WebSocket_UpServer,

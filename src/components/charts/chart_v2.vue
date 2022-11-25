@@ -7,7 +7,7 @@
       </div>
       <div class="row">
         <div class="col-6">
-          <slot name="topLabel"/>
+          <slot name="topLabel" />
         </div>
         <div align="right" class="col-6">
           <q-btn padding="xs" color="rgb(60,60,60)" icon="search" @click="viewChart" />
@@ -30,13 +30,13 @@
       <canvas style="background-color: rgb(60, 60, 60);" :height="height" :id="chartId" v-show="vis"></canvas>
     </q-card-section>
     <q-inner-loading :showing="!vis" color="white" label-class="text-white" label-style="font-size: 1.1em" />
-    <q-dialog v-model="view" ref="dialog" persistent  @show="beforeShow" full-height full-width>
+    <q-dialog v-model="view" ref="dialog" persistent @show="beforeShow" full-height full-width>
       <q-card class="text-white" style="background-color: rgb(60, 60, 60);">
         <q-bar>
           <div :class="classTitle + ' text-left'">{{ nam }}</div>
           <q-space />
-          <q-btn dense flat icon="close" v-close-popup>
-            <q-tooltip class="bg-white text-primary">Закрыть</q-tooltip>
+          <q-btn dense flat icon="close" @click="close" v-close-popup>
+            <q-tooltip class="bg-grey text-white">Закрыть</q-tooltip>
           </q-btn>
         </q-bar>
         <q-card-section align="center" style="padding: 0px;">
@@ -123,7 +123,7 @@ export default defineComponent({
     },
   },
   mounted() {
-    this.myChart = this.createChart(this.chartId, this.typeChart);
+    this.myChart = this.createChart(this.chartId, this.typeChart, 12);
     this.setParameters(this.parameters);
   },
   data(props) {
@@ -137,7 +137,7 @@ export default defineComponent({
     };
   },
   methods: {
-    createChart(chartId, typeChart) {
+    createChart(chartId, typeChart, tooltipsSize) {
       const ctx = document.getElementById(chartId);
       return new Chart(ctx, {
         type: typeChart,
@@ -157,10 +157,18 @@ export default defineComponent({
         },
         options: {
           tooltips: {
+            // mode: 'index',
+            // intersect: false,
+            // position: 'nearest',
+            // bodyFontSize: tooltipsSize,
+            // titleFontSize: tooltipsSize,
+            enabled: true,
             mode: 'index',
             intersect: false,
             position: 'nearest',
-            bodyFontSize: 10,
+            bodyFontSize: tooltipsSize,
+            titleFontSize: tooltipsSize,
+            animation: false,
           },
           scales: {
             gridLines: 'red',
@@ -173,7 +181,7 @@ export default defineComponent({
                   maxRotation: 0,
                   autoSkip: true,
                   autoSkipPadding: 64,
-                  fontSize: 13,
+                  fontSize: tooltipsSize + 2,
                   fontColor: 'white',
                 },
                 gridLines: {
@@ -192,6 +200,7 @@ export default defineComponent({
                   autoSkip: true,
                   autoSkipPadding: 15,
                   fontColor: 'white',
+                  fontSize: tooltipsSize + 2,
                 },
                 gridLines: {
                   color: 'grey-4',
@@ -228,11 +237,11 @@ export default defineComponent({
       return this.vis;
     },
     // очистка массива
-    clear() {
-      this.myChart.data.labels = [];
-      this.myChart.data.datasets[0].data = [];
-      this.myChart.data.datasets[0].backgroundColor = [];
-    },
+    // clear() {
+    //   this.myChart.data.labels = [];
+    //   this.myChart.data.datasets[0].data = [];
+    //   this.myChart.data.datasets[0].backgroundColor = [];
+    // },
     setParametersDouble(parameters) {
       for (let i = 0; i < parameters.length; i += 1) {
         const { name, color } = parameters[i];
@@ -275,11 +284,11 @@ export default defineComponent({
       this.myChart.update();
     },
     update() {
-      if (this.myChartDouble) {
+      if (this.myChartDouble && this.view) {
         this.myChartDouble.update();
       }
       this.myChart.update();
-      this.setVisible(true);
+      // this.setVisible(true);
     },
     pushValuesDouble(values, timeline, direct, update) {
       if (this.myChartDouble.data.datasets[0].data.length >= this.countMax) {
@@ -330,9 +339,9 @@ export default defineComponent({
         if (!this.getVisible()) {
           this.setVisible(true);
         }
-        if (this.myChartDouble) {
-          this.pushValuesDouble(values, timeline, direct, update);
-        }
+      }
+      if (this.myChartDouble && this.view) {
+        this.pushValuesDouble(values, timeline, direct, update);
       }
     },
     // удаление данных в массив параметра ПРОВЕРЕНО
@@ -351,8 +360,13 @@ export default defineComponent({
     viewChart() {
       this.view = true;
     },
+    close() {
+      this.myChartDouble = null;
+      this.view = false;
+      this.update();
+    },
     beforeShow() {
-      this.myChartDouble = this.createChart('double', this.typeChart);
+      this.myChartDouble = this.createChart('double', this.typeChart, 20);
       this.setParametersDouble(this.parameters);
       this.myChartDouble.data = this.myChart.data;
       this.myChartDouble.update();

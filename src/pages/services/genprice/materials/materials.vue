@@ -13,7 +13,8 @@
           <q-card-actions class="fit">
             <q-btn color='primary' label='Создать' @click="createAction" />
             <q-btn color='primary' label='Изменить' v-show="selected.length === 1" @click="changeAction(selected)" />
-            <q-btn color='primary' label='Удалить' v-show="selected.length > 0" @click="deleteAction(selected)" disable/>
+            <q-btn color='primary' label='Удалить' v-show="selected.length > 0" @click="deleteAction(selected)"
+              disable />
             <q-space />
             <q-select outlined dense v-model="filterOptions" :options="op" class="text-h6"
               options-selected-class="text-h6" popup-content-class="text-h6" style="width: 220px; margin-right: 10px" />
@@ -24,6 +25,11 @@
               </template>
             </q-input>
           </q-card-actions>
+        </template>
+        <template v-slot:pagination>
+          <div class="text-h6">
+            Количество элементов: {{ rows.length }}
+          </div>
         </template>
         <template v-slot:header-cell="props">
           <q-th :props="props">

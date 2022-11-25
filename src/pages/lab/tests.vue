@@ -857,9 +857,9 @@
       </div>
       <div class="row">
         <div class="col-6">
-          <Chart :ref="charts[0]" name='Перепад (11-22), Па' :parameters="[{ name: 'Давление', color: 'rgb(97, 138, 199)' }]"
-            chartId="chart0" colorDefault="yellow" :legend="false" classTitle="text-h6" :height="80"
-            valueMeasure="Па" />
+          <Chart :ref="charts[0]" name='Перепад (11-22), Па'
+            :parameters="[{ name: 'Давление', color: 'rgb(97, 138, 199)' }]" chartId="chart0" colorDefault="yellow"
+            :legend="false" classTitle="text-h6" :height="80" valueMeasure="Па" />
         </div>
         <div class="col-6">
           <Chart :ref="charts[1]" name='Управление ресивер Вытяжки, %'
@@ -929,7 +929,8 @@
               <div class="col-6">
                 <div class="text-h6">
                   Состояние записи:
-                  <div :class="getcolorStatus(statusWrite === 'Готов к останову' || statusWrite === 'Запись' || statusWrite === 'Запись/Готов к останову')">
+                  <div
+                    :class="getcolorStatus(statusWrite === 'Готов к останову' || statusWrite === 'Запись' || statusWrite === 'Запись/Готов к останову')">
                     {{ statusWrite }}
                   </div>
                 </div>
@@ -946,22 +947,23 @@
             <div class="row">
               <div class="col-3">
                 <q-toggle v-model="modeWrite" class="full-width" label="Режим запись"
-                  @update:model-value="updateModeWrite" />
+                  @update:model-value="enterPassword(updateModeWrite)" />
               </div>
               <div class="col-3">
                 <q-toggle v-model="autoWrite" class="full-width" label="Автозапись"
-                  @update:model-value="updateAutoWrite" />
+                  @update:model-value="enterPassword(updateAutoWrite)" />
               </div>
               <div class="col-3">
+                <!-- @update:model-value="updateCountRegisterWrite" -->
                 <q-input ref="comp_countRegisterWrite" v-model="countRegisterWrite" color="white"
                   input-class="text-h6 text-white" outlined label-color="white"
-                  @update:model-value="updateCountRegisterWrite" type="number" label="Количество регистраций"
+                   type="number" label="Количество регистраций"
                   :rules="[val => (val >= 0) && (+val <= 10000) || 'Введите корректные данные']" style="width: 178px;"
-                  @focus="focus_countRegisterWrite = true" @blur="updateCountRegisterWrite"
-                  @keydown.enter.prevent="updateCountRegisterWrite" />
+                  @focus="focus_countRegisterWrite = true" @blur="enterPassword(updateCountRegisterWrite)"
+                  @keydown.enter.prevent="enterPassword(updateCountRegisterWrite)" />
               </div>
               <div class="col-3">
-                <q-toggle v-model="pause" class="full-width" label="Пауза" @update:model-value="updatePause" />
+                <q-toggle v-model="pause" class="full-width" label="Пауза" @update:model-value="enterPassword(updatePause)" />
               </div>
             </div>
             <div class="row">
@@ -1159,7 +1161,42 @@
         </q-card>
       </div>
     </q-card-section>
+    <q-dialog v-model="changeDialog" ref="comp_inputPassword" persistent>
+      <q-card style="width: 700px; max-width: 80vw;">
+        <q-card-section style="background-color: rgb(80, 80, 80);">
+          <div class="text-h6 text-white">Авторизованный доступ</div>
+        </q-card-section>
+        <q-card-section class="row text-white" style="background-color: rgb(60, 60, 60);">
+          <q-card-section class="col-6">
+            Для внесения изменений в работу установки введите сервисный пароль:
+          </q-card-section>
+          <q-card-section class="col-6 q-pt-none">
+            <q-input ref="comp_inputPassword" v-model="inputPassword" clearable dark type="password" label="Пароль" @clear="inputPassword = ''"
+              color="white" input-class="text-h6 text-white" outlined label-color="grey" />
+          </q-card-section>
+        </q-card-section>
+        <q-card-actions align="right" style="background-color: rgb(80, 80, 80);">
+          <q-btn class="bg-teal text-white" label="Принять" @click="confirmPassword"
+            :disable="inputPassword.length == 0" />
+          <q-btn ref="confirmPass" class="bg-teal text-white" label="Отмена" v-close-popup @click="cancelConfirm" />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+    <q-dialog v-model="errorPasswordDialog" persistent transition-show="scale" transition-hide="scale">
+      <q-card class="bg-white text" style="width: 300px">
+        <q-card-section>
+          <div class="text-h6">Ошибка</div>
+        </q-card-section>
+        <q-card-section class="q-pt-none">
+          Неверный пароль
+        </q-card-section>
+        <q-card-actions align="right" class="bg-red text-white">
+          <q-btn flat label="OK" v-close-popup />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
   </q-card>
+
 </template>
 <script>
 import {
@@ -1178,9 +1215,15 @@ export default {
     const dataValues0 = [];
     const dataValues1 = [];
     const load = ref(0);
+    const changeDialog = ref(false);
+    const errorPasswordDialog = ref(false);
+    let password = '';
+    const inputPassword = ref(password);
+    const comp_inputPassword = ref(null);
+    const confirmPass = ref(null);
     const loadComplete = ref(false);
     const {
-      host, getCurrentTime, WebSocket_Create, WebSocket_Listen, WebSocket_Close, WebSocket_Send,
+      host, getCurrentTime, WebSocket_Create, WebSocket_Listen, WebSocket_Close, WebSocket_Send, TRUE_PASSWORD,
     } = inject('store');
     const charts = [];
     for (let index = 0; index < 2; index += 1) {
@@ -1634,6 +1677,28 @@ export default {
         id: 2, type: 'pause', value, timestamp: getCurrentTime(),
       });
     }
+    let varFunction = null;
+    function enterPassword(action) {
+      if (password !== TRUE_PASSWORD) {
+        changeDialog.value = true;
+        inputPassword.value = '';
+        console.log('введите пароль');
+        varFunction = action;
+      } else {
+        console.log('пароль введён');
+        action();
+      }
+    }
+    function confirmPassword() {
+      if (inputPassword.value === TRUE_PASSWORD) {
+        password = inputPassword.value;
+        console.log(password);
+        changeDialog.value = false;
+        varFunction();
+      } else {
+        errorPasswordDialog.value = true;
+      }
+    }
     onMounted(() => {
       axios
         .get(`${host}/app/database/DataRecup/720`).then((responseM) => {
@@ -1658,6 +1723,13 @@ export default {
       WebSocket_Close('recup');
     });
     return {
+      changeDialog,
+      errorPasswordDialog,
+      inputPassword,
+      comp_inputPassword,
+      enterPassword,
+      confirmPassword,
+      confirmPass,
       updatePause,
       updateModeWrite,
       updateAutoWrite,
@@ -1794,6 +1866,9 @@ export default {
       lock_modeWrite,
       getcolorStatus,
       lock_autoWrite,
+      ds: ref(() => {
+        console.log(1);
+      }),
     };
   },
 };

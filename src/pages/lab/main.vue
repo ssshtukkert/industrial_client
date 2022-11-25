@@ -45,7 +45,7 @@
             </q-card-section>
             <q-card-actions class="row" style="background-color: rgb(80, 80, 80);">
               <q-space />
-              <q-btn color="green" label="Пуск / Стоп" @click="onof" :disable="onofLock" />
+              <q-btn color="green" label="Пуск / Стоп"  @click="enterPassword(onof)" :disable="onofLock" />
             </q-card-actions>
           </q-card>
         </div>
@@ -80,7 +80,7 @@
                 <q-form class="q-gutter-sm">
                   <q-select v-model="mode" transition-show="flip-up" transition-hide="flip-down" color="grey"
                     label-color="grey" popup-content-style="background-color: rgb(60, 60, 60); color:  white;" outlined
-                    :options="optionsMode" label="Режим" @update:model-value="acceptParameters">
+                    :options="optionsMode" label="Режим" @update:model-value="enterPassword(acceptParameters)">
                     <template v-slot:selected>
                       <div class="text-white">
                         {{ mode }}
@@ -89,16 +89,16 @@
                   </q-select>
                   <q-input ref="compWidth" v-model="width" type="number" label="Ширина воздуховода, мм" lazy-rules
                     :rules="[val => (val && val > 0) && (+val < 1000) || 'Введите корректные данные']" color="white"
-                    @focus="focus_width = true" @blur="acceptParameters" input-class="text-h6 text-white" outlined
-                    label-color="grey" @keydown.enter.prevent="acceptParameters" />
+                    @focus="focus_width = true" @blur="enterPassword(acceptParameters)" input-class="text-h6 text-white" outlined
+                    label-color="grey" @keydown.enter.prevent="enterPassword(acceptParameters)" />
                   <q-input ref="compHeight" v-model="height" type="number" label="Высота воздуховода, мм" lazy-rules
                     :rules="[val => (val && val > 0) && (+val < 1000) || 'Введите корректные данные']" color="white"
-                    @focus="focus_height = true" @blur="acceptParameters" @keydown.enter.prevent="acceptParameters"
+                    @focus="focus_height = true" @blur="enterPassword(acceptParameters)" @keydown.enter.prevent="enterPassword(acceptParameters)"
                     input-class="text-h6 text-white" outlined label-color="grey" />
                   <q-input ref="compAirV" v-model="airV" type="number"
                     label="Уставка номинала расхода водуха (вытяжка), м3/ч" lazy-rules
                     :rules="[val => (val && val > 0) && (+val < 10000) || 'Введите корректные данные']"
-                    @focus="focus_airV = true" @blur="acceptParameters" @keydown.enter.prevent="acceptParameters"
+                    @focus="focus_airV = true" @blur="enterPassword(acceptParameters)" @keydown.enter.prevent="enterPassword(acceptParameters)"
                     color="white" input-class="text-h6 text-white" outlined label-color="grey" />
                   <q-input v-model="airP" type="number" label="Уставка номинала расхода водуха (приток)" readonly
                     color="white" input-class="text-h6 text-white" outlined label-color="grey" />
@@ -156,33 +156,33 @@
               <q-input ref="comp_stendPritokTemp" v-model="stendPritokTemp" type="number"
                 label="Стенд Приток температура" color="white" input-class="text-h6 text-white" outlined
                 label-color="grey" :rules="[val => (val >= -50) && (+val <= 100) || 'Введите корректные данные']"
-                @focus="focus_stendPritokTemp = true" @blur="accept" @keydown.enter.prevent="accept" />
+                @focus="focus_stendPritokTemp = true" @blur="enterPassword(accept)" @keydown.enter.prevent="enterPassword(accept)" />
               <q-input ref="comp_stendPritokHum" v-model="stendPritokHum" type="number" label="Стенд Приток влажность"
                 color="white" input-class="text-h6 text-white" outlined label-color="grey"
                 :rules="[val => (val >= 0) && (+val <= 100) || 'Введите корректные данные']"
-                @focus="focus_stendPritokHum = true" @blur="accept" @keydown.enter.prevent="accept" />
+                @focus="focus_stendPritokHum = true" @blur="enterPassword(accept)" @keydown.enter.prevent="enterPassword(accept)" />
               <q-input ref="comp_stendVytTemp" v-model="stendVytTemp" type="number" label="Стенд Вытяжка температура"
                 color="white" input-class="text-h6 text-white" outlined label-color="grey"
                 :rules="[val => (val >= -50) && (+val <= 100) || 'Введите корректные данные']"
-                @focus="focus_stendVytTemp = true" @blur="accept" @keydown.enter.prevent="accept" />
+                @focus="focus_stendVytTemp = true" @blur="enterPassword(accept)" @keydown.enter.prevent="enterPassword(accept)" />
               <q-input ref="comp_stendVytHum" v-model="stendVytHum" type="number" label="Стенд Вытяжка влажность"
                 color="white" input-class="text-h6 text-white" outlined label-color="grey"
                 :rules="[val => (val >= 0) && (+val <= 100) || 'Введите корректные данные']"
-                @focus="focus_stendVytHum = true" @blur="accept" @keydown.enter.prevent="accept" />
+                @focus="focus_stendVytHum = true" @blur="enterPassword(accept)" @keydown.enter.prevent="enterPassword(accept)" />
             </q-card-section>
             <q-card-section class="col-4" style="background-color: rgb(60, 60, 60);">
               <q-input ref="comp_setSmeshPritok1" v-model="setSmeshPritok1" type="number"
                 label="Уставка Смешение Приток 1" color="white" input-class="text-h6 text-white" outlined
                 label-color="grey" :rules="[val => (val >= -50) && (+val <= 100) || 'Введите корректные данные']"
-                @focus="focus_setSmeshPritok1 = true" @blur="accept" @keydown.enter.prevent="accept" />
+                @focus="focus_setSmeshPritok1 = true" @blur="enterPassword(accept)" @keydown.enter.prevent="enterPassword(accept)" />
               <q-input ref="comp_setM3Pritok1" v-model="setM3Pritok1" type="number" label="Уставка м3 Приток1"
                 color="white" input-class="text-h6 text-white" outlined label-color="grey"
                 :rules="[val => (val >= 0) && (+val <= 10000) || 'Введите корректные данные']"
-                @focus="focus_setM3Pritok1 = true" @blur="accept" @keydown.enter.prevent="accept" />
+                @focus="focus_setM3Pritok1 = true" @blur="enterPassword(accept)" @keydown.enter.prevent="enterPassword(accept)" />
               <q-input ref="comp_setTOutPritok1" v-model="setTOutPritok1" type="number" label="Уставка Т выход Приток1*"
                 color="white" input-class="text-h6 text-white" outlined label-color="grey"
                 :rules="[val => (val >= -50) && (+val <= 100) || 'Введите корректные данные']"
-                @focus="focus_setTOutPritok1 = true" @blur="accept" @keydown.enter.prevent="accept"
+                @focus="focus_setTOutPritok1 = true" @blur="enterPassword(accept)" @keydown.enter.prevent="enterPassword(accept)"
                 :readonly="!onPritok1 || !onPritok2">
                 <template v-slot:hint>
                   <div class="text-grey">
@@ -193,59 +193,92 @@
               <q-input ref="comp_setSmeshVyt" v-model="setSmeshVyt" type="number" label="Уставка смешение Вытяжка"
                 color="white" input-class="text-h6 text-white" outlined label-color="grey"
                 :rules="[val => (val >= -50) && (+val <= 100) || 'Введите корректные данные']"
-                @focus="focus_setSmeshVyt = true" @blur="accept" @keydown.enter.prevent="accept" />
+                @focus="focus_setSmeshVyt = true" @blur="enterPassword(accept)" @keydown.enter.prevent="enterPassword(accept)" />
               <q-input ref="comp_setM3Vyt" v-model="setM3Vyt" type="number" label="Уставка м3 Вытяжка" color="white"
                 input-class="text-h6 text-white" outlined label-color="grey"
                 :rules="[val => (val >= 0) && (+val <= 10000) || 'Введите корректные данные']"
-                @focus="focus_setM3Vyt = true" @blur="accept" @keydown.enter.prevent="accept" />
+                @focus="focus_setM3Vyt = true" @blur="enterPassword(accept)" @keydown.enter.prevent="enterPassword(accept)" />
               <q-input ref="comp_setSmeshPritok2" v-model="setSmeshPritok2" type="number"
                 label="Уставка смешение Приток 2" color="white" input-class="text-h6 text-white" outlined
                 label-color="grey" :rules="[val => (val >= -50) && (+val <= 100) || 'Введите корректные данные']"
-                @focus="focus_setSmeshPritok2 = true" @blur="accept" @keydown.enter.prevent="accept" />
+                @focus="focus_setSmeshPritok2 = true" @blur="enterPassword(accept)" @keydown.enter.prevent="enterPassword(accept)" />
               <q-input ref="comp_setM3Pritok2" v-model="setM3Pritok2" type="number" label="Уставка м3 Приток2"
                 color="white" input-class="text-h6 text-white" outlined label-color="grey"
                 :rules="[val => (val >= 0) && (+val <= 10000) || 'Введите корректные данные']"
-                @focus="focus_setM3Pritok2 = true" @blur="accept" @keydown.enter.prevent="accept" />
+                @focus="focus_setM3Pritok2 = true" @blur="enterPassword(accept)" @keydown.enter.prevent="enterPassword(accept)" />
             </q-card-section>
             <q-card-section class="col-4" style="background-color: rgb(60, 60, 60);">
               <q-card-section>
                 <q-toggle v-model="kpdDelta" class="full-width" label="Падение/КПД"
-                  @update:model-value="accept_kpdDelta" />
+                  @update:model-value="enterPassword(accept_kpdDelta)" />
                 <q-toggle v-model="autoParameter" class="full-width" label="АвтоПараметр"
-                  @update:model-value="accept_autoParameter" />
+                  @update:model-value="enterPassword(accept_autoParameter)" />
                 <q-toggle v-model="onPritok1" class="full-width" label="Система Приток1"
-                  @update:model-value="accept_onPritok1" />
+                  @update:model-value="enterPassword(accept_onPritok1)" />
                 <q-toggle v-model="smPritok1" class="full-width" label="Смешение Приток1"
                   @update:model-value="accept_smPritok1" />
                 <q-toggle v-model="onHumPritok1" class="full-width" label="Увлажнение Приток1"
-                  @update:model-value="accept_onHumPritok1" />
+                  @update:model-value="enterPassword(accept_onHumPritok1)" />
                 <q-toggle v-model="onVyt" class="full-width" label="Система Вытяжка"
-                  @update:model-value="accept_onVyt" />
+                  @update:model-value="enterPassword(accept_onVyt)" />
                 <q-toggle v-model="smVyt" class="full-width" label="Смешение Вытяжка"
-                  @update:model-value="accept_smVyt" />
+                  @update:model-value="enterPassword(accept_smVyt)" />
                 <q-toggle v-model="onHumVyt" class="full-width" label="Увлажнение Вытяжка"
-                  @update:model-value="accept_onHumVyt" />
+                  @update:model-value="enterPassword(accept_onHumVyt)" />
                 <q-toggle v-model="onPritok2" class="full-width" label="Ситема Приток2"
-                  @update:model-value="accept_onPritok2" />
+                  @update:model-value="enterPassword(accept_onPritok2)" />
               </q-card-section>
               <q-card-section>
                 <q-input ref="comp_resetRecieverPritok1" v-model="resetRecieverPritok1" type="number" color="white"
                   input-class="text-h6 text-white" outlined label-color="grey" label="Сброс ресивера Приток (закрытие)"
                   :rules="[val => (val >= 0) && (+val <= 10000) || 'Введите корректные данные']"
-                  @focus="focus_resetRecieverPritok1 = true" @blur="accept" @keydown.enter.prevent="accept" />
+                  @focus="focus_resetRecieverPritok1 = true" @blur="enterPassword(accept)" @keydown.enter.prevent="enterPassword(accept)" />
                 <q-input ref="comp_resetRecieverPritokVyt" v-model="resetRecieverPritokVyt" type="number" color="white"
                   input-class="text-h6 text-white" outlined label-color="grey" label="Сброс ресивера Вытяжка (закрытие)"
                   :rules="[val => (val >= 0) && (+val <= 10000) || 'Введите корректные данные']"
-                  @focus="focus_resetRecieverPritokVyt = true" @blur="accept" @keydown.enter.prevent="accept" />
+                  @focus="focus_resetRecieverPritokVyt = true" @blur="enterPassword(accept)" @keydown.enter.prevent="enterPassword(accept)" />
               </q-card-section>
             </q-card-section>
           </q-card-section>
         </q-card>
       </div>
+      <q-dialog v-model="changeDialog" ref="comp_inputPassword" persistent>
+        <q-card style="width: 700px; max-width: 80vw;">
+          <q-card-section style="background-color: rgb(80, 80, 80);">
+            <div class="text-h6 text-white">Авторизованный доступ</div>
+          </q-card-section>
+          <q-card-section class="row text-white" style="background-color: rgb(60, 60, 60);">
+            <q-card-section class="col-6">
+              Для внесения изменений в работу установки введите сервисный пароль:
+            </q-card-section>
+            <q-card-section class="col-6 q-pt-none">
+              <q-input ref="comp_inputPassword" v-model="inputPassword" clearable dark type="password" label="Пароль" @clear="inputPassword = ''"
+                color="white" input-class="text-h6 text-white" outlined label-color="grey" />
+            </q-card-section>
+          </q-card-section>
+          <q-card-actions align="right" style="background-color: rgb(80, 80, 80);">
+            <q-btn class="bg-teal text-white" label="Принять" @click="confirmPassword"
+              :disable="inputPassword.length == 0" />
+            <q-btn ref="confirmPass" class="bg-teal text-white" label="Отмена" v-close-popup @click="cancelConfirm" />
+          </q-card-actions>
+        </q-card>
+      </q-dialog>
+      <q-dialog v-model="errorPasswordDialog" persistent transition-show="scale" transition-hide="scale">
+        <q-card class="bg-white text" style="width: 300px">
+          <q-card-section>
+            <div class="text-h6">Ошибка</div>
+          </q-card-section>
+          <q-card-section class="q-pt-none">
+            Неверный пароль
+          </q-card-section>
+          <q-card-actions align="right" class="bg-red text-white">
+            <q-btn flat label="OK" v-close-popup />
+          </q-card-actions>
+        </q-card>
+      </q-dialog>
       <q-inner-loading :showing="load === false" color="white" label-class="text-white"
         label="Получение данных с щита управления" label-style="font-size: 1.1em" />
     </q-page>
-
   </div>
 
 </template>
@@ -262,6 +295,11 @@ export default {
     const router = useRouter();
     document.title = 'Установки';
     const load = ref(false);
+    const changeDialog = ref(false);
+    const errorPasswordDialog = ref(false);
+    let password = '';
+    const inputPassword = ref(password);
+    const comp_inputPassword = ref(null);
     // управление
     const on = ref(0);
     // блокировка кнопки пуск (блокировка включается ровно до следующего пакета данных)
@@ -365,7 +403,7 @@ export default {
     let a2 = [];
     let a3 = [];
     const {
-      WebSocket_Create, WebSocket_Listen, WebSocket_Close, WebSocket_Send, getCurrentTime, validationNumber, convertToBinary,
+      WebSocket_Create, WebSocket_Listen, WebSocket_Close, WebSocket_Send, getCurrentTime, validationNumber, convertToBinary, TRUE_PASSWORD,
     } = inject('store');
     function listen(json) {
       const mes = json.message;
@@ -708,6 +746,28 @@ export default {
       comp_resetRecieverPritok1.value.blur();
       comp_resetRecieverPritokVyt.value.blur();
     }
+    let varFunction = null;
+    function enterPassword(action) {
+      if (password !== TRUE_PASSWORD) {
+        changeDialog.value = true;
+        inputPassword.value = '';
+        console.log('введите пароль');
+        varFunction = action;
+      } else {
+        console.log('пароль введён');
+        action();
+      }
+    }
+    function confirmPassword() {
+      if (inputPassword.value === TRUE_PASSWORD) {
+        password = inputPassword.value;
+        console.log(password);
+        changeDialog.value = false;
+        varFunction();
+      } else {
+        errorPasswordDialog.value = true;
+      }
+    }
     onMounted(() => {
       WebSocket_Create('recup', { getMain: 1 });
       WebSocket_Listen('recup', listen);
@@ -757,7 +817,6 @@ export default {
       airV,
       mode,
       optionsMode,
-      // optionsSeason,
       currentS,
       setMassAir,
       setHum,
@@ -821,6 +880,12 @@ export default {
       kpdDelta,
       lock_resetRecieverPritok1,
       lock_resetRecieverPritokVyt,
+      changeDialog,
+      inputPassword,
+      comp_inputPassword,
+      enterPassword,
+      confirmPassword,
+      errorPasswordDialog,
     };
   },
 };
