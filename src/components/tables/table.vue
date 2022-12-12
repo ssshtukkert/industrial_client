@@ -1,12 +1,12 @@
 <template>
   <q-table class="window-height fit" :rows="rows" :columns="columns" row-key="name" :filter="filter"
-    :filter-method="find" virtual-scroll :selected-rows-label="getSelectedString" selection="multiple"
-    v-model:selected="selected" binary-state-sort v-model:pagination="pagination" :rows-per-page-options="[1]"
+    :filter-method="find" virtual-scroll :hide-selected-banner="true" selection="multiple" v-model:selected="selected"
+    binary-state-sort v-model:pagination="pagination" :rows-per-page-options="[1]"
     :no-results-label="`По запросу '${filter}' ничего не найдено`" grid-header wrap-cells :no-data-label="noDataText"
     @row-click="selectRow" @row-dblclick="actionRow" style="max-height: 87vh;">
     <template v-slot:top>
       <q-card-actions v-show="!hideButtons" class="fit">
-        <q-btn color='primary' label='Создать' @click="createAction" />
+        <q-btn color='primary' icon="add" @click="createAction" />
         <q-btn color='primary' label='Изменить' v-show="isOneSelect()" @click="changeAction(selected)" />
         <q-btn color='primary' label='Удалить' v-show="selected.length > 0" @click="deleteAction(selected)" />
         <slot name="actions" />
@@ -21,7 +21,7 @@
     </template>
     <template v-slot:pagination>
       <div class="text-h6">
-       Количество элементов: {{ rows.length }}
+        {{ getSelectedString() }}
       </div>
     </template>
     <template v-slot:header-cell="props">
@@ -35,13 +35,13 @@
           {{ props.value }}
         </div>
         <q-tooltip v-if="props.row.descript" :delay="800">
-            <template v-slot:default>
-              <div v-if="props.row.descript.length > 0">
+          <template v-slot:default>
+            <div v-if="props.row.descript.length > 0">
               <p style="white-space: pre;">
                 {{ props.row.descript }}
               </p>
             </div>
-            </template>
+          </template>
         </q-tooltip>
       </q-td>
     </template>
@@ -208,7 +208,7 @@ export default defineComponent({
       action.value = 1;
     }
     function getSelectedString() {
-      return selected.value.length === 0 ? '' : `Объектов выбрано: ${selected.value.length} из ${rows.value.length}`;
+      return selected.value.length === 0 ? `Всего объектов: ${rows.value.length}` : `Объектов выбрано: ${selected.value.length} из ${rows.value.length}`;
     }
     function getIndexColumnOfSelected(value) {
       let index = -1;

@@ -5,31 +5,31 @@
     </q-card-section>
     <div class="row justify-center">
       <div class="col-4 ">
-        <Chart :ref="charts[2]" name='Теплоцентраль, °С'
+        <Chart :ref="charts[2]" name='Температура центрального теплоносителя, °С'
           :parameters="[{ name: 'Температура', color: 'rgb(97, 138, 199)' }]" chartId="chart2" colorDefault="black"
           :legend="false" classTitle="text-h8" :height="70" classValue="text-h6" valueMeasure="°С" />
       </div>
     </div>
     <div class="row">
       <div class="col-6">
-        <Chart :ref="charts[0]" name='Температура наружняя, °С'
+        <Chart :ref="charts[0]" name='Температура наружного воздуха, °С'
           :parameters="[{ name: 'Температура', color: 'rgb(97, 138, 199)' }]" chartId="chart0" colorDefault="black"
           :legend="false" classTitle="text-h8" :height="50" classValue="text-h6" valueMeasure="°С" />
       </div>
       <div class="col-6">
-        <Chart :ref="charts[3]" name='Влажность наружная, г/кг'
+        <Chart :ref="charts[3]" name='Влагосодержание наружного воздуха, г/кг'
           :parameters="[{ name: 'Температура', color: 'rgb(97, 138, 199)' }]" chartId="chart3" colorDefault="black"
           :legend="false" classTitle="text-h8" :height="50" classValue="text-h6" valueMeasure="г/кг" />
       </div>
     </div>
     <div class="row">
       <div class="col-6">
-        <Chart :ref="charts[1]" name='Температура помещение, °С'
+        <Chart :ref="charts[1]" name='Температура воздуха в помещении, °С'
           :parameters="[{ name: 'Температура', color: 'rgb(97, 138, 199)' }]" chartId="chart1" colorDefault="black"
           :legend="false" classTitle="text-h8" :height="50" classValue="text-h6" valueMeasure="°С" />
       </div>
       <div class="col-6">
-        <Chart :ref="charts[4]" name='Влажность помещение, г/кг'
+        <Chart :ref="charts[4]" name='Влагосодержание воздуха в помещении, г/кг'
           :parameters="[{ name: 'Температура', color: 'rgb(97, 138, 199)' }]" chartId="chart4" colorDefault="black"
           :legend="false" classTitle="text-h8" :height="50" classValue="text-h6" valueMeasure="г/кг" />
       </div>
@@ -41,7 +41,7 @@
           chartId="chart5" colorDefault="black" :legend="false" classTitle="text-h8" valueMeasure="°С" />
       </div>
       <div class="col-2">
-        <Chart :ref="charts[6]" name='Абсолютная влажность воздуха смешения Вытяжки, г/кг'
+        <Chart :ref="charts[6]" name='Влагосодержание воздуха смешения Вытяжки, г/кг'
           :parameters="[{ name: 'Влагосодержание', color: 'rgb(97, 138, 199)' }]" chartId="chart6" colorDefault="black"
           :legend="false" classTitle="text-h8" valueMeasure="г/кг" />
       </div>
@@ -67,14 +67,14 @@
           chartId="chart8" colorDefault="black" :legend="false" classTitle="text-h8" valueMeasure="°С" />
       </div>
       <div class="col-2">
-        <Chart_v3 :ref="charts[9]" name='Абсолютная влажность воздуха после увлажнителя Вытяжка, г/кг'
+        <Chart_v3 :ref="charts[9]" name='Влагосодержание воздуха после увлажнителя Вытяжка, г/кг'
           :parameters="[{ name: 'Влагосодержание', color: 'rgb(97, 138, 199)' }, { name: 'Уставка', color: 'white' }]"
           chartId="chart9" colorDefault="black" :legend="false" classTitle="text-h8" valueMeasure="г/кг" />
       </div>
       <div class="col-2">
-        <Chart_v3 :ref="charts[10]" name='Расход воздуха вентилятора Вытяжки, м3/ч'
+        <Chart_v3 :ref="charts[10]" name='Расход воздуха вентилятора Вытяжки, м³/ч'
           :parameters="[{ name: 'Расход', color: 'rgb(97, 138, 199)' }, { name: 'Уставка', color: 'white' }]"
-          chartId="chart10" colorDefault="black" :legend="false" classTitle="text-h8" valueMeasure="м3/ч" />
+          chartId="chart10" colorDefault="black" :legend="false" classTitle="text-h8" valueMeasure="м³/ч" />
       </div>
     </div>
     <div class="row">
@@ -130,7 +130,7 @@
           chartId="chart17" colorDefault="black" :legend="false" classTitle="text-h8" valueMeasure="%" />
       </div>
       <div class="col-2">
-        <Chart_v3 :ref="charts[18]" name='Абсолютная влажность на выходе Вытяжка, г/кг'
+        <Chart_v3 :ref="charts[18]" name='Влагосодержание воздуха на выходе Вытяжка, г/кг'
           :parameters="[{ name: 'Влажность', color: 'rgb(97, 138, 199)' }, { name: 'Уставка', color: 'white' }]"
           chartId="chart18" colorDefault="black" :legend="false" classTitle="text-h8" valueMeasure="г/кг" />
       </div>
@@ -265,6 +265,8 @@ export default {
       }
       return binary;
     }
+    let workVyt = false;
+    let smeshWorkVyt = false;
     function listen(json) {
       const mes = json.message;
       if (json.id === 2) {
@@ -303,6 +305,7 @@ export default {
             updateChartv3Set(19, [{ value: mes.TwT_11.value },
               { value: mes.TwT_11.setpoint }, { value: setMax }, { value: setMin }], mes.TwT_11.value, mes.TwT_11.setpoint, mes.time, true, true);
             tObr.value = mes.SCo_t_obr_vokal_vyt.value;
+            workVyt = Number(mes.CodeSets.value[3]) === 1;
           } else {
             const obj = {};
             // eslint-disable-next-line no-restricted-syntax, guard-for-in
@@ -326,11 +329,12 @@ export default {
             CodeStatus1.unshift(Number(0));
           }
           CodeStatus1.reverse();
-          if (CodeStatus1[5] === '1') {
-            stat.value = 'воздух';
-          } else {
-            stat.value = 'вода';
-          }
+          smeshWorkVyt = Number(CodeStatus1[5]) === 1;
+        }
+        if (workVyt && smeshWorkVyt) {
+          stat.value = 'воздух';
+        } else {
+          stat.value = 'вода';
         }
       }
     }

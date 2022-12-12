@@ -8,6 +8,8 @@ const routes = [
       { path: '/home', component: () => import('pages/Index.vue') },
       { path: '/plant', component: () => import('src/pages/plant/shopPlant.vue') },
       { path: '/vent', component: () => import('pages/vent/index.vue') },
+      { path: '/vent/vu1', component: () => import('pages/vent/vu1.vue') },
+      { path: '/vent/vu2', component: () => import('pages/vent/vu2.vue') },
       // ---------------------------------LAB-------------------------------------------------------------------
       { path: '/lab/recup/main', component: () => import('src/pages/lab/main.vue') },
       { path: '/lab/recup/inflow', component: () => import('src/pages/lab/inflow.vue') },

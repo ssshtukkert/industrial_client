@@ -1,16 +1,23 @@
 <template>
-  <q-btn v-if="name != ''" @click="selected" class="full-width full-height" style="padding: 0px;">
-    <div class="full-width full-height" :id="size" style="margin: 0px; min-height: var(--sizeY); max-height: var(--sizeY)">
-      <img class="bottom fit" :src="imageBottom" />
-      <img v-if="imageTop != ''" class="top fit" :src="imageTop" />
-    </div>
-    <q-tooltip v-if="name != ''">
-      {{ name }}
-    </q-tooltip>
-  </q-btn>
-  <q-icon v-if="name == ''" class="full-width full-height">
-    <img :src="imageBottom" :id="size" style="min-height: var(--sizeY); max-height: var(--sizeY)">
-  </q-icon>
+  <div :style="styleContent">
+    <q-btn v-if="name != ''" class="fit" style="padding: 0px;" @click="clickSelect(name)">
+      <div class="fit" :id="size" style="margin: 0px; min-height: var(--sizeY); max-height: var(--sizeY)">
+        <img v-if="imageBottom != ''" class="bottom fit" :src="imageBottom" />
+        <img v-if="imageTop != ''" class="top fit" :src="imageTop" />
+      </div>
+      <q-tooltip v-if="name != ''" :delay="500">
+        <div class="text-h6">
+          {{ name }}
+        </div>
+        <p class="text-h6" style="white-space: pre-line; max-width: 300px;">
+          {{ descript }}
+        </p>
+      </q-tooltip>
+    </q-btn>
+    <q-icon v-if="name == ''" class="fit">
+      <img class="" :src="imageBottom" :id="size" style="min-height: var(--sizeY); max-height: var(--sizeY)">
+    </q-icon>
+  </div>
 </template>
 <script>
 import { defineComponent, require } from 'vue';
@@ -22,13 +29,17 @@ export default defineComponent({
       type: String,
       default: '',
     },
-    selected: {
+    descript: {
+      type: String,
+      default: '',
+    },
+    clickSelect: {
       type: Function,
       default() {
       },
     },
     imageBottom: {
-      type: Image,
+      type: String,
       default: require('./air.svg'),
     },
     imageTop: {
@@ -39,12 +50,10 @@ export default defineComponent({
       type: String,
       default: 'small',
     },
-  },
-  methods: {
-  },
-  data() {
-    return {
-    };
+    styleContent: {
+      type: String,
+      default: '',
+    },
   },
 });
 </script>
@@ -62,10 +71,36 @@ export default defineComponent({
   top: 0px;
   z-index: 1;
 }
+
+.red {
+  filter: invert(5%) sepia(78%) saturate(6858%) hue-rotate(-35deg) brightness(97%) contrast(0%);
+}
+
+#xsmall {
+  --sizeY: 32px;
+}
+
 #small {
   --sizeY: 64px;
 }
+
 #large {
   --sizeY: 128px;
+}
+
+.rotate180 {
+  -webkit-transform: rotate(180deg);
+  -moz-transform: rotate(180deg);
+  -ms-transform: rotate(180deg);
+  -o-transform: rotate(180deg);
+  transform: rotate(180deg);
+}
+
+.scaleY {
+  transform: scaleY(-1);
+}
+
+.scaleX {
+  transform: scaleX(-1);
 }
 </style>

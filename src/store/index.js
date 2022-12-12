@@ -13,21 +13,6 @@ const state = reactive({
   socketData: {},
 });
 
-// function WebSocket_Init(nameNR, onopenMessage) {
-//   state.socket = new WebSocket('ws://10.154.152.88:1880/vu1');
-
-//   // if (nameNR) {
-//   //   state.socket = new WebSocket(`ws://${window.location.hostname}:${state.portNR}/${nameNR}`);
-//   // } else {
-//   //   state.socket = new WebSocket(`wss://${window.location.hostname}:${state.portDefault}/${nameNR}`);
-//   // }
-//   // if (onopenMessage) {
-//   state.socket.onopen = function () {
-//     state.socket.send(JSON.stringify(onopenMessage));
-//   };
-//   // }
-//   return true;
-// }
 const host = 'http://10.154.152.88:3001';
 
 function WebSocket_UpServer(onopenMessage) {
@@ -180,7 +165,16 @@ function getCurrentTime() {
   const format = `${h}:${m}:${s}`;
   return format;
 }
-
+// возвращает элемент из списка по id идентификатору
+function getObject(array, prop, value) {
+  for (let index = 0; index < array.length; index += 1) {
+    const element = array[index];
+    if (element[prop] === value) {
+      return element;
+    }
+  }
+  return null;
+}
 // возвращает свойство элемента из списка по id идентификатору
 function getProp(array, id, prop) {
   for (let index = 0; index < array.length; index += 1) {
@@ -200,6 +194,19 @@ function getId(array, prop, value) {
     }
   }
   return -1;
+}
+// удалет элемент из массива с полем field равным value
+function removeElementInArray(array, field, value) {
+  let ind = -1;
+  for (let index = 0; index < array.length; index += 1) {
+    if (array[index][field] === value) {
+      ind = index;
+      break;
+    }
+  }
+  if (ind !== -1) {
+    array.splice(ind, 1);
+  }
 }
 // запросы
 // запрос категорий материалов
@@ -250,7 +257,9 @@ export default {
   getDataAlarms,
   getDataAlarm,
   getProp,
+  getObject,
   getId,
+  removeElementInArray,
   getMaterialsCategories,
   validationName,
   validationNumber,

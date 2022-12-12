@@ -8,7 +8,7 @@
         :queryAll="getQueryAll()" :queryUpdate="getQueryUpdate()" :queryDelete="getQueryDelete()"
         :queryCreate="getQueryCreate()" :actionRow="actionRow" >
         <template v-slot:actions>
-          <q-btn color='orange' label='Открыть' v-show="isOneSelect()" @click="goCalculation" />
+          <q-btn color='orange' label='Открыть' v-show="isOneSelect()" @click="goRoot" />
           <q-btn color='green' label='Скопировать' v-show="isOneSelect()" @click="copy" />
         </template>
       </Table>
@@ -97,8 +97,8 @@ export default defineComponent({
       const route = router.resolve({ path: `/services/productoptions/configurations/${id}` });
       window.open(route.href, '_blank');
     }
-    function goCalculation() {
-      router.push(`/services/genprice/calculations/${table.value.getSelect()[0].id}`);
+    function goRoot() {
+      router.push(`/services/productoptions/configurations/${table.value.getSelect()[0].id}`);
     }
     function allowCopy() {
       return createInputName.value !== table.value.selected[0].name;
@@ -158,7 +158,7 @@ export default defineComponent({
       allowCopy,
       actionRow,
       goCalculationId,
-      goCalculation,
+      goRoot,
       getQueryAll,
       getQueryDelete,
       getQueryUpdate,

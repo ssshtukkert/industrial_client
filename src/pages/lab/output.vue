@@ -5,9 +5,9 @@
     </q-card-section>
     <div class="row">
       <div class="col-6">
-        <Chart_v3 :ref="charts[0]" name='Расход вентилятора Приточного, м3/ч' :parameters="[{ name: 'Расход', color: 'rgb(97, 138, 199)' }, { name: 'Уставка', color: 'white' }]" classValue="text-h6" classSetpoint="text-h6"
+        <Chart_v3 :ref="charts[0]" name='Расход вентилятора Приточного, м³/ч' :parameters="[{ name: 'Расход', color: 'rgb(97, 138, 199)' }, { name: 'Уставка', color: 'white' }]" classValue="text-h6" classSetpoint="text-h6"
           chartId="chart0" colorDefault="yellow" :legend="false" classTitle="text-h8" :height="80"
-          valueMeasure="м3/ч" />
+          valueMeasure="м³/ч" />
       </div>
       <div class="col-6">
         <Chart :ref="charts[1]" name='Управление вентилятором Приточным, %'
@@ -17,8 +17,8 @@
     </div>
     <div class="row">
       <div class="col-6">
-        <Chart_v3 :ref="charts[2]" name='Расход вентилятора Вытяжка, м3/ч' :parameters="[{ name: 'Расход', color: 'rgb(97, 138, 199)' }, { name: 'Уставка', color: 'white' }]" classValue="text-h6" classSetpoint="text-h6"
-          chartId="chart2" colorDefault="black" :legend="false" classTitle="text-h8" valueMeasure="м3/ч" :height="80"/>
+        <Chart_v3 :ref="charts[2]" name='Расход вентилятора Вытяжка, м³/ч' :parameters="[{ name: 'Расход', color: 'rgb(97, 138, 199)' }, { name: 'Уставка', color: 'white' }]" classValue="text-h6" classSetpoint="text-h6"
+          chartId="chart2" colorDefault="black" :legend="false" classTitle="text-h8" valueMeasure="м³/ч" :height="80"/>
       </div>
       <div class="col-6">
         <Chart :ref="charts[3]" name='Управление вентилятором Вытяжка, %'

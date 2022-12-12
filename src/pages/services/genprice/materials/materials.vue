@@ -5,7 +5,7 @@
         <div class="text-h6">Материалы</div>
       </q-card-section>
       <q-table class="my-sticky-header-table window-height" :rows="rows" :columns="columns" row-key="name"
-        :filter="filter" :filter-method="find" virtual-scroll :selected-rows-label="getSelectedString"
+        :filter="filter" :filter-method="find" virtual-scroll :hide-selected-banner="true"
         selection="multiple" v-model:selected="selected" binary-state-sort v-model:pagination="pagination"
         :rows-per-page-options="[1]" style="max-height: 87vh"
         :no-results-label="`По запросу '${filter}' ничего не найдено`" grid-header wrap-cells @row-click="selectRow">
@@ -28,7 +28,7 @@
         </template>
         <template v-slot:pagination>
           <div class="text-h6">
-            Количество элементов: {{ rows.length }}
+            {{ getSelectedString() }}
           </div>
         </template>
         <template v-slot:header-cell="props">
@@ -460,7 +460,7 @@ export default defineComponent({
       }),
       selected,
       getSelectedString() {
-        return selected.value.length === 0 ? '' : `Объектов выбрано: ${selected.value.length} из ${rows.value.length}`;
+        return selected.value.length === 0 ? `Всего объектов: ${rows.value.length}` : `Объектов выбрано: ${selected.value.length} из ${rows.value.length}`;
       },
     };
   },

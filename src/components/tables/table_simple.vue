@@ -1,6 +1,9 @@
 <template>
+  <!-- :selected-rows-label="getSelectedString" -->
   <q-table class="window-height fit" :rows="rows" :columns="columns" row-key="name" :filter="filter"
-    :filter-method="find" virtual-scroll :selected-rows-label="getSelectedString" selection="multiple"
+    :filter-method="find" virtual-scroll
+    :hide-selected-banner="true"
+    selection="multiple"
     v-model:selected="selected" binary-state-sort v-model:pagination="pagination" :rows-per-page-options="[1]"
     :no-results-label="`По запросу '${filter}' ничего не найдено`" grid-header wrap-cells :no-data-label="noDataText"
     @update:selected="updateSelected" @row-click="selectRow" :style="styleContent">
@@ -20,7 +23,7 @@
     </template>
     <template v-slot:pagination>
       <div class="text-h6">
-       Количество элементов: {{ rows.length }}
+        {{ getSelectedString() }}
       </div>
     </template>
     <template v-slot:header-cell="props">
@@ -125,7 +128,7 @@ export default defineComponent({
       props.updateSelected(selected.value);
     }
     function getSelectedString() {
-      return selected.value.length === 0 ? '' : `Объектов выбрано: ${selected.value.length} из ${rows.value.length}`;
+      return selected.value.length === 0 ? `Всего объектов: ${rows.value.length}` : `Объектов выбрано: ${selected.value.length} из ${rows.value.length}`;
     }
     function getIndexColumnOfSelected(value) {
       let index = -1;

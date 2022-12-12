@@ -2,7 +2,8 @@
   <q-table class="fit" :rows="rows" :columns="columns" row-key="name" :filter="filter" :filter-method="find"
     virtual-scroll selection="multiply" v-model:selected="selected" v-model:pagination="pagination"
     :rows-per-page-options="[1]" grid-header wrap-cells :no-data-label="noDataText" :hide-bottom="true"
-    :hide-header="true" @update:selected="updateSelect" @row-click="selectRow" @row-dblclick="actionRow" :style="styleContent">
+    :hide-header="true" @update:selected="updateSelect" @row-click="selectRow" @row-dblclick="actionRow"
+    :style="styleContent">
     <template v-slot:top>
       <q-card-actions class="fit" style="min-height: 10px;">
         <q-input class="text-h6" @update:model-value="updateSearch" outlined dense debounce="300" color="primary"
@@ -22,13 +23,13 @@
     <template v-slot:body-cell-name="props">
       <q-td key="name" :props="props">
         <div class="text-h6">{{ props.row.name }}</div>
-          <q-tooltip v-if="props.row.descript.length > 0" :delay="800">
-            <template v-slot:default>
+        <q-tooltip v-if="props.row.descript.length > 0" :delay="800">
+          <template v-slot:default>
             <p style="white-space: pre;">
               {{ props.row.descript }}
             </p>
           </template>
-          </q-tooltip>
+        </q-tooltip>
       </q-td>
     </template>
   </q-table>
@@ -55,7 +56,8 @@ export default defineComponent({
     columnsDef: {
       type: Array,
       default() {
-        return [];
+        return [
+        ];
       },
     },
     rowsDef: {

@@ -13,7 +13,8 @@
           <div v-if="calibration1 > 0" class="text-h6 text-white">
             Калибровка: {{ calibration1 }}
           </div>
-            <q-btn type="submit" :loading="calibration1 > 0" color="teal" label="Корректировка РА1" @click="calibration(1)"/>
+          <q-btn type="submit" :loading="calibration1 > 0" color="teal" label="Корректировка РА1"
+            @click="enterPassword(calibration, 1)" />
         </div>
         <div class="col-3 text-grey">
           ДавлВытяжкаПосле (12)
@@ -23,7 +24,8 @@
           <div v-if="calibration2 > 0" class="text-h6 text-white">
             Калибровка: {{ calibration2 }}
           </div>
-          <q-btn type="submit" :loading="calibration2 > 0" color="teal" label="Корректировка РА2" @click="calibration(2)"/>
+          <q-btn type="submit" :loading="calibration2 > 0" color="teal" label="Корректировка РА2"
+            @click="enterPassword(calibration, 2)" />
         </div>
         <div class="col-3 text-grey">
           ДавлПритокПосле (22)
@@ -31,9 +33,10 @@
             {{ pa3 }} Па
           </div>
           <div v-if="calibration3 > 0" class="text-h6 text-white">
-            Калибровка:  {{ calibration3 }}
+            Калибровка: {{ calibration3 }}
           </div>
-          <q-btn type="submit" :loading="calibration3 > 0" color="teal" label="Корректировка РА3" @click="calibration(3)"/>
+          <q-btn type="submit" :loading="calibration3 > 0" color="teal" label="Корректировка РА3"
+            @click="enterPassword(calibration, 3)" />
         </div>
         <div class="col-3 text-grey">
           ДавлВытяжкаДо (11)
@@ -43,10 +46,45 @@
           <div v-if="calibration4 > 0" class="text-h6 text-white">
             Калибровка: {{ calibration4 }}
           </div>
-          <q-btn type="submit" :loading="calibration4 > 0" color="teal" label="Корректировка РА4" @click="calibration(4)"/>
+          <q-btn type="submit" :loading="calibration4 > 0" color="teal" label="Корректировка РА4"
+            @click="enterPassword(calibration, 4)" />
         </div>
       </div>
     </q-card-section>
+    <q-dialog v-model="changeDialog" ref="comp_inputPassword" persistent>
+      <q-card style="width: 700px; max-width: 80vw;">
+        <q-card-section style="background-color: rgb(80, 80, 80);">
+          <div class="text-h6 text-white">Авторизованный доступ</div>
+        </q-card-section>
+        <q-card-section class="row text-white" style="background-color: rgb(60, 60, 60);">
+          <q-card-section class="col-6">
+            Для внесения изменений в работу установки введите сервисный пароль:
+          </q-card-section>
+          <q-card-section class="col-6 q-pt-none">
+            <q-input ref="comp_inputPassword" v-model="inputPassword" clearable dark type="password" label="Пароль"
+              @clear="inputPassword = ''" color="white" input-class="text-h6 text-white" outlined label-color="grey" />
+          </q-card-section>
+        </q-card-section>
+        <q-card-actions align="right" style="background-color: rgb(80, 80, 80);">
+          <q-btn class="bg-teal text-white" label="Принять" @click="confirmPassword"
+            :disable="inputPassword.length == 0" />
+          <q-btn ref="confirmPass" class="bg-teal text-white" label="Отмена" v-close-popup @click="cancelConfirm" />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+    <q-dialog v-model="errorPasswordDialog" persistent transition-show="scale" transition-hide="scale">
+      <q-card class="bg-white text" style="width: 300px">
+        <q-card-section>
+          <div class="text-h6">Ошибка</div>
+        </q-card-section>
+        <q-card-section class="q-pt-none">
+          Неверный пароль
+        </q-card-section>
+        <q-card-actions align="right" class="bg-red text-white">
+          <q-btn flat label="OK" v-close-popup />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
   </q-page>
 </template>
 
@@ -67,8 +105,14 @@ export default {
     const calibration2 = ref(0);
     const calibration3 = ref(0);
     const calibration4 = ref(0);
+    const changeDialog = ref(false);
+    const errorPasswordDialog = ref(false);
+    let password = '';
+    const inputPassword = ref(password);
+    const comp_inputPassword = ref(null);
+    const confirmPass = ref(null);
     const {
-      WebSocket_Create, WebSocket_Listen, WebSocket_Close, WebSocket_Send, getCurrentTime,
+      WebSocket_Create, WebSocket_Listen, WebSocket_Close, WebSocket_Send, getCurrentTime, TRUE_PASSWORD,
     } = inject('store');
     function calibration(pa) {
       WebSocket_Send('recup', {
@@ -102,6 +146,30 @@ export default {
         }
       }
     }
+    let varFunction = null;
+    let paD = -1;
+    function enterPassword(action, pa) {
+      if (password !== TRUE_PASSWORD) {
+        changeDialog.value = true;
+        inputPassword.value = '';
+        console.log('введите пароль');
+        varFunction = action;
+        paD = pa;
+      } else {
+        console.log('пароль введён');
+        action(pa);
+      }
+    }
+    function confirmPassword() {
+      if (inputPassword.value === TRUE_PASSWORD) {
+        password = inputPassword.value;
+        console.log(password);
+        changeDialog.value = false;
+        varFunction(paD);
+      } else {
+        errorPasswordDialog.value = true;
+      }
+    }
     onMounted(() => {
       // написать удаление элементов при размонтировании образа
       WebSocket_Create('recup', { getMain: 1 });
@@ -111,6 +179,8 @@ export default {
       WebSocket_Close('recup');
     });
     return {
+      confirmPassword,
+      enterPassword,
       pa1,
       pa2,
       pa3,
@@ -120,10 +190,12 @@ export default {
       calibration2,
       calibration3,
       calibration4,
+      changeDialog,
+      errorPasswordDialog,
+      inputPassword,
+      comp_inputPassword,
+      confirmPass,
     };
   },
 };
 </script>
-<style scoped>
-
-</style>

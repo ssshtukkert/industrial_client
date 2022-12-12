@@ -640,6 +640,7 @@ export default {
         name: 'datetime', align: 'left', label: 'Дата и время', field: 'datetime', sortOrder: 'ad',
       },
     ]);
+    // const dataValuesVU2 = [];
     const {
       WebSocket_Create, WebSocket_Listen, WebSocket_Close, WebSocket_Send, getCurrentDate, getDataAlarms, getDataAlarm,
     } = inject('store');
@@ -763,6 +764,7 @@ export default {
         if ('id' in json) {
           if (json.id === 2) {
             if (!json.error) {
+              console.log(json);
               if (!changeDialog.value) {
                 if (json.alarm === 1) {
                   statusVU2.value = 'Авария';
@@ -864,6 +866,27 @@ export default {
         mountChart[5] = true;
       }
     }
+    // function updateChartv3(index, values, time, direct, update) {
+    //   if (time) {
+    //     chart3.value.pushValues(values, time, direct, update);
+    //   } else {
+    //     chart3.value.pushValues(values, getCurrentTime(), direct, update);
+    //   }
+    // }
+    // function shiftVU2() {
+    //   if (dataValuesVU2.length > 0) {
+    //     const mes = dataValuesVU2[dataValuesVU2.length - 1];
+    //     updateChartv3(0, [{ value: mes.m3h_21_UdalPr },
+    //       { value: mes.Set_m3h_21_UdalPr }], mes.time, false, false);
+    //     dataValuesVU2.pop();
+    //     // load.value = dataValues.length;
+    //     setImmediate(shiftVU2);
+    //   } else {
+    //     // for (let index = 0; index < 4; index += 1) {
+    //     //   charts[index].value.update();
+    //     // }
+    //   }
+    // }
     onMounted(() => {
       loadVU1.value = true;
       loadVU2.value = true;

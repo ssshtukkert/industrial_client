@@ -6,6 +6,9 @@
         <q-toolbar-title>
           <Header />
         </q-toolbar-title>
+        <div style="padding-right: 60px;">
+          v.0.12
+        </div>
       </q-toolbar>
     </q-header>
 
@@ -77,6 +80,8 @@ export default defineComponent({
           node: '/vent',
           children: [
             { label: 'Вент. установки', to: '/vent' },
+            { label: 'Вент. установка №1', to: '/vent/vu1' },
+            { label: 'Вент. установка №2', to: '/vent/vu2' },
           ],
         },
         {
@@ -86,7 +91,7 @@ export default defineComponent({
           node: '/lab',
           children: [
             {
-              label: 'Стенд подготовки воздуха',
+              label: 'Стенд испытания рекуператоров',
               selectable: false,
               node: 'lab/recup',
               children: [
@@ -167,7 +172,7 @@ export default defineComponent({
               ],
             },
             {
-              label: 'Подбор ЩУ',
+              label: 'Подбор автоматики',
               selectable: false,
               node: '/services/productoptions',
               children: [

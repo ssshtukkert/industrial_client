@@ -2,19 +2,9 @@
   <q-page padding>
     <q-card class="bg-white">
       <q-card-section class="bg-secondary">
-        <div class="text-h6 text-white">
-          Расчет {{ name }} от {{ updatedAt }}
-          <a v-show="change"> *
-            <q-tooltip :delay="800">
-              * - означает что внесены изменения, для сохранения изменений необходимо "Записать" расчет в базу данных
-            </q-tooltip>
-          </a>
-        </div>
-      </q-card-section>
-      <q-card-section class="text-black">
         <q-btn color='orange' label='< Назад к списку' style="margin-right: 15px;" @click="exit">
-          <q-tooltip :delay="800">
-            Вернуться к списку расчетов
+          <q-tooltip>
+            Вернуться к списку конфигураций
           </q-tooltip>
         </q-btn>
         <DialogConfirm ref="dex">
@@ -25,175 +15,281 @@
           </template>
         </DialogConfirm>
         <q-btn color='primary' :disabled="!change" label='Записать' @click="writeDatabase" style="margin-right: 15px;">
-          <q-tooltip :delay="800">
-            Сохранить расчет в базе данных
+          <q-tooltip>
+            Сохранить конфигурацию в базе данных
           </q-tooltip>
         </q-btn>
         <q-btn color='primary' v-show="change" label='Отменить изменения' @click="resetChange"
           style="margin-right: 15px;">
-          <q-tooltip v-if="change" :delay="800">
+          <q-tooltip v-if="change">
             Обновить содержимое
           </q-tooltip>
         </q-btn>
-        <q-btn color='primary' :disable="change" label='Экспорт в PDF' :href="downloadPDF" target="_self"
-          style="margin-right: 15px;" >
-          <q-tooltip :delay="800">
+        <q-btn color='primary' disable label='Экспорт в PDF' :href="downloadPDF" target="_self"
+          style="margin-right: 15px;">
+          <q-tooltip>
             Скачать данные в pdf файле
           </q-tooltip>
         </q-btn>
       </q-card-section>
+      <q-card-section class="text-black">
+        <div class="text-h6">
+          Конфигурация {{ name }} от {{ updatedAt }}
+          <a v-show="change"> *
+            <q-tooltip>
+              * - означает что внесены изменения, для сохранения изменений необходимо "Записать" конфигурацию в базу
+              данных
+            </q-tooltip>
+          </a>
+        </div>
+      </q-card-section>
       <div class="row">
-        <q-card-section class="text-h6 col-6">
-          <div>
-            Стоимость материалов: {{ cost }} руб.
-            <q-tooltip :delay="800">
-              Суммарная стоимость материалов во вкладке "Материалы"
-            </q-tooltip>
-          </div>
-          <div class="row">
-            Трудоёмкость: {{ inputLaboriousnes }} ч.
-            <q-tooltip :delay="800">
-              Суммарное количество трудозатрат во вкладке "Трудозатраты"
-            </q-tooltip>
-          </div>
-          <div>
-            Стоимость 1ч: {{ costOneHourWorker }} руб.
-            <q-tooltip :delay="800">
-              Стоимость работ электромонтажных и проверочных работ, выполненных за 1 час
-            </q-tooltip>
-          </div>
-          <q-badge color="primary" class="text-h6">
-            Себестоимость: {{ costAll }} руб.
-            <q-tooltip :delay="800">
-              Расчетная себестоимость:
-              <br />
-              стоимость материалов + % расходников + количество часов * стоимость 1ч. работы.
-              <br />
-              Пересчитывается автоматически
-            </q-tooltip>
-          </q-badge>
-        </q-card-section>
-        <q-card-section class="text-h6 col-6">
-          <div>
-            Габариты: {{ wh[0] }} х {{ wh[1] }} мм
-            <q-tooltip :delay="800">
-              Максимальный габарит во вкладке Материалы
-            </q-tooltip>
-          </div>
-          <div>
-            Вес: {{ weight }} кг.
-            <q-tooltip :delay="800">
-              Общий вес всех материалов
-            </q-tooltip>
-          </div>
-        </q-card-section>
       </div>
       <div class="bg-white text-h6">
         <q-tabs v-model="tab" class="text-black" no-caps align="justify" active-color="teal" indicator-color="teal">
-          <q-tab name="materials">
-            <div class="text-h6">Материалы ({{ getMaterialsCount() }})</div>
-            <q-tooltip :delay="800">
-              Вкладка для формирования спецификации для расчета
+          <q-tab name="elements">
+            <div class="text-h6">Конфигуратор</div>
+            <q-tooltip>
+              Вкладка для формирования структуры установки
             </q-tooltip>
           </q-tab>
           <q-tab name="card">
             <div class="text-h6">Карточка</div>
-            <q-tooltip :delay="800">
-              Основная информация о расчете
+            <q-tooltip>
+              Основная информация о конфигурации
             </q-tooltip>
           </q-tab>
-          <q-tab name="laboriousness">
-            <div class="text-h6">Трудоёмкость</div>
-            <q-tooltip :delay="800">
-              Вкладка для формирования трудозатрат
+          <q-tab name="kip">
+            <div class="text-h6">Комплект КИПиА</div>
+            <q-tooltip>
+              Вкладка для формирования перечня контрольно-измерительных приборов и оборудования автоматики
             </q-tooltip>
           </q-tab>
-          <q-tab name="files">
-            <div class="text-h6">Файлы</div>
-            <q-tooltip :delay="800">
-              Хранилище загруженный файлов
+          <q-tab name="blockmanual">
+            <div class="text-h6">Подбор ЩУ</div>
+            <q-tooltip>
+              Подбирает маркировку и рассчитывает стоимость щита управления для выбранной конфигурации
             </q-tooltip>
           </q-tab>
         </q-tabs>
         <q-separator />
         <q-tab-panels v-model="tab" animated keep-alive @transition="updateTabPanels">
-          <q-tab-panel name="card" style="min-height: 400px">
+          <q-tab-panel name="card" style="min-height: 100px">
             <div class="row">
-              <q-input v-model="inputDescript" class=" fit" clearable outlined label="Описание" type="textarea"
-                @update:model-value="syncTableMaterials" :input-style="{resize: 'none', height: '50vh' }" />
+              <q-input v-model="inputDescript" class="fit" clearable outlined label="Описание" type="textarea"
+                @update:model-value="syncTableMaterials" :input-style="{ resize: 'none', height: '50vh' }" />
             </div>
           </q-tab-panel>
-          <q-tab-panel name="materials" style="min-height: 400px">
-            <Table :setChange="changeCount" :keyEnter="keyEnter" ref="tableMaterials" :columnsDef="columns" :rowsDef="rowsEntryMaterials"
-              :updateSelected="updateSelectedTableMaterials" style="max-height: 55vh;">
-              <template v-slot:actions>
-                <q-btn color='primary' label='Добавить' @click="actionAddMaterial" />
-                <q-btn v-show="removeMain" color='primary' label='Удалить' @click="actionRemoveMaterial" />
-                <q-dialog v-model="dialogAddMaterials" persistent transition-show="scale" transition-hide="scale">
-                  <q-card style="min-width: 95vw;">
-                    <q-card-section class="row bg-teal text-white">
-                      <div class="text-h6">Добавить материалы</div>
-                      <q-space />
-                      <q-btn color='primary' label="Закрыть" v-close-popup @click="updateSearch" />
+          <q-tab-panel class="q-pa-sm " name="elements">
+            <q-card>
+              <q-card-actions>
+                <q-btn color='primary' label='Основные параметры' @click="openDialog('Выбор основных параметров')" />
+                <q-btn color='primary' label='Добавить' @click="openDialog('Добавить новое оборудование')" />
+              </q-card-actions>
+              <div align="center">
+                <div v-if="confType == 'Приточная'">
+                  Приточная система
+                </div>
+                <div v-if="confType == 'Приточно - вытяжная'">
+                  Приточно - вытяжная система
+                </div>
+              </div>
+              <div class="row">
+                <div class="col">
+                  <div class="row fit">
+                    <!-- <div class="col bg-light-blue-8" /> -->
+                    <div class="col-1">
+                      <ImageElement name="Жалюзи притока" :imageTop="require('./components/valve.svg')"
+                        :clickSelect="openDialog" />
+                    </div>
+                    <div class="col-1">
+                      <ImageElement name="Камера смешения" :imageTop="require('./components/recircle.svg')"
+                        :clickSelect="openDialog" />
+                    </div>
+                    <div class="col">
+                      <ImageElement />
+                    </div>
+                    <div class="col-1">
+                      <ImageElement name="Фильтр притока 1" :imageTop="require('./components/filter.svg')"
+                        :clickSelect="openDialog" />
+                    </div>
+                    <div class="col-1">
+                      <ImageElement name="Фильтр притока 2" :imageTop="require('./components/filter.svg')"
+                        :clickSelect="openDialog" />
+                    </div>
+                    <div class="col-1">
+                      <ImageElement name="Фильтр притока 3" :imageTop="require('./components/filter.svg')"
+                        :clickSelect="openDialog" />
+                    </div>
+                    <div class="col-1">
+                      <ImageElement name="Преднагреватель" :imageTop="require('./components/heater.svg')"
+                        :clickSelect="openDialog" />
+                    </div>
+                    <div class="col">
+                      <ImageElement />
+                    </div>
+                  </div>
+                  <div v-if="confType === 'Приточно - вытяжная'" class="row fit">
+                    <!-- <div class="col-1 bg-light-blue-8" /> -->
+                    <div class="col-1">
+                      <ImageElement name="Жалюзи вытяжки" :imageTop="require('./components/valve.svg')"
+                        :clickSelect="openDialog" />
+                    </div>
+                    <div class="col">
+                      <ImageElement />
+                    </div>
+                  </div>
+                </div>
+                <!-- Рекуператор -->
+                <div v-if="confType === 'Приточно - вытяжная' && confRecup == 'Да'" class="col-1 self-center" ref="rec">
+                  <ImageElement name="Рекуператор" :imageTop="require('./components/recuperator.svg')" size="large"
+                    :clickSelect="openDialog" />
+                </div>
+                <div class="col fit">
+                  <div v-for="flow in orderFlows" :key="flow">
+                    <div v-if="confType === 'Приточно - вытяжная' &&
+                    flow === 'outflow'" class="row">
+                      <div class="col">
+                        <ImageElement />
+                      </div>
+                      <div class="col-1">
+                        <div ref="vv2">
+                          <ImageElement name="Вент вытяжки 2" :imageTop="require('./components/fan.svg')"
+                            :clickSelect="openDialog" />
+                        </div>
+                      </div>
+                      <div class="col-1">
+                        <div ref="vv1">
+                          <ImageElement name="Вент вытяжки 1" :imageTop="require('./components/fan.svg')"
+                            :clickSelect="openDialog" />
+                        </div>
+                      </div>
+                      <div class="col-1">
+                        <ImageElement name="Фильтр вытяжки 2" :imageTop="require('./components/filter.svg')"
+                          :clickSelect="openDialog" />
+                      </div>
+                      <div class="col-1">
+                        <ImageElement name="Фильтр вытяжки 1" :imageTop="require('./components/filter.svg')"
+                          :clickSelect="openDialog" />
+                      </div>
+                      <div class="col">
+                        <ImageElement />
+                      </div>
+                      <!-- <div class="col bg-grey-9" /> -->
+                    </div>
+                    <div v-if="flow === 'inflow'" class="row">
+                      <div class="col">
+                        <ImageElement />
+                      </div>
+                      <div class="col-1">
+                        <ImageElement name="Теплообменник 1" :imageTop="require('./components/heater.svg')"
+                          :clickSelect="openDialog" />
+                      </div>
+                      <div class="col-1">
+                        <ImageElement name="Теплообменник 2" :imageTop="require('./components/heater.svg')"
+                          :clickSelect="openDialog" />
+                      </div>
+                      <div class="col-1">
+                        <ImageElement name="Теплообменник 3" :imageTop="require('./components/heater.svg')"
+                          :clickSelect="openDialog" />
+                      </div>
+                      <div class="col-1">
+                        <ImageElement name="Охладитель 1" :imageTop="require('./components/cooler.svg')"
+                          :clickSelect="openDialog" />
+                      </div>
+                      <div class="col-1">
+                        <ImageElement name="Охладитель 2" :imageTop="require('./components/cooler.svg')"
+                          :clickSelect="openDialog" />
+                      </div>
+                      <div class="col-1">
+                        <ImageElement name="Увлажнитель" :imageTop="require('./components/humdity.svg')"
+                          :clickSelect="openDialog" />
+                      </div>
+                      <div class="col-1">
+                        <div class="row">
+                          <ImageElement name="Вент притока 2" :imageTop="require('./components/fan.svg')"
+                            :clickSelect="openDialog" />
+                          <ImageElement name="Вент притока 2" :imageTop="require('./components/fan.svg')"
+                            :clickSelect="openDialog" />
+                        </div>
+                      </div>
+                      <div class="col fit">
+                        <ImageElement />
+                      </div>
+                      <!-- <div class="col bg-grey-9" /> -->
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <Dialog v-model="elementDialog" :elementName="dialogName" style="width: 600px;">
+                <template v-slot:content>
+                  <div v-if="dialogName == 'Выбор основных параметров'">
+                    <q-card-section class="row">
+                      <q-card-section class="col-4">
+                        <q-select class="text-h6" label="Тип системы:" options-selected-class="text-h6"
+                          popup-content-class="text-h6" outlined v-model="confType" :options="confTypeOptions"
+                          @update:model-value="updateType" />
+                      </q-card-section>
+                      <q-card-section class="col-3">
+                        <q-select v-if="confType == 'Приточно - вытяжная'" class="text-h6" label="Наличие рекуператора:"
+                          options-selected-class="text-h6" popup-content-class="text-h6" outlined v-model="confRecup"
+                          :options="['Да', 'Нет']" @update:model-value="updateType" />
+                      </q-card-section>
                     </q-card-section>
-                    <q-card-section class="bg-white text-h6 q-pt-none">
-                      {{ text }}
+                  </div>
+                  <div v-else-if="dialogName == 'Добавить новое оборудование'">
+                    Добавление нового оборудования: клапан воздушный притока, теплообменник
+                  </div>
+                  <div v-else>
+                  </div>
+                  <div v-if="dialogName == 'Выбор основных параметров'">
+                    <q-card-section class="row">
+                      <q-card-section class="col-6">
+                        <q-select class="text-h6 fit" label="Тип системы:" options-selected-class="text-h6"
+                          popup-content-class="text-h6" outlined v-model="confType" :options="confTypeOptions"
+                          @update:model-value="updateType" />
+                      </q-card-section>
+                      <q-card-section class="col-6">
+                        <q-select v-if="confType == 'Приточно - вытяжная'" class="text-h6 fit"
+                          label="Наличие рекуператора:" options-selected-class="text-h6" popup-content-class="text-h6"
+                          outlined v-model="confRecup" :options="['Да', 'Нет']" @update:model-value="updateType" />
+                      </q-card-section>
                     </q-card-section>
-                    <q-card-section>
-                      <q-splitter v-model="splitterModel" style="height: 70vh">
-                        <template v-slot:before>
-                          <Table_v2 ref="tableAddMaterials" :columnsDef="columnsAddMaterials"
-                            :rowsDef="rowsAllMaterials" style="height: 90vh;" :updateSelect="tableMaterialsUpdate"
-                            :updateSearch="updateSearch" :actionRow="confirmAddMaterial"
-                            styleContent="max-height: 70vh;">
-                            <template v-slot:actions>
-                              <q-select outlined dense v-model="addMaterialsCategorySelector"
-                                @update:model-value="addMaterialsCategoryUpdate"
-                                :options="addMaterialsCategorySelectorOp" class="text-h6"
-                                options-selected-class="text-h6" popup-content-class="text-h6"
-                                style="width: 220px; margin-left: 15px" />
-                              <q-btn v-show="add" color='orange' label='В список' @click="confirmAddMaterial"
-                                style="margin-left: 15px; margin-right: 15px;" />
-                            </template>
-                          </Table_v2>
-                        </template>
-                        <template v-slot:after>
-                          <Table ref="tableAddMaterialsBuffer" :columnsDef="columnsAddMaterialsBuffer"
-                            styleContent="max-height: 70vh;" :rowsDef="rowsAddMaterialsBuffer" :hideShearch="true"
-                            :updateSelected="updateSelectedTableMaterialsBuffer">
-                            <template v-slot:actions>
-                              <q-btn v-show="rowsAddMaterialsBuffer.length > 0" color='green' label='Обновить и закрыть'
-                                @click="confirmAddEntryMaterial" style="margin-right: 15px;" />
-                              <q-btn v-show="removeFromBuffer" color='red' label='Убрать'
-                                @click="actionRemoveBufferMaterial" style="margin-right: 15px;" />
-                            </template>
-                          </Table>
-                        </template>
-                      </q-splitter>
-                    </q-card-section>
-                  </q-card>
-                </q-dialog>
-              </template>
-            </Table>
-            <DialogConfirm ref="dc">
-              <template v-slot:buttons>
-                <q-btn v-show="tableMaterials.selected[0].count > 1 || tableMaterials.selected.length > 1" color='red'
-                  label="Удалить все" @click="confirmDeleteAction(true)" />
-                <q-btn v-show="tableMaterials.selected.length === 1" color='orange' label="Удалить"
-                  @click="confirmDeleteAction(false)" />
-                <q-btn color='primary' label="Отмена" v-close-popup />
-              </template>
-            </DialogConfirm>
+                  </div>
+                  <div v-else-if="dialogName == 'Добавить новое оборудование'">
+                    Добавление нового оборудования: клапан воздушный притока, теплообменник
+                  </div>
+                  <div v-else>
+                  </div>
+                </template>
+              </Dialog>
+            </q-card>
           </q-tab-panel>
           <q-tab-panel name="laboriousness" style="min-height: 600px">
             <q-input v-model="inputLaboriousnes" @update:model-value="syncTableMaterials" class="text-h6" outlined
               label="Трудозатраты" type="number" :rules="validationNumberNoZero" suffix="ч." style="width: 160px;"
               auto-save />
           </q-tab-panel>
+          <q-tab-panel name="blockmanual" style="min-height: 100px">
+            <div class="row">
+              <q-card-section class="text-h6 col-6">
+                <q-badge color="primary" class="text-h6">
+                  Маркировка ЩУ: ABU-W-1-ZM
+                </q-badge>
+              </q-card-section>
+            </div>
+            <div class="row">
+              <q-card-section class="text-h6 col-6">
+                <q-badge color="primary" class="text-h6">
+                  Себестоимость ЩУ: 0 руб
+                </q-badge>
+              </q-card-section>
+            </div>
+          </q-tab-panel>
           <q-tab-panel name="files" style="min-height: 400px">
             <div class="q-pa-md">
               <q-uploader url="http://10.154.152.88:3001/upload/disk"
-                :headers="[{name: 'X-Custom-Timestamp', value: 1550240306080}]" style="max-width: 300px" />
+                :headers="[{ name: 'X-Custom-Timestamp', value: 1550240306080 }]" style="max-width: 300px" />
             </div>
           </q-tab-panel>
         </q-tab-panels>
@@ -206,18 +302,19 @@
 import {
   ref, defineComponent, inject, onMounted, watch,
 } from 'vue';
-import Table from 'src/components/tables/table_simple.vue';
-import Table_v2 from 'src/components/tables/table_simple_v2.vue';
+
 import DialogConfirm from 'src/components/dialogs/confirm.vue';
+import ImageElement from 'src/pages/services/productoptions/components/imageElement.vue';
 import { useRoute, useRouter } from 'vue-router';
 import axios from 'axios';
+import Dialog from './components/dialog.vue';
 
 export default defineComponent({
   name: 'GenPricePage',
   components: {
-    Table,
-    Table_v2,
     DialogConfirm,
+    ImageElement,
+    Dialog,
   },
   setup() {
     const { host, getProp, validationNumberNoZero } = inject('store');
@@ -226,7 +323,7 @@ export default defineComponent({
     const route = useRoute();
     const router = useRouter();
     const { id } = route.params;
-    const tab = ref('materials');
+    const tab = ref('elements');
     const tableMaterials = ref(null);
     const tableAddMaterials = ref(null);
     const tableAddMaterialsBuffer = ref(null);
@@ -248,6 +345,23 @@ export default defineComponent({
     const costAll = ref(0);
     const costOneHourWorker = ref(0);
     const percentOfMaterials = ref(0);
+
+    // ссылки
+    // const colorSelect = 'bg-teal';
+    const refsElements = [];
+    const vp1 = ref(null);
+    refsElements.push(vp1);
+    const vp2 = ref(null);
+    refsElements.push(vp2);
+
+    //
+    const elementDialog = ref(false);
+    const dialogName = ref('');
+    const confTypeOptions = ['Приточная', 'Приточно - вытяжная'];
+    const confType = ref(confTypeOptions[0]);
+    const orderFlows = ref(['outflow', 'inflow']);
+    const confRecup = ref('Нет');
+
     const columns = [
       {
         name: 'name',
@@ -305,11 +419,15 @@ export default defineComponent({
     const rowsEntryMaterials = ref([]);
     const rowsAllMaterials = ref([]);
     const rowsAddMaterialsBuffer = ref([]);
+    // готовые
+    function confirmExit() {
+      router.push('/services/productoptions/configurations');
+    }
     function getPathList() {
-      return '/services/genprice/calculations';
+      return '/services/productoptions/configurations';
     }
     function getQueryAll() {
-      return `${host}/services/genprice/Calculation`;
+      return `${host}/services/productoptions/Configuration`;
     }
     const name = ref('');
     const updatedAt = ref('');
@@ -321,6 +439,7 @@ export default defineComponent({
     }
     let object = null;
     const syncObject = ref(null);
+    //
     function getEntryMaterials() {
       const mat = [];
       for (let index = 0; index < rowsEntryMaterials.value.length; index += 1) {
@@ -389,9 +508,7 @@ export default defineComponent({
       syncTableMaterials();
     }
     function resetSelectTableAddMaterials() {
-      if (tableAddMaterials.value) {
-        tableAddMaterials.value.selected.length = 0;
-      }
+      tableAddMaterials.value.selected.length = 0;
     }
     function update(callback) {
       // запрос метаданных из справочника материалов
@@ -415,7 +532,6 @@ export default defineComponent({
                 const m = responseM.data[index];
                 rowsAllMaterials.value.push(m);
                 allMaterials.push(m);
-                console.log(rowsAllMaterials);
               }
               rowsEntryMaterials.value.length = 0;
               axios.get(`${getQueryAll()}/${id}`)
@@ -482,9 +598,7 @@ export default defineComponent({
         }
       });
     }
-    function confirmExit() {
-      router.push('/services/genprice/calculations');
-    }
+
     function confirmExitAndSave() {
       writeDatabase();
       confirmExit();
@@ -520,7 +634,6 @@ export default defineComponent({
       add.value = selected.length > 0;
     }
     function updateRowsAllMaterials() {
-      resetSelectTableAddMaterials();
       rowsAllMaterials.value.length = 0;
       for (let index = 0; index < allMaterials.length; index += 1) {
         const element = allMaterials[index];
@@ -529,7 +642,6 @@ export default defineComponent({
           rowsAllMaterials.value.push(element);
         }
       }
-      add.value = false;
     }
     function actionAddMaterial() {
       updateRowsAllMaterials();
@@ -640,10 +752,33 @@ export default defineComponent({
       }
       return materialsCount;
     }
+    // оставить
     watch(syncObject, (newValue, oldValue) => {
       change.value = (newValue !== oldValue);
     }, { flush: 'sync' });
+    // новые функции
+    function selectClickElement(elName) {
+      dialogName.value = elName;
+      elementDialog.value = true;
+    }
+    function updateType() {
+      if (confRecup.value === 'Нет') {
+        orderFlows.value = ['inflow', 'outflow'];
+      } else if (confRecup.value === 'Да') {
+        orderFlows.value = ['outflow', 'inflow'];
+      }
+    }
     return {
+      // новые
+      Dialog,
+      openDialog: selectClickElement,
+      elementDialog,
+      dialogName,
+      confType,
+      confTypeOptions,
+      confRecup,
+      orderFlows,
+      updateType,
       addMaterialsCategoryUpdate,
       addMaterialsCategorySelector,
       addMaterialsCategorySelectorOp,
@@ -682,8 +817,6 @@ export default defineComponent({
       updatedAt,
       getQueryAll,
       getQueryUpdate,
-      Table,
-      Table_v2,
       DialogConfirm,
       tableMaterials,
       tableAddMaterialsBuffer,
@@ -704,6 +837,10 @@ export default defineComponent({
       resetChange,
       splitterModel: ref(50),
       getMaterialsCount,
+      //
+      vp1,
+      vp2,
+      ImageElement,
     };
   },
 });

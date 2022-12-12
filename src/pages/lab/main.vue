@@ -1,11 +1,11 @@
 <template>
   <div class="q-pa-md row items-start q-gutter-md">
     <q-page class="full-width" style="margin: 0px; background-color: rgb(60, 60, 60);">
-      <div class="row">
+      <div class="row" v-show="load">
         <div class="col-6">
           <q-card class="text-white" style="margin: 10px;">
             <q-card-section style="background-color: rgb(80, 80, 80);">
-              <div class="text-h6">Щит управление</div>
+              <div class="text-h6">Щит управления</div>
             </q-card-section>
             <q-card-section class="row text-white" style="background-color: rgb(60, 60, 60);">
               <div class="col-4">
@@ -62,7 +62,7 @@
                 </div>
                 <div class="flex column items-center" v-if="onforce">
                   <q-icon name="emoji_objects" color="green" size="100px" />
-                  <div>В работе</div>
+                  <div>Работа</div>
                 </div>
               </div>
             </q-card-section>
@@ -88,19 +88,19 @@
                     </template>
                   </q-select>
                   <q-input ref="compWidth" v-model="width" type="number" label="Ширина воздуховода, мм" lazy-rules
-                    :rules="[val => (val && val > 0) && (+val < 1000) || 'Введите корректные данные']" color="white"
+                    :rules="[val => (val && val > 0) && (+val <= 1000) || 'Введите корректные данные']" color="white"
                     @focus="focus_width = true" @blur="enterPassword(acceptParameters)" input-class="text-h6 text-white" outlined
                     label-color="grey" @keydown.enter.prevent="enterPassword(acceptParameters)" />
                   <q-input ref="compHeight" v-model="height" type="number" label="Высота воздуховода, мм" lazy-rules
-                    :rules="[val => (val && val > 0) && (+val < 1000) || 'Введите корректные данные']" color="white"
+                    :rules="[val => (val && val > 0) && (+val <= 1000) || 'Введите корректные данные']" color="white"
                     @focus="focus_height = true" @blur="enterPassword(acceptParameters)" @keydown.enter.prevent="enterPassword(acceptParameters)"
                     input-class="text-h6 text-white" outlined label-color="grey" />
                   <q-input ref="compAirV" v-model="airV" type="number"
-                    label="Уставка номинала расхода водуха (вытяжка), м3/ч" lazy-rules
-                    :rules="[val => (val && val > 0) && (+val < 10000) || 'Введите корректные данные']"
+                    label="Уставка номинала расхода водуха (вытяжка), м³/ч" lazy-rules
+                    :rules="[val => (val && val > 0) && (+val <= 10000) || 'Введите корректные данные']"
                     @focus="focus_airV = true" @blur="enterPassword(acceptParameters)" @keydown.enter.prevent="enterPassword(acceptParameters)"
                     color="white" input-class="text-h6 text-white" outlined label-color="grey" />
-                  <q-input v-model="airP" type="number" label="Уставка номинала расхода водуха (приток)" readonly
+                  <q-input v-model="airP" type="number" label="Уставка номинала расхода водуха (приток), м³/ч" readonly
                     color="white" input-class="text-h6 text-white" outlined label-color="grey" />
                 </q-form>
               </q-card-section>
@@ -112,31 +112,31 @@
                   {{ currentS }}
                 </div>
                 <div class="text-h8 text-grey">
-                  Уставка массового расхода:
+                  Уставка массового расхода воздуха, кг/с:
                 </div>
                 <div class="text-h6 text-white">
                   {{ setMass }}
                 </div>
                 <div class="text-h8 text-grey">
-                  Уставка влагосодержания Приток, г/кг:
+                  Уставка влагосодержания воздуха Приток, г/кг:
                 </div>
                 <div class="text-h6 text-white">
                   {{ Hc_21_Pr }}
                 </div>
                 <div class="text-h8 text-grey">
-                  Уставка влажного термометра Приток, °С:
+                  Уставка температуры влажного термометра Приток, °С:
                 </div>
                 <div class="text-h6 text-white">
                   {{ TwT_21 }}
                 </div>
                 <div class="text-h8 text-grey">
-                  Уставка влагосодержания Вытяжка, г/кг:
+                  Уставка влагосодержания воздуха Вытяжка, г/кг:
                 </div>
                 <div class="text-h6 text-white">
                   {{ Hc_11_Vyt }}
                 </div>
                 <div class="text-h8 text-grey">
-                  Уставка влажного термометра Вытяжка, °С:
+                  Уставка температуры влажного термометра Вытяжка, °С:
                 </div>
                 <div class="text-h6 text-white">
                   {{ TwT_11 }}
@@ -154,18 +154,18 @@
           <q-card-section class="row text-white" style="background-color: rgb(60, 60, 60);">
             <q-card-section class="col-4" style="background-color: rgb(60, 60, 60);">
               <q-input ref="comp_stendPritokTemp" v-model="stendPritokTemp" type="number"
-                label="Стенд Приток температура" color="white" input-class="text-h6 text-white" outlined
+                label="Уставка температуры воздуха Приток" color="white" input-class="text-h6 text-white" outlined
                 label-color="grey" :rules="[val => (val >= -50) && (+val <= 100) || 'Введите корректные данные']"
                 @focus="focus_stendPritokTemp = true" @blur="enterPassword(accept)" @keydown.enter.prevent="enterPassword(accept)" />
-              <q-input ref="comp_stendPritokHum" v-model="stendPritokHum" type="number" label="Стенд Приток влажность"
+              <q-input ref="comp_stendPritokHum" v-model="stendPritokHum" type="number" label="Уставка относительной влажности Приток"
                 color="white" input-class="text-h6 text-white" outlined label-color="grey"
                 :rules="[val => (val >= 0) && (+val <= 100) || 'Введите корректные данные']"
                 @focus="focus_stendPritokHum = true" @blur="enterPassword(accept)" @keydown.enter.prevent="enterPassword(accept)" />
-              <q-input ref="comp_stendVytTemp" v-model="stendVytTemp" type="number" label="Стенд Вытяжка температура"
+              <q-input ref="comp_stendVytTemp" v-model="stendVytTemp" type="number" label="Уставка температуры воздуха Вытяжка"
                 color="white" input-class="text-h6 text-white" outlined label-color="grey"
                 :rules="[val => (val >= -50) && (+val <= 100) || 'Введите корректные данные']"
                 @focus="focus_stendVytTemp = true" @blur="enterPassword(accept)" @keydown.enter.prevent="enterPassword(accept)" />
-              <q-input ref="comp_stendVytHum" v-model="stendVytHum" type="number" label="Стенд Вытяжка влажность"
+              <q-input ref="comp_stendVytHum" v-model="stendVytHum" type="number" label="Уставка относительной влажности Вытяжка"
                 color="white" input-class="text-h6 text-white" outlined label-color="grey"
                 :rules="[val => (val >= 0) && (+val <= 100) || 'Введите корректные данные']"
                 @focus="focus_stendVytHum = true" @blur="enterPassword(accept)" @keydown.enter.prevent="enterPassword(accept)" />
@@ -175,7 +175,7 @@
                 label="Уставка Смешение Приток 1" color="white" input-class="text-h6 text-white" outlined
                 label-color="grey" :rules="[val => (val >= -50) && (+val <= 100) || 'Введите корректные данные']"
                 @focus="focus_setSmeshPritok1 = true" @blur="enterPassword(accept)" @keydown.enter.prevent="enterPassword(accept)" />
-              <q-input ref="comp_setM3Pritok1" v-model="setM3Pritok1" type="number" label="Уставка м3 Приток1"
+              <q-input ref="comp_setM3Pritok1" v-model="setM3Pritok1" type="number" label="Уставка м³ Приток1"
                 color="white" input-class="text-h6 text-white" outlined label-color="grey"
                 :rules="[val => (val >= 0) && (+val <= 10000) || 'Введите корректные данные']"
                 @focus="focus_setM3Pritok1 = true" @blur="enterPassword(accept)" @keydown.enter.prevent="enterPassword(accept)" />
@@ -194,7 +194,7 @@
                 color="white" input-class="text-h6 text-white" outlined label-color="grey"
                 :rules="[val => (val >= -50) && (+val <= 100) || 'Введите корректные данные']"
                 @focus="focus_setSmeshVyt = true" @blur="enterPassword(accept)" @keydown.enter.prevent="enterPassword(accept)" />
-              <q-input ref="comp_setM3Vyt" v-model="setM3Vyt" type="number" label="Уставка м3 Вытяжка" color="white"
+              <q-input ref="comp_setM3Vyt" v-model="setM3Vyt" type="number" label="Уставка м³ Вытяжка" color="white"
                 input-class="text-h6 text-white" outlined label-color="grey"
                 :rules="[val => (val >= 0) && (+val <= 10000) || 'Введите корректные данные']"
                 @focus="focus_setM3Vyt = true" @blur="enterPassword(accept)" @keydown.enter.prevent="enterPassword(accept)" />
@@ -202,7 +202,7 @@
                 label="Уставка смешение Приток 2" color="white" input-class="text-h6 text-white" outlined
                 label-color="grey" :rules="[val => (val >= -50) && (+val <= 100) || 'Введите корректные данные']"
                 @focus="focus_setSmeshPritok2 = true" @blur="enterPassword(accept)" @keydown.enter.prevent="enterPassword(accept)" />
-              <q-input ref="comp_setM3Pritok2" v-model="setM3Pritok2" type="number" label="Уставка м3 Приток2"
+              <q-input ref="comp_setM3Pritok2" v-model="setM3Pritok2" type="number" label="Уставка м³ Приток2"
                 color="white" input-class="text-h6 text-white" outlined label-color="grey"
                 :rules="[val => (val >= 0) && (+val <= 10000) || 'Введите корректные данные']"
                 @focus="focus_setM3Pritok2 = true" @blur="enterPassword(accept)" @keydown.enter.prevent="enterPassword(accept)" />
@@ -213,6 +213,8 @@
                   @update:model-value="enterPassword(accept_kpdDelta)" />
                 <q-toggle v-model="autoParameter" class="full-width" label="АвтоПараметр"
                   @update:model-value="enterPassword(accept_autoParameter)" />
+                  <q-toggle v-model="onDefrost" disable class="full-width" label="Режим оттайки"
+                  @update:model-value="enterPassword(accept_onDefrost)" />
                 <q-toggle v-model="onPritok1" class="full-width" label="Система Приток1"
                   @update:model-value="enterPassword(accept_onPritok1)" />
                 <q-toggle v-model="smPritok1" class="full-width" label="Смешение Приток1"
@@ -239,6 +241,14 @@
                   @focus="focus_resetRecieverPritokVyt = true" @blur="enterPassword(accept)" @keydown.enter.prevent="enterPassword(accept)" />
               </q-card-section>
             </q-card-section>
+          </q-card-section>
+        </q-card>
+        <q-card class="bg-secondary text-white" style="margin: 10px;">
+          <q-card-section style="background-color: rgb(80, 80, 80);">
+            <div class="text-h6">Управление данными</div>
+          </q-card-section>
+          <q-card-section class="row text-white" style="background-color: rgb(60, 60, 60);">
+            <q-btn class="bg-teal text-white" label="Очистить БД" />
           </q-card-section>
         </q-card>
       </div>
@@ -317,7 +327,7 @@ export default {
     const smVyt = ref(false);
     const onHumVyt = ref(false);
     const onPritok2 = ref(false);
-
+    const onDefrost = ref(false);
     const stendPritokTemp = ref(0);
     const focus_stendPritokTemp = ref(false);
     const comp_stendPritokTemp = ref(null);
@@ -593,6 +603,7 @@ export default {
           smVyt.value = mes.CodeSets.value[4] === 1;
           onHumVyt.value = mes.CodeSets.value[5] === 1;
           onPritok2.value = mes.CodeSets.value[6] === 1;
+          onDefrost.value = mes.CodeSets.value[7] === 1;
           kpdDelta.value = mes.CodeSets.value[12] === 1;
           autoParameter.value = mes.CodeSets.value[13] === 1;
           setMass.value = mes.setMass.setpoint;
@@ -659,6 +670,11 @@ export default {
     function accept_onVyt() {
       WebSocket_Send('recup', {
         id: 2, type: 'onVyt', value: onVyt.value, timestamp: getCurrentTime(),
+      });
+    }
+    function accept_onDefrost() {
+      WebSocket_Send('recup', {
+        id: 2, type: 'onDefrost', value: onDefrost.value, timestamp: getCurrentTime(),
       });
     }
     function accept_smVyt() {
@@ -789,6 +805,7 @@ export default {
       smVyt,
       onHumVyt,
       onPritok2,
+      onDefrost,
       accept,
       accept_onHumPritok1,
       accept_autoParameter,
@@ -798,6 +815,7 @@ export default {
       accept_smPritok1,
       accept_smVyt,
       accept_onVyt,
+      accept_onDefrost,
       stendVytTemp,
       stendVytHum,
       setSmeshPritok1,

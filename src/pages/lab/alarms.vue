@@ -53,7 +53,7 @@
               <q-td :class="getcolor(AlarmStatus1[9])">{{ parsebool(AlarmStatus1[9]) }}</q-td>
             </q-tr>
             <q-tr>
-              <q-td>Резерв</q-td>
+              <q-td>Обрыв датчика скорости стенда</q-td>
               <q-td :class="getcolor(AlarmStatus1[10])">{{ parsebool(AlarmStatus1[10]) }}</q-td>
             </q-tr>
             <q-tr>

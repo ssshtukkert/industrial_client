@@ -7,33 +7,15 @@
     </q-card-section>
     <q-card-section class="text-black q-pa-sm" style="background-color: rgb(60, 60, 60);">
       <div class="row">
-        <div class="col-1 q-pa-xs">
+        <div class="col-4 q-pa-xs">
           <q-card class="col-4 fit text-white" style="background-color: rgb(60, 60, 60);">
             <q-card-section style="background-color: rgb(80, 80, 80);">
-              <div class="text-h7">
-                Подача Вытяжка
-              </div>
-            </q-card-section>
-            <q-card-section class="text-h6">
-              Вытяжной канал до ресивера
-            </q-card-section>
-            <q-card-section class="text-grey">
-              Плотность 11:
-              <div class="text-h6 text-white">
-                {{ Plotnost_11 }} кг/м3
-              </div>
-            </q-card-section>
-          </q-card>
-        </div>
-        <div class="col-3 q-pa-xs">
-          <q-card class="col-4 fit text-white" style="background-color: rgb(60, 60, 60);">
-            <q-card-section style="background-color: rgb(80, 80, 80);">
-              <div class="text-h6">
-                Вытяжной 11
+              <div class="text-h8">
+                Подача "вытяжного" воздуха/параметры воздуха в канале №11
               </div>
             </q-card-section>
             <q-card-section>
-              <div class="row">
+              <div class="row full-height items-center">
                 <div class="col-4 text-grey">
                   Скор13:
                   <div class="text-h6 text-white">
@@ -47,13 +29,13 @@
                   </div>
                 </div>
                 <div class="col-5 text-grey">
-                  СкорСрВытДо:
+                  Скорость воздуха средняя:
                   <div class="text-h6 text-white">
                     {{ Speed_11_Sr }} м/с
                   </div>
                 </div>
               </div>
-              <div class="row">
+              <div class="row full-height items-center">
                 <div class="col-4 text-grey">
                   Скор14:
                   <div class="text-h6 text-white">
@@ -67,13 +49,13 @@
                   </div>
                 </div>
                 <div class="col-5 text-grey">
-                  m3ВытяжкаДо 11:
+                  Объёмный расход воздуха:
                   <div class="text-h6 text-white">
-                    {{ m3h_11 }} м3/ч
+                    {{ m3h_11 }} м<sup>3</sup>/ч
                   </div>
                 </div>
               </div>
-              <div class="row">
+              <div class="row full-height items-center">
                 <div class="col-4 text-grey">
                   Скор15:
                   <div class="text-h6 text-white">
@@ -87,13 +69,16 @@
                   </div>
                 </div>
                 <div class="col-5 text-grey">
-                  МассРасхВытДо11:
+                  Массовый расход воздуха:
                   <div class="text-h6 text-white">
                     {{ mass_11 }} кг/с
                   </div>
+                  <div class="text-h6 text-white">
+                    {{ (mass_11 * 3600).toFixed(2) }} кг/ч
+                  </div>
                 </div>
               </div>
-              <div class="row">
+              <div class="row full-height items-center">
                 <div class="col-4 text-grey">
                   Скор16:
                   <div class="text-h6 text-white">
@@ -107,11 +92,17 @@
                   </div>
                 </div>
                 <div class="col-5 text-grey">
-                  ДавлВытяжкаДо11:
+                  Давление воздуха:
                   <div class="text-h6 text-white">
                     {{ Pressure_11 }} Па
                   </div>
                 </div>
+              </div>
+            </q-card-section>
+            <q-card-section class="text-grey">
+              Плотность воздуха:
+              <div class="text-h6 text-white">
+                {{ Plotnost_11 }} кг/м<sup>3</sup>
               </div>
             </q-card-section>
           </q-card>
@@ -119,8 +110,8 @@
         <div class="col-2 q-pa-xs">
           <q-card class="col-4 fit text-white" style="background-color: rgb(60, 60, 60);">
             <q-card-section style="background-color: rgb(80, 80, 80);">
-              <div class="text-h6">
-                Т/Вл 11
+              <div class="text-h8">
+                Температура и относительная влажность воздуха в канале №11
               </div>
             </q-card-section>
             <q-card-section>
@@ -216,9 +207,12 @@
                   </div>
                 </div>
                 <div class="col-6 text-grey">
-                  Влажность средняя:
+                  Влагосодержание среднее:
                   <div class="text-h6 text-white">
                     {{ Rh_11 }} %
+                  </div>
+                  <div class="text-h6 text-white">
+                    {{Hc_11}} г/кг
                   </div>
                 </div>
               </div>
@@ -226,16 +220,15 @@
           </q-card>
         </div>
         <div class="col-2 q-pa-xs">
-          <q-card class="col-4 fit text-white" style="background-color: rgb(60, 60, 60);">
+          <q-card class="col-3 fit text-white" style="background-color: rgb(60, 60, 60);">
             <q-card-section style="background-color: rgb(80, 80, 80);">
               <div class="text-h8">
-                Перепад 11-12
+                Перепад давления воздуха между каналами №11 и №12
               </div>
             </q-card-section>
             <q-card-section>
               <div class="row">
-                <div class="col-12 text-grey">
-                  Перепад вытяжка (11-12):
+                <div class="col-12 text-grey" align="center">
                   <div class="text-h6 text-white">
                     {{ deltap_11_12 }} Па
                   </div>
@@ -247,8 +240,8 @@
         <div class="col-2 q-pa-xs">
           <q-card class="col-4 fit text-white" style="background-color: rgb(60, 60, 60);">
             <q-card-section style="background-color: rgb(80, 80, 80);">
-              <div class="text-h6">
-                Т/Вл 12
+              <div class="text-h8">
+                Температура и относительная влажность воздуха в канале №12
               </div>
             </q-card-section>
             <q-card-section>
@@ -344,61 +337,58 @@
                   </div>
                 </div>
                 <div class="col-6 text-grey">
-                  Влажность средняя:
+                  Влагосодержание среднее:
                   <div class="text-h6 text-white">
                     {{ Rh_12 }} %
+                  </div>
+                  <div class="text-h6 text-white">
+                    {{Hc_12}} г/кг
                   </div>
                 </div>
               </div>
             </q-card-section>
           </q-card>
         </div>
-        <div class="col-1 q-pa-xs">
+        <div class="col-2 q-pa-xs">
           <q-card class="col-4 fit text-white" style="background-color: rgb(60, 60, 60);">
             <q-card-section style="background-color: rgb(80, 80, 80);">
               <div class="text-h7">
-                Вытяжной 12
+                Удаление "вытяжного" воздуха/параметры воздуха в канале №12
               </div>
             </q-card-section>
             <q-card-section>
               <div class="row">
                 <div class="col-12 text-grey">
-                  m3Вытяжка После 12:
+                  Объёмный расход воздуха:
                   <div class="text-h6 text-white">
-                    {{ m3h_12 }} м3/ч
+                    {{ m3h_12 }} м<sup>3</sup>/ч
                   </div>
                 </div>
               </div>
               <div class="row">
                 <div class="col-12 text-grey">
-                  МассРасхВыт После 12:
+                  Массовый расход воздуха:
                   <div class="text-h6 text-white">
                     {{ mass_12 }} кг/с
+                  </div>
+                  <div class="text-h6 text-white">
+                    {{ (mass_12 * 3600).toFixed(2) }} кг/ч
                   </div>
                 </div>
               </div>
               <div class="row">
                 <div class="col-12  text-grey">
-                  ДавлВытяжка После (12):
+                  Давление воздуха:
                   <div class="text-h6 text-white">
                     {{ Pressure_12 }} Па
                   </div>
                 </div>
               </div>
             </q-card-section>
-          </q-card>
-        </div>
-        <div class="col-1 q-pa-xs">
-          <q-card class="col-4 fit text-white" style="background-color: rgb(60, 60, 60);">
-            <q-card-section style="background-color: rgb(80, 80, 80);">
-              <div class="text-h7">
-                ВентВытУдал
-              </div>
-            </q-card-section>
             <q-card-section class="text-grey">
-              Плотность 12:
+              Плотность воздуха:
               <div class="text-h6 text-white">
-                {{ Plotnost_12 }} кг/м3
+                {{ Plotnost_12 }} кг/м<sup>3</sup>
               </div>
             </q-card-section>
           </q-card>
@@ -409,33 +399,33 @@
           <q-card class="col-4 text-white" style="background-color: rgb(60, 60, 60);">
             <q-card-section style="background-color: rgb(80, 80, 80);">
               <div class="text-h6">
-                Перепад между 11 и 22
+                Перепад давления воздуха между каналами №11/№22 и рассчитанные показатели
               </div>
             </q-card-section>
             <q-card-section>
-              <div class="row">
-                <div class="col-2 text-grey">
-                  Перепад (11-22):
+              <div class="row full-height">
+                <div class="col-4 text-grey" align="center">
+                  Перепад давления воздуха между каналами №11 и №22:
                   <div class="text-h6 text-white">
                     {{ deltap_11_22 }} Па
                   </div>
                 </div>
-                <div class="col-2 text-grey">
-                  Влажностный КПД:
-                  <div class="text-h6 text-white">
-                    {{ KPD_H }}
-                  </div>
-                </div>
-                <div class="col-2 text-grey">
+                <div class="col-2 text-grey" align="center">
                   Тепловой баланс:
                   <div class="text-h6 text-white">
                     {{ warmBalance }}
                   </div>
                 </div>
-                <div class="col-2 text-grey">
+                <div class="col-2 text-grey" align="center">
                   Температурный КПД:
                   <div class="text-h6 text-white">
                     {{ KPD_T }} %
+                  </div>
+                </div>
+                <div class="col-2 text-grey" align="center">
+                  Влажностный КПД:
+                  <div class="text-h6 text-white">
+                    {{ KPD_H }}
                   </div>
                 </div>
               </div>
@@ -444,33 +434,15 @@
         </div>
       </div>
       <div class="row">
-        <div class="col-1 q-pa-xs">
+        <div class="col-4 q-pa-xs">
           <q-card class="col-4 fit text-white" style="background-color: rgb(60, 60, 60);">
             <q-card-section style="background-color: rgb(80, 80, 80);">
-              <div class="text-h7">
-                Подача Приток
-              </div>
-            </q-card-section>
-            <q-card-section class="text-h6">
-              Приточный канал до ресивера
-            </q-card-section>
-            <q-card-section class="text-grey">
-              Плотность 21:
-              <div class="text-h6 text-white">
-                {{ Plotnost_21 }} кг/м3
-              </div>
-            </q-card-section>
-          </q-card>
-        </div>
-        <div class="col-3 q-pa-xs">
-          <q-card class="col-4 fit text-white" style="background-color: rgb(60, 60, 60);">
-            <q-card-section style="background-color: rgb(80, 80, 80);">
-              <div class="text-h6">
-                Приточный 21
+              <div class="text-h8">
+                Подача "приточного" воздуха/параметры воздуха в канале №21
               </div>
             </q-card-section>
             <q-card-section>
-              <div class="row">
+              <div class="row full-height items-center">
                 <div class="col-4 text-grey">
                   Скор1:
                   <div class="text-h6 text-white">
@@ -484,13 +456,13 @@
                   </div>
                 </div>
                 <div class="col-5 text-grey">
-                  СкорСрПрДо 21:
+                  Скорость воздуха средняя:
                   <div class="text-h6 text-white">
                     {{ Speed_21_Sr }} м/с
                   </div>
                 </div>
               </div>
-              <div class="row">
+              <div class="row full-height items-center">
                 <div class="col-4 text-grey">
                   Скор2:
                   <div class="text-h6 text-white">
@@ -504,13 +476,13 @@
                   </div>
                 </div>
                 <div class="col-5 text-grey">
-                  m3ПритокДо 21:
+                  Объёмный расход воздуха:
                   <div class="text-h6 text-white">
-                    {{ m3h_21 }} м3/ч
+                    {{ m3h_21 }} м<sup>3</sup>/ч
                   </div>
                 </div>
               </div>
-              <div class="row">
+              <div class="row full-height items-center" >
                 <div class="col-4 text-grey">
                   Скор3:
                   <div class="text-h6 text-white">
@@ -524,13 +496,16 @@
                   </div>
                 </div>
                 <div class="col-5 text-grey">
-                  МассРасхПритокДо21:
+                  Массовый расход воздуха:
                   <div class="text-h6 text-white">
                     {{ mass_21 }} кг/с
                   </div>
+                  <div class="text-h6 text-white">
+                    {{ (mass_21 * 3600).toFixed(2) }} кг/ч
+                  </div>
                 </div>
               </div>
-              <div class="row">
+              <div class="row full-height items-center">
                 <div class="col-4 text-grey">
                   Скор4:
                   <div class="text-h6 text-white">
@@ -544,11 +519,17 @@
                   </div>
                 </div>
                 <div class="col-5 text-grey">
-                  ДавлПритокДо 21:
+                  Давление воздуха:
                   <div class="text-h6 text-white">
                     {{ Pressure_21 }} Па
                   </div>
                 </div>
+              </div>
+            </q-card-section>
+            <q-card-section class="text-grey">
+              Плотность воздуха:
+              <div class="text-h6 text-white">
+                {{ Plotnost_21 }} кг/м<sup>3</sup>
               </div>
             </q-card-section>
           </q-card>
@@ -556,8 +537,8 @@
         <div class="col-2 q-pa-xs">
           <q-card class="col-4 fit text-white" style="background-color: rgb(60, 60, 60);">
             <q-card-section style="background-color: rgb(80, 80, 80);">
-              <div class="text-h6">
-                Т/Вл 21
+              <div class="text-h8">
+                Температура и относительная влажность воздуха в канале №21
               </div>
             </q-card-section>
             <q-card-section>
@@ -659,9 +640,12 @@
                   </div>
                 </div>
                 <div class="col-6 text-grey">
-                  Влажность средняя:
+                  Влагосодержание среднее:
                   <div class="text-h6 text-white">
                     {{ Rh_21 }} %
+                  </div>
+                  <div class="text-h6 text-white">
+                    {{Hc_21}} г/кг
                   </div>
                 </div>
               </div>
@@ -672,14 +656,13 @@
           <q-card class="col-4 fit text-white" style="background-color: rgb(60, 60, 60);">
             <q-card-section style="background-color: rgb(80, 80, 80);">
               <div class="text-h8">
-                Перепад 21-22
+                Перепад давления воздуха между каналами №21 и №22
               </div>
             </q-card-section>
             <q-card-section>
               <div class="row">
                 <div class="col-12 text-grey">
-                  Перепад вытяжка (21-22):
-                  <div class="text-h6 text-white">
+                  <div class="text-h6 text-white" align="center">
                     {{ deltap_21_22 }} Па
                   </div>
                 </div>
@@ -690,8 +673,8 @@
         <div class="col-2 q-pa-xs">
           <q-card class="col-4 fit text-white" style="background-color: rgb(60, 60, 60);">
             <q-card-section style="background-color: rgb(80, 80, 80);">
-              <div class="text-h6">
-                Т/Вл 22
+              <div class="text-h8">
+                Температура и относительная влажность воздуха в канале №22
               </div>
             </q-card-section>
             <q-card-section>
@@ -793,37 +776,43 @@
                   </div>
                 </div>
                 <div class="col-6 text-grey">
-                  Влажность средняя:
+                  Влагосодержание среднее:
                   <div class="text-h6 text-white">
                     {{ Rh_22 }} %
+                  </div>
+                  <div class="text-h6 text-white">
+                    {{Hc_22}} г/кг
                   </div>
                 </div>
               </div>
             </q-card-section>
           </q-card>
         </div>
-        <div class="col-1 q-pa-xs">
+        <div class="col-2 q-pa-xs">
           <q-card class="col-4 fit text-white" style="background-color: rgb(60, 60, 60);">
             <q-card-section style="background-color: rgb(80, 80, 80);">
               <div class="text-h7">
-                Приточный 22
+                Удаление "приточного" воздуха/параметры воздуха в канале №22
               </div>
             </q-card-section>
             <q-card-section>
               <div class="row">
                 <div class="col-12 text-grey">
-                  m3Приток После:
+                  Объёмный расход воздуха:
                   <div class="text-h6 text-white">
-                    {{ m3h_22 }} м3/ч
+                    {{ m3h_22 }} м<sup>3</sup>/ч
                   </div>
                 </div>
               </div>
               <q-separator />
               <div class="row">
                 <div class="col-12 text-grey">
-                  МассРасхПр После:
+                  Массовый расход воздуха:
                   <div class="text-h6 text-white">
                     {{ mass_22 }} кг/с
+                  </div>
+                  <div class="text-h6 text-white">
+                    {{ (mass_22 * 3600).toFixed(2) }} кг/ч
                   </div>
                 </div>
               </div>
@@ -837,19 +826,10 @@
                 </div>
               </div>
             </q-card-section>
-          </q-card>
-        </div>
-        <div class="col-1 q-pa-xs">
-          <q-card class="col-4 fit text-white" style="background-color: rgb(60, 60, 60);">
-            <q-card-section style="background-color: rgb(80, 80, 80);">
-              <div class="text-h7">
-                ВентПритУдал
-              </div>
-            </q-card-section>
             <q-card-section class="text-grey">
-              Плотность 22:
+              Плотность воздуха:
               <div class="text-h6 text-white">
-                {{ Plotnost_22 }} кг/м3
+                {{ Plotnost_22 }} кг/м<sup>3</sup>
               </div>
             </q-card-section>
           </q-card>
@@ -857,66 +837,74 @@
       </div>
       <div class="row">
         <div class="col-6">
-          <Chart :ref="charts[0]" name='Перепад (11-22), Па'
+          <Chart :ref="charts[0]" name='Перепад давления воздуха между каналами №11/№22, Па'
             :parameters="[{ name: 'Давление', color: 'rgb(97, 138, 199)' }]" chartId="chart0" colorDefault="yellow"
-            :legend="false" classTitle="text-h6" :height="80" valueMeasure="Па" />
+            :legend="false" classTitle="text-h6" classValue="text-h6" :height="80" valueMeasure="Па" />
         </div>
         <div class="col-6">
           <Chart :ref="charts[1]" name='Управление ресивер Вытяжки, %'
             :parameters="[{ name: 'Производительность', color: 'rgb(97, 138, 199)' }]" chartId="chart1"
-            colorDefault="yellow" :legend="false" classTitle="text-h6" :height="80" valueMeasure="%" />
+            colorDefault="yellow" :legend="false" classValue="text-h6" classTitle="text-h6" :height="80" valueMeasure="%" />
         </div>
       </div>
-      <q-card-section class="row">
-        <div class="col-6 text-grey">
-          Атмосфера:
-          <div class="text-h6 text-white">
-            {{ Patm }} кПа
+      <q-card class="col-4 fit text-white" style="background-color: rgb(60, 60, 60);">
+        <q-card-section style="background-color: rgb(80, 80, 80);">
+          <div class="text-h6">
+            Внешние условия
           </div>
-        </div>
-      </q-card-section>
-      <q-card-section class="row">
-        <div class="col-6 text-grey">
-          Температура наружная:
-          <div class="text-h6 text-white">
-            {{ SCo_t_nar }} °С
+        </q-card-section>
+        <q-card-section class="row">
+          <div class="col-6 text-grey" align="center">
+            Атмосферное давление:
+            <div class="text-h6 text-white">
+              {{ Patm }} кПа
+            </div>
           </div>
-        </div>
-        <div class="col-6 text-grey">
-          Температура помещения:
-          <div class="text-h6 text-white">
-            {{ T_Lab }} °С
+        </q-card-section>
+        <q-card-section class="row" align="center">
+          <div class="col-6 text-grey">
+            Температура наружного воздуха:
+            <div class="text-h6 text-white">
+              {{ SCo_t_nar }} °С
+            </div>
           </div>
-        </div>
-      </q-card-section>
-      <q-card-section class="row">
-        <div class="col-6 text-grey">
-          Влагосодержание наружное:
-          <div class="text-h6 text-white">
-            {{ SCo_Abs_nar }} г/кг
+          <div class="col-6 text-grey">
+            Температура воздуха в помещении:
+            <div class="text-h6 text-white">
+              {{ T_Lab }} °С
+            </div>
           </div>
-        </div>
-        <div class="col-6 text-grey">
-          Влогосодержание помещения:
-          <div class="text-h6 text-white">
-            {{ Hc_Lab }} г/кг
+        </q-card-section>
+        <q-card-section class="row" align="center">
+          <div class="col-6 text-grey">
+            Влагосодержание наружного воздуха:
+            <div class="text-h6 text-white">
+              {{ SCo_Abs_nar }} г/кг
+            </div>
           </div>
-        </div>
-      </q-card-section>
-      <q-card-section class="row">
-        <div class="col-6 text-grey">
-          Наружная относительная влажность:
-          <div class="text-h6 text-white">
-            {{ SCo_Rh_nar }} %
+          <div class="col-6 text-grey">
+            Влогосодержание воздуха в помещении:
+            <div class="text-h6 text-white">
+              {{ Hc_Lab }} г/кг
+            </div>
           </div>
-        </div>
-        <div class="col-6 text-grey">
-          Помещение относительная влажность:
-          <div class="text-h6 text-white">
-            {{ Rh_Lab }} %
+        </q-card-section>
+        <q-card-section class="row" align="center">
+          <div class="col-6 text-grey">
+            Относительная влажность наружного воздуха:
+            <div class="text-h6 text-white">
+              {{ SCo_Rh_nar }} %
+            </div>
           </div>
-        </div>
-      </q-card-section>
+          <div class="col-6 text-grey">
+            Относительная влажность воздуха в помещении:
+            <div class="text-h6 text-white">
+              {{ Rh_Lab }} %
+            </div>
+          </div>
+        </q-card-section>
+      </q-card>
+
       <div class="row">
         <q-card class="col-4 fit text-white" style="background-color: rgb(60, 60, 60);">
           <q-card-section style="background-color: rgb(80, 80, 80);">
@@ -956,14 +944,15 @@
               <div class="col-3">
                 <!-- @update:model-value="updateCountRegisterWrite" -->
                 <q-input ref="comp_countRegisterWrite" v-model="countRegisterWrite" color="white"
-                  input-class="text-h6 text-white" outlined label-color="white"
-                   type="number" label="Количество регистраций"
+                  input-class="text-h6 text-white" outlined label-color="white" type="number"
+                  label="Количество регистраций"
                   :rules="[val => (val >= 0) && (+val <= 10000) || 'Введите корректные данные']" style="width: 178px;"
                   @focus="focus_countRegisterWrite = true" @blur="enterPassword(updateCountRegisterWrite)"
                   @keydown.enter.prevent="enterPassword(updateCountRegisterWrite)" />
               </div>
               <div class="col-3">
-                <q-toggle v-model="pause" class="full-width" label="Пауза" @update:model-value="enterPassword(updatePause)" />
+                <q-toggle v-model="pause" class="full-width" label="Пауза" :disable="lock_pause > 0"
+                  @update:model-value="enterPassword(updatePause)" />
               </div>
             </div>
             <div class="row">
@@ -1171,8 +1160,8 @@
             Для внесения изменений в работу установки введите сервисный пароль:
           </q-card-section>
           <q-card-section class="col-6 q-pt-none">
-            <q-input ref="comp_inputPassword" v-model="inputPassword" clearable dark type="password" label="Пароль" @clear="inputPassword = ''"
-              color="white" input-class="text-h6 text-white" outlined label-color="grey" />
+            <q-input ref="comp_inputPassword" v-model="inputPassword" clearable dark type="password" label="Пароль"
+              @clear="inputPassword = ''" color="white" input-class="text-h6 text-white" outlined label-color="grey" />
           </q-card-section>
         </q-card-section>
         <q-card-actions align="right" style="background-color: rgb(80, 80, 80);">
@@ -1630,7 +1619,7 @@ export default {
 
           if (lock_autoWrite.value > 0) {
             lock_autoWrite.value -= 1;
-          } else {
+          } else if (!changeDialog.value) {
             autoWrite.value = mes.AutoWrite.value;
           }
           if (lock_pause.value > 0) {
@@ -1641,11 +1630,13 @@ export default {
                 id: 2, type: 'pause', value: !pause.value, timestamp: getCurrentTime(),
               });
             }
-            pause.value = mes.SetPause.value;
+            if (!changeDialog.value) {
+              pause.value = mes.SetPause.value;
+            }
           }
           if (lock_modeWrite.value > 0) {
             lock_modeWrite.value -= 1;
-          } else {
+          } else if (!changeDialog.value) {
             modeWrite.value = mes.StateSwitchWrite.value;
           }
           if (!focus_countRegisterWrite.value) {
@@ -1659,22 +1650,22 @@ export default {
         id: 2, type: 'countRegisterWrite', value: countRegisterWrite.value, timestamp: getCurrentTime(),
       });
     }
-    function updateModeWrite(value) {
+    function updateModeWrite() {
       lock_modeWrite.value = 2;
       WebSocket_Send('recup', {
-        id: 2, type: 'modeWrite', value, timestamp: getCurrentTime(),
+        id: 2, type: 'modeWrite', value: modeWrite.value, timestamp: getCurrentTime(),
       });
     }
-    function updateAutoWrite(value) {
+    function updateAutoWrite() {
       lock_autoWrite.value = 2;
       WebSocket_Send('recup', {
-        id: 2, type: 'autoWrite', value, timestamp: getCurrentTime(),
+        id: 2, type: 'autoWrite', value: autoWrite.value, timestamp: getCurrentTime(),
       });
     }
-    function updatePause(value) {
+    function updatePause() {
       lock_pause.value = 2;
       WebSocket_Send('recup', {
-        id: 2, type: 'pause', value, timestamp: getCurrentTime(),
+        id: 2, type: 'pause', value: pause.value, timestamp: getCurrentTime(),
       });
     }
     let varFunction = null;
