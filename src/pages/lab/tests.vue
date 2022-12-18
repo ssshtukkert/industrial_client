@@ -212,7 +212,7 @@
                     {{ Rh_11 }} %
                   </div>
                   <div class="text-h6 text-white">
-                    {{Hc_11}} г/кг
+                    {{ Hc_11 }} г/кг
                   </div>
                 </div>
               </div>
@@ -342,7 +342,7 @@
                     {{ Rh_12 }} %
                   </div>
                   <div class="text-h6 text-white">
-                    {{Hc_12}} г/кг
+                    {{ Hc_12 }} г/кг
                   </div>
                 </div>
               </div>
@@ -482,7 +482,7 @@
                   </div>
                 </div>
               </div>
-              <div class="row full-height items-center" >
+              <div class="row full-height items-center">
                 <div class="col-4 text-grey">
                   Скор3:
                   <div class="text-h6 text-white">
@@ -645,7 +645,7 @@
                     {{ Rh_21 }} %
                   </div>
                   <div class="text-h6 text-white">
-                    {{Hc_21}} г/кг
+                    {{ Hc_21 }} г/кг
                   </div>
                 </div>
               </div>
@@ -781,7 +781,7 @@
                     {{ Rh_22 }} %
                   </div>
                   <div class="text-h6 text-white">
-                    {{Hc_22}} г/кг
+                    {{ Hc_22 }} г/кг
                   </div>
                 </div>
               </div>
@@ -844,7 +844,8 @@
         <div class="col-6">
           <Chart :ref="charts[1]" name='Управление ресивер Вытяжки, %'
             :parameters="[{ name: 'Производительность', color: 'rgb(97, 138, 199)' }]" chartId="chart1"
-            colorDefault="yellow" :legend="false" classValue="text-h6" classTitle="text-h6" :height="80" valueMeasure="%" />
+            colorDefault="yellow" :legend="false" classValue="text-h6" classTitle="text-h6" :height="80"
+            valueMeasure="%" />
         </div>
       </div>
       <q-card class="col-4 fit text-white" style="background-color: rgb(60, 60, 60);">
@@ -970,7 +971,7 @@
               </div>
               <div class="col-4">
                 <div class="text-h6">
-                  <q-btn :disable="modeWrite" color="teal" label="Скачать отчёт"
+                  <q-btn :disable="statusWrite !== ''" color="teal" label="Скачать отчёт"
                     href="http://10.154.152.88:3001/download/local/cyclic_pressures.xlsx" target="_self" />
                 </div>
               </div>
@@ -989,58 +990,58 @@
             <div class="row">
               <div class="col-6" style="padding: 10px;">
                 <table style="width: 100%;">
-                  <div class="text-h6"></div>
+                  <div class="text-h6">Подготовка воздуха</div>
                   <q-tr>
-                    <q-th>Параметр воздуха</q-th>
+                    <q-th>Показатель</q-th>
                     <q-th>В режиме</q-th>
                   </q-tr>
                   <q-tr>
-                    <q-td>Т приток в режиме</q-td>
+                    <q-td>Температура «приточного» воздуха в канале №21 в режиме</q-td>
                     <q-td :class="getcolor(CodeStatus2[10])">{{ parsebool(CodeStatus2[10]) }}</q-td>
                   </q-tr>
                   <q-tr>
-                    <q-td>Вл приток в режиме</q-td>
+                    <q-td>Относительная влажность «приточного» воздуха в канале №21 в режиме</q-td>
                     <q-td :class="getcolor(CodeStatus2[11])">{{ parsebool(CodeStatus2[11]) }}</q-td>
                   </q-tr>
                   <q-tr>
-                    <q-td>Т вытяжка в режиме</q-td>
+                    <q-td>Температура «вытяжного» воздуха в канале №11 в режиме</q-td>
                     <q-td :class="getcolor(CodeStatus2[12])">{{ parsebool(CodeStatus2[12]) }}</q-td>
                   </q-tr>
                   <q-tr>
-                    <q-td>Вл вытяжка в режиме</q-td>
+                    <q-td>Относительная влажность «вытяжного» воздуха в канале №11 в режиме</q-td>
                     <q-td :class="getcolor(CodeStatus2[13])">{{ parsebool(CodeStatus2[13]) }}</q-td>
                   </q-tr>
                 </table>
               </div>
               <div class="col-6" style="padding: 10px;">
                 <table style="width: 100%;">
-                  <div class="text-h6">Статусы оборудования</div>
+                  <div class="text-h6">Подготовка объёма и перепада давления воздуха</div>
                   <q-tr>
-                    <q-th>Подготовка перепада давления</q-th>
+                    <q-th>Показатель</q-th>
                     <q-th>В режиме</q-th>
                   </q-tr>
                   <q-tr>
-                    <q-td>РежимУдПриток</q-td>
+                    <q-td>Удаляемый вентилятор Притока в режиме</q-td>
                     <q-td :class="getcolor(CodeStatus2[4])">{{ parsebool(CodeStatus2[4]) }}</q-td>
                   </q-tr>
                   <q-tr>
-                    <q-td>РежимУдВытяжка</q-td>
+                    <q-td>Удаляемый вентилятор Вытяжка в режиме</q-td>
                     <q-td :class="getcolor(CodeStatus2[6])">{{ parsebool(CodeStatus2[6]) }}</q-td>
                   </q-tr>
                   <q-tr>
-                    <q-td>РежимРесивер</q-td>
+                    <q-td>Клапан подачи воздуха ресивера «Вытяжка» в режиме</q-td>
                     <q-td :class="getcolor(CodeStatus2[5])">{{ parsebool(CodeStatus2[5]) }}</q-td>
                   </q-tr>
                   <q-tr>
-                    <q-td>ФиксРежимУдПриток</q-td>
+                    <q-td>Фиксация удаляемого вентилятора Приток</q-td>
                     <q-td :class="getcolor(CodeStatus2[7])">{{ parsebool(CodeStatus2[7]) }}</q-td>
                   </q-tr>
                   <q-tr>
-                    <q-td>ФиксРежимУдВытяжка</q-td>
+                    <q-td>Фиксация удаляемого вентилятора Вытяжка</q-td>
                     <q-td :class="getcolor(CodeStatus2[8])">{{ parsebool(CodeStatus2[8]) }}</q-td>
                   </q-tr>
                   <q-tr>
-                    <q-td>ФиксДавлениеРесивер</q-td>
+                    <q-td>Фиксация ресивера Вытяжка по давлению</q-td>
                     <q-td :class="getcolor(CodeStatus2[9])">{{ parsebool(CodeStatus2[9]) }}</q-td>
                   </q-tr>
                 </table>
@@ -1134,11 +1135,11 @@
                     <q-th>В режиме</q-th>
                   </q-tr>
                   <q-tr>
-                    <q-td>РежимУдПриток</q-td>
+                    <q-td>Режим удаляемого вентилятора «Приток»</q-td>
                     <q-td :class="getcolor(CodeStatus2[4])">{{ parsebool(CodeStatus2[4]) }}</q-td>
                   </q-tr>
                   <q-tr>
-                    <q-td>РежимУдВытяжка</q-td>
+                    <q-td>Режим удаляемого вентилятора «Вытяжка»</q-td>
                     <q-td :class="getcolor(CodeStatus2[6])">{{ parsebool(CodeStatus2[6]) }}</q-td>
                   </q-tr>
                 </table>
@@ -1591,6 +1592,11 @@ export default {
 
           loadComplete.value = true;
         } else if (json.type === 'sendAirDevices') {
+          if (mes.rabota.value === 'СТОП') {
+            WebSocket_Send('recup', {
+              id: 2, type: 'modeWrite', value: false, timestamp: getCurrentTime(),
+            });
+          }
           if (dataValues1.length === 0) {
             updateChart(1, mes.SCo_reg_m3h_vyt_reciever.value, null, mes.time, true, true);
           } else {

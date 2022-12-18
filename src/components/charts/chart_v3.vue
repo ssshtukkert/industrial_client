@@ -237,6 +237,9 @@ export default defineComponent({
     setVisible(val) {
       this.vis = val;
     },
+    setName(val) {
+      this.nam = val;
+    },
     getVisible() {
       return this.vis;
     },

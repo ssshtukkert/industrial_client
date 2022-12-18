@@ -1,7 +1,7 @@
 <template>
   <div :style="styleContent">
-    <q-btn v-if="name != ''" class="fit" style="padding: 0px;" @click="clickSelect(name)">
-      <div class="fit" :id="size" style="margin: 0px; min-height: var(--sizeY); max-height: var(--sizeY)">
+    <q-btn v-if="name != ''" class="fit" style="padding: 0px;" @click="clickSelect(idname)">
+      <div class="fit" :id="size" style="margin: 0px; min-height: var(--sizeY);  min-width: var(--sizeX);" >
         <img v-if="imageBottom != ''" class="bottom fit" :src="imageBottom" />
         <img v-if="imageTop != ''" class="top fit" :src="imageTop" />
       </div>
@@ -15,7 +15,7 @@
       </q-tooltip>
     </q-btn>
     <q-icon v-if="name == ''" class="fit">
-      <img class="" :src="imageBottom" :id="size" style="min-height: var(--sizeY); max-height: var(--sizeY)">
+      <img class="" :src="imageBottom" :id="size" style="min-height: var(--sizeY);   min-width: var(--sizeX);">
     </q-icon>
   </div>
 </template>
@@ -28,6 +28,9 @@ export default defineComponent({
     name: {
       type: String,
       default: '',
+    },
+    idname: {
+      type: String,
     },
     descript: {
       type: String,
@@ -72,20 +75,26 @@ export default defineComponent({
   z-index: 1;
 }
 
-.red {
-  filter: invert(5%) sepia(78%) saturate(6858%) hue-rotate(-35deg) brightness(97%) contrast(0%);
+.white {
+  filter: brightness(0) invert(1);
+}
+.grey {
+  filter: invert(100%) sepia(100%) saturate(0%) hue-rotate(35deg) brightness(100%) contrast(0%);
 }
 
 #xsmall {
-  --sizeY: 32px;
+  --sizeY: 16px;
+  --sizeX: 16px;
 }
 
 #small {
-  --sizeY: 64px;
+  --sizeY: 32px;
+  --sizeX: 32px;
 }
 
 #large {
-  --sizeY: 128px;
+  --sizeY: 64px;
+  --sizeX: 32px;
 }
 
 .rotate180 {
@@ -96,6 +105,21 @@ export default defineComponent({
   transform: rotate(180deg);
 }
 
+.rotate90 {
+  -webkit-transform: rotate(90deg);
+  -moz-transform: rotate(90deg);
+  -ms-transform: rotate(90deg);
+  -o-transform: rotate(90deg);
+  transform: rotate(90deg);
+}
+
+.rotate270 {
+  -webkit-transform: rotate(270deg);
+  -moz-transform: rotate(270deg);
+  -ms-transform: rotate(270deg);
+  -o-transform: rotate(270deg);
+  transform: rotate(270deg);
+}
 .scaleY {
   transform: scaleY(-1);
 }

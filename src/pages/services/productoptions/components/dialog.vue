@@ -1,7 +1,7 @@
 <template>
   <q-dialog persistent @show="beforeShow">
-    <q-card :style="styleContent">
-      <q-bar class="bg-teal text-white">
+    <q-card :style="styleContent" style="background-color: rgb(60, 60, 60);">
+      <q-bar class="text-white" style="background-color: rgb(80, 80, 80);">
         <div :class="classTitle + ' text-left'">{{ elementName }}</div>
         <q-space />
         <slot name="buttonsWindow" />

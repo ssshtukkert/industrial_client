@@ -1,17 +1,29 @@
 <template>
-  <q-table class="window-height fit" :rows="rows" :columns="columns" row-key="name" :filter="filter"
+  <q-table dark class="window-height fit" :rows="rows" :columns="columns" row-key="name" :filter="filter"
     :filter-method="find" virtual-scroll :hide-selected-banner="true" selection="multiple" v-model:selected="selected"
     binary-state-sort v-model:pagination="pagination" :rows-per-page-options="[1]"
     :no-results-label="`По запросу '${filter}' ничего не найдено`" grid-header wrap-cells :no-data-label="noDataText"
-    @row-click="selectRow" @row-dblclick="actionRow" style="max-height: 87vh;">
+    @row-click="selectRow" @row-dblclick="actionRow" style="max-height: 87vh; background-color: rgb(60, 60, 60);">
     <template v-slot:top>
       <q-card-actions v-show="!hideButtons" class="fit">
-        <q-btn color='primary' icon="add" @click="createAction" />
-        <q-btn color='primary' label='Изменить' v-show="isOneSelect()" @click="changeAction(selected)" />
-        <q-btn color='primary' label='Удалить' v-show="selected.length > 0" @click="deleteAction(selected)" />
+        <q-btn color='dark-grey' icon="add" @click="createAction" >
+          <q-tooltip :delay="800">
+            Создать новую запись
+          </q-tooltip>
+        </q-btn>
+        <q-btn color='dark-grey' icon="edit" v-show="isOneSelect()" @click="changeAction(selected)" >
+          <q-tooltip :delay="800">
+            Редактировать запись
+          </q-tooltip>
+        </q-btn>
+        <q-btn color='dark-grey' icon="delete" v-show="selected.length > 0" @click="deleteAction(selected)" >
+          <q-tooltip :delay="800">
+            Удалить запись/записи
+          </q-tooltip>
+        </q-btn>
         <slot name="actions" />
         <q-space />
-        <q-input class="text-h6" outlined dense debounce="300" color="primary" v-model="filter" clearable
+        <q-input dark class="text-h6" outlined dense debounce="300" color="primary" v-model="filter" clearable
           placeholder="Поиск" style="margin: 10px;">
           <template v-slot:append>
             <q-icon name="search" />

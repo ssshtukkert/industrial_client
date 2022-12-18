@@ -7,7 +7,7 @@
           <Header />
         </q-toolbar-title>
         <div style="padding-right: 60px;">
-          v.0.12
+          v.0.12.1
         </div>
       </q-toolbar>
     </q-header>
@@ -19,12 +19,19 @@
         </q-route-tab>
       </q-tabs>
     </q-footer> -->
+    <q-drawer v-model="leftDrawerOpen" show-if-above bordered :width="400" :breakpoint="800"
+      style="background-color: rgb(60, 60, 60); overflow: hidden;">
+      <q-scroll-area visible :delay="0" style="height: 100%;"
+        :vertical-thumb-style="{ right: '2px', borderRadius: '0px', background: 'grey', width: '15px', opacity: 1 }"
+        :horizontal-thumb-style="{ bottom: '2px', borderRadius: '0px', background: 'grey', height: '15px', opacity: 1 }"
+        :vertical-bar-style="{ right: '2px', borderRadius: '0px', background: 'grey', opacity: 0.3, width: '15px' }"
+        :horizontal-bar-style="{ bottom: '2px', borderRadius: '0px', background: 'grey', opacity: 0.3, height: '15px' }">
+        <Tree ref="navigator" :data="propsNav"></Tree>
+      </q-scroll-area>
 
-    <q-drawer v-model="leftDrawerOpen" show-if-above bordered :width="400" :breakpoint="800">
-      <Tree ref="navigator" :data="propsNav"></Tree>
     </q-drawer>
     <q-page-container>
-        <router-view style="padding: 0px; margin: 0px; "/>
+      <router-view style="padding: 0px; margin: 0px; " />
     </q-page-container>
   </q-layout>
 </template>
@@ -68,10 +75,6 @@ export default defineComponent({
           icon: 'precision_manufacturing',
           selectable: false,
           node: '/plant',
-          children: [
-            { label: 'Станок 1', to: '/plant' },
-            { label: 'Станок 2', to: '/plant' },
-          ],
         },
         {
           label: 'Вентиляция',
@@ -79,7 +82,6 @@ export default defineComponent({
           selectable: false,
           node: '/vent',
           children: [
-            { label: 'Вент. установки', to: '/vent' },
             { label: 'Вент. установка №1', to: '/vent/vu1' },
             { label: 'Вент. установка №2', to: '/vent/vu2' },
           ],

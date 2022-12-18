@@ -1,7 +1,7 @@
 <template>
-  <q-page padding>
-    <q-card class="bg-white">
-      <q-card-section class="bg-secondary">
+  <q-page class="text-white" padding style="background-color: rgb(60, 60, 60);">
+    <q-card class="" style="background-color: rgb(60, 60, 60);">
+      <q-card-section style="background-color: rgb(80, 80, 80);">
         <div class="text-h6 text-white">
           Конфигурация {{ name }} от {{ updatedAt }}
           <a v-show="change"> *
@@ -12,8 +12,8 @@
           </a>
         </div>
       </q-card-section>
-      <q-card-section class="text-black">
-        <q-btn color='orange' label='< Назад к списку' style="margin-right: 15px;" @click="exit">
+      <q-card-actions class="text-black">
+        <q-btn color='dark-grey' icon="arrow_back" @click="exit">
           <q-tooltip :delay="800">
             Вернуться к списку конфигураций
           </q-tooltip>
@@ -25,28 +25,26 @@
             <q-btn color='primary' label="Отмена" v-close-popup />
           </template>
         </DialogConfirm>
-        <q-btn color='primary' :disabled="!change" icon="save" @click="writeDatabase" style="margin-right: 15px;">
-          <q-tooltip :delay="800">
+        <q-btn color='dark-grey' :disabled="!change" icon="save" @click="writeDatabase">
+          <q-tooltip v-if="change" :delay="800">
             Сохранить конфигурацию в базе данных
           </q-tooltip>
         </q-btn>
-        <q-btn color='primary' v-show="change" label='Отменить изменения' @click="resetChange"
-          style="margin-right: 15px;">
+        <q-btn color='dark-grey' v-show="change" label='Отменить изменения' @click="resetChange">
           <q-tooltip v-if="change" :delay="800">
             Отменить внесённые изменения
           </q-tooltip>
         </q-btn>
-        <q-btn color='primary' disable label='Экспорт в PDF' :href="downloadPDF" target="_self"
+        <q-btn color='dark-grey' disable icon="picture_as_pdf" :href="downloadPDF" target="_self"
           style="margin-right: 15px;">
           <q-tooltip :delay="800">
             Скачать данные в pdf файле
           </q-tooltip>
         </q-btn>
-      </q-card-section>
-      <div class="row">
-      </div>
+      </q-card-actions>
       <div class="bg-white text-h6">
-        <q-tabs v-model="tab" class="text-black" no-caps align="justify" active-color="teal" indicator-color="teal">
+        <q-tabs dense v-model="tab" class="text-grey" no-caps align="justify" active-color="white"
+          indicator-color="white" style="background-color: rgb(60, 60, 60);">
           <q-tab name="elements">
             <div class="text-h6">Конфигуратор</div>
             <q-tooltip :delay="800">
@@ -54,7 +52,7 @@
             </q-tooltip>
           </q-tab>
           <q-tab name="blockmanual">
-            <div class="text-h6">Подбор ЩУ</div>
+            <div class="text-h6">Подбор автоматики</div>
             <q-tooltip :delay="800">
               Подбирает маркировку и рассчитывает стоимость щита управления для выбранной конфигурации
             </q-tooltip>
@@ -71,95 +69,152 @@
               Вкладка для формирования перечня контрольно-измерительных приборов и оборудования автоматики
             </q-tooltip>
           </q-tab>
+          <q-tab name="files">
+            <div class="text-h6">Файлы</div>
+            <q-tooltip :delay="800">
+              Вкладка хранения пользовательских файлов
+            </q-tooltip>
+          </q-tab>
         </q-tabs>
-        <q-separator />
-        <q-tab-panels v-model="tab" animated keep-alive @transition="updateTabPanels">
+        <q-tab-panels v-model="tab" animated keep-alive @transition="updateTabPanels"
+          style="background-color: rgb(60, 60, 60);">
           <q-tab-panel name="card" style="min-height: 100px">
             <div class="row">
-              <q-input v-model="inputDescript" class="fit" clearable outlined label="Описание" type="textarea"
-                @update:model-value="syncTableMaterials" :input-style="{ resize: 'none', height: '50vh' }" />
+              <q-input v-model="inputDescript" dark class="fit" clearable outlined label="Описание" type="textarea"
+                @update:model-value="sync" :input-style="{ resize: 'none', height: '50vh' }" />
             </div>
           </q-tab-panel>
-          <q-tab-panel class="q-pa-sm " name="elements">
-            <q-card>
-              <q-card-actions>
-                <q-btn color='primary' icon="settings" @click="openDialog('Выбор основных параметров')">
-                  <q-tooltip :delay="800">
-                    Выбор основных параметров
-                  </q-tooltip>
-                </q-btn>
-                <q-btn color='primary' icon="edit" @click="openDialog('Изменить конфигурацию')">
-                  <q-tooltip :delay="800">
-                    Изменить конфигурацию (добавить или исключить используемые узлы)
-                  </q-tooltip>
-                </q-btn>
-              </q-card-actions>
-              <div align="center">
-                <div v-if="confType == 'Приточная'">
-                  Приточная/Вытяжная система
-                </div>
-                <div v-if="confType == 'Приточно - вытяжная'">
-                  Приточно - вытяжная система
-                </div>
-              </div>
-              <div class="row">
-                <div class="grid-container">
-                  <ImageElement v-for="element in initElements" :key="element" :id="element.id"
-                    :class="`grid-item ${element.class || ''}`" :name="element.name || ''" :descript="element.description || ''"
-                    :size="element.size || 'small'" :imageTop="loadImage(element.imageTop)"
-                    :imageBottom="loadImage(element.imageBottom)" :clickSelect="openDialog" />
-                  <!-- :imageTop="require(`./components/${element.imageTop}`)" -->
-                  <!-- <ImageElement id="fnresinp" class="grid-item" :imageBottom="require('./components/fan_reserve.svg')"
+          <q-tab-panel class="q-pa-sm" name="elements" style="background-color: rgb(60, 60, 60);">
+            <q-card-actions>
+              <q-btn color='dark-grey' icon="edit" @click="openDialog('Изменить конфигурацию')">
+                <q-tooltip :delay="800">
+                  Изменить конфигурацию (добавить или исключить используемые узлы)
+                </q-tooltip>
+              </q-btn>
+            </q-card-actions>
+
+            <q-splitter dark vertical v-model="splitterModelMain" separator-class="bg-white"
+              style="height: 70vh; background-color: rgb(60, 60, 60);">
+              <template v-slot:before style="overflow: hidden;">
+                <q-splitter dark horizontal v-model="splitterModelMainSettings" separator-class="bg-white"
+                  style="background-color: rgb(60, 60, 60);">
+                  <template v-slot:before>
+                    <q-scroll-area visible :delay="0" style=" max-width: 100%; height: 100%;"
+                      :vertical-thumb-style="{ right: '2px', borderRadius: '0px', background: 'grey', width: '15px', opacity: 1 }"
+                      :horizontal-thumb-style="{ bottom: '2px', borderRadius: '0px', background: 'grey', height: '15px', opacity: 1 }"
+                      :vertical-bar-style="{ right: '2px', borderRadius: '0px', background: 'grey', opacity: 0.3, width: '15px' }"
+                      :horizontal-bar-style="{ bottom: '2px', borderRadius: '0px', background: 'grey', opacity: 0.3, height: '15px' }">
+                      <div class="grid-container">
+                        <ImageElement v-for="element in initElements" :key="element" :id="element.id"
+                          :class="`grid-item white ${element.class || ''}`" :name="element.name || ''"
+                          :descript="element.description || ''" :size="element.size || 'small'"
+                          :imageTop="loadImage(element.imageTop)" :imageBottom="loadImage(element.imageBottom)"
+                          :clickSelect="openDialog" :idname="element.id" />
+                        <!-- :imageTop="require(`./components/${element.imageTop}`)" -->
+                        <!-- <ImageElement id="fnresinp" class="grid-item" :imageBottom="require('./components/fan_reserve.svg')"
                     size="large" />
                   <ImageElement id="fnresoutp" class="grid-item scaleX"
                     :imageBottom="require('./components/fan_reserve.svg')" size="large" />
                   <ImageElement id="rec" class="grid-item" name="Рекуператор"
                     :imageTop="require('./components/recuperator.svg')" :clickSelect="openDialog" /> -->
 
-                  <!-- <ImageElement v-for="index in 23" :key="index" :id="`air${index}`" class="grid-item" />
+                        <!-- <ImageElement v-for="index in 23" :key="index" :id="`air${index}`" class="grid-item" />
                   <ImageElement v-for="index in 10" :key="index" :id="`wall${index}`" class="grid-item" /> -->
-
-                </div>
-              </div>
-              <Dialog v-model="elementDialog" :elementName="dialogName" styleContent="width: 70vw; max-width: 70vw;">
-                <template v-slot:buttonsWindow>
-                  <q-btn dense flat icon="close" @click="closeAndConfirm" v-close-popup>
-                    <q-tooltip class="bg-grey text-white">Закрыть</q-tooltip>
-                  </q-btn>
-                </template>
-                <template v-slot:content>
-                  <div v-if="dialogName == 'Выбор основных параметров'">
-                    <q-card-section class="row">
-                      <q-card-section class="col-6">
-                        <q-select class="text-h6 fit" label="Тип системы:" options-selected-class="text-h6"
+                      </div>
+                    </q-scroll-area>
+                  </template>
+                  <template v-slot:after style="overflow: hidden;">
+                    <q-scroll-area visible :delay="0" style=" max-width: 100%; height: 100%;"
+                      :vertical-thumb-style="{ right: '2px', borderRadius: '0px', background: 'grey', width: '15px', opacity: 1 }"
+                      :horizontal-thumb-style="{ bottom: '2px', borderRadius: '0px', background: 'grey', height: '15px', opacity: 1 }"
+                      :vertical-bar-style="{ right: '2px', borderRadius: '0px', background: 'grey', opacity: 0.3, width: '15px' }"
+                      :horizontal-bar-style="{ bottom: '2px', borderRadius: '0px', background: 'grey', opacity: 0.3, height: '15px' }">
+                      <q-card-section class="row">
+                        <!-- <div class="text-white">
+                        Тип системы: {{ confType.label }}
+                      </div> -->
+                        <q-select dark dense class="col-4 text-h6" label="Тип системы:" options-selected-class="text-h6"
                           popup-content-class="text-h6" outlined v-model="confType" :options="confTypeOptions"
-                          @update:model-value="updateType" />
+                          option-value="id" @update:model-value="updateType"
+                          popup-content-style="background-color: rgb(60, 60, 60); color:  white;">
+                          <template v-slot:selected>
+                            <div class="text-white">
+                              {{ confType.label }}
+                            </div>
+                          </template>
+                        </q-select>
                       </q-card-section>
-                      <q-card-section class="col-6">
-                        <q-select v-if="confType == 'Приточно - вытяжная'" class="text-h6 fit"
-                          label="Наличие рекуператора:" options-selected-class="text-h6" popup-content-class="text-h6"
-                          outlined v-model="confRecup" :options="['Да', 'Нет']" />
-                      </q-card-section>
+
+                    </q-scroll-area>
+
+                  </template>
+                </q-splitter>
+              </template>
+              <template v-slot:after>
+                <q-scroll-area visible :delay="0" style=" max-width: 100%; height: 100%;"
+                  :vertical-thumb-style="{ right: '2px', borderRadius: '0px', background: 'grey', width: '15px', opacity: 1 }"
+                  :horizontal-thumb-style="{ bottom: '2px', borderRadius: '0px', background: 'grey', height: '15px', opacity: 1 }"
+                  :vertical-bar-style="{ right: '2px', borderRadius: '0px', background: 'grey', opacity: 0.3, width: '15px' }"
+                  :horizontal-bar-style="{ bottom: '2px', borderRadius: '0px', background: 'grey', opacity: 0.3, height: '15px' }">
+                  <q-card-section>
+                    Элемент
+                  </q-card-section>
+                </q-scroll-area>
+
+              </template>
+            </q-splitter>
+
+            <Dialog v-model="elementDialog" :elementName="dialogName" styleContent="width: 70vw; max-width: 70vw;">
+              <template v-slot:buttonsWindow>
+                <q-btn dense flat icon="close" @click="closeAndConfirm" v-close-popup>
+                  <q-tooltip class="bg-grey text-white">Закрыть</q-tooltip>
+                </q-btn>
+              </template>
+              <template v-slot:content>
+                <div v-if="dialogName == 'Выбор основных параметров'">
+                  <q-card-section class="row">
+                    <q-card-section class="col-4">
+
                     </q-card-section>
-                  </div>
-                  <div v-else-if="dialogName == 'Изменить конфигурацию'">
-                    <q-splitter v-model="splitterModel" style="height: 70vh">
-                      <template v-slot:before>
-                        <q-table class="fit" :rows="rowsElements" :columns="columnsElements" row-key="name"
-                          :filter="filter" :filter-method="find" virtual-scroll selection="multiply"
-                          v-model:selected="selectedElements" @update:selected="updateRowElements"
-                          v-model:pagination="pagination" :rows-per-page-options="[1]" grid-header wrap-cells
-                          :no-data-label="noDataText" :hide-bottom="true" :hide-header="true"
-                          @row-click="selectRowElements" bordered separator="none">
+                    <q-card-section class="col-3">
+                      <q-select dark v-if="confType.label === confTypeOptions[1].label" class="text-h6 fit"
+                        label="Наличие рекуператора:" options-selected-class="text-h6" popup-content-class="text-h6"
+                        outlined v-model="confRecup" :options="['Да', 'Нет']" label-color="grey"
+                        popup-content-style="background-color: rgb(60, 60, 60); color:  white;">
+                        <template v-slot:selected>
+                          <div class="text-white">
+                            {{ confRecup }}
+                          </div>
+                        </template>
+                      </q-select>
+                    </q-card-section>
+                  </q-card-section>
+                </div>
+                <div v-else-if="dialogName == 'Изменить конфигурацию'">
+                  <q-splitter dark v-model="splitterModelChangeConfigure"
+                    style="height: 70vh; background-color: rgb(60, 60, 60);">
+                    <template v-slot:before>
+                      <q-scroll-area dark visible class="fit bg-dark text-white"
+                        :vertical-thumb-style="{ right: '2px', borderRadius: '0px', background: 'grey', width: '15px', opacity: 1 }"
+                        :horizontal-thumb-style="{ bottom: '2px', borderRadius: '0px', background: 'grey', height: '15px', opacity: 1 }"
+                        :vertical-bar-style="{ right: '2px', borderRadius: '0px', background: 'grey', opacity: 0.3, width: '15px' }"
+                        :horizontal-bar-style="{ bottom: '2px', borderRadius: '0px', background: 'grey', opacity: 0.3, height: '15px' }">
+                        <q-table dark :rows="rowsElements" :columns="columnsElements" row-key="name" :filter="filter"
+                          :filter-method="find" virtual-scroll selection="multiply" v-model:selected="selectedElements"
+                          @update:selected="updateRowElements" v-model:pagination="pagination"
+                          :rows-per-page-options="[1]" grid-header wrap-cells :no-data-label="noDataText"
+                          :hide-bottom="true" :hide-header="true" @row-click="selectRowElements" separator="none"
+                          style="background-color: rgb(60, 60, 60);">
                           <template v-slot:body-selection="props">
-                            <q-toggle class="fit" size="4em" v-model="props.selected"
+                            <q-toggle class="fit" size="4em" v-model="props.selected" @update:model-value="sync"
                               @mouseover="overElement(props.row.id)" @mouseleave="leaveElement" />
                           </template>
                           <template v-slot:body-cell="props">
                             <q-td key="name" :props="props" @mouseover="overElement(props.row.id)"
                               @mouseleave="leaveElement">
                               <q-item class="row">
-                                <img :src="loadImage(props.row.icon)" style="min-height: 50px; max-height: 50px;" />
+                                <img class="white" :src="loadImage(props.row.icon)"
+                                  style="min-height: 50px; max-height: 50px;" />
                                 <div style="padding-left: 10px;">
                                   <div class="text-h6">
                                     {{ props.row.name }}
@@ -172,32 +227,34 @@
                             </q-td>
                           </template>
                         </q-table>
-                      </template>
-                      <template v-slot:after>
-                        <q-card-section class="text-h6">
-                          {{ nameElement }}
-                        </q-card-section>
-                        <q-card-section class="text-h8" align="center">
-                          {{ descriptElement }}
-                        </q-card-section>
-                      </template>
-                    </q-splitter>
-                  </div>
-                  <div v-else>
-                  </div>
-                </template>
-                <template v-slot:actions>
-                  <div>
-                    <q-btn color='primary' label="Применить" @click="closeAndConfirm" v-close-popup></q-btn>
-                  </div>
-                </template>
-              </Dialog>
-            </q-card>
-          </q-tab-panel>
-          <q-tab-panel name="laboriousness" style="min-height: 600px">
-            <q-input v-model="inputLaboriousnes" @update:model-value="syncTableMaterials" class="text-h6" outlined
-              label="Трудозатраты" type="number" :rules="validationNumberNoZero" suffix="ч." style="width: 160px;"
-              auto-save />
+                      </q-scroll-area>
+                    </template>
+                    <template v-slot:after>
+                      <q-card-section class="text-h6 text-white">
+                        {{ nameElement }}
+                      </q-card-section>
+                      <q-card-section class="text-h8 text-white" align="center">
+                        {{ descriptElement }}
+                      </q-card-section>
+                    </template>
+                  </q-splitter>
+                </div>
+                <div v-else>
+                  <q-card-actions>
+                    <q-btn color='primary' icon="delete">
+                      <q-tooltip :delay="800">
+                        Исключить элемент
+                      </q-tooltip>
+                    </q-btn>
+                  </q-card-actions>
+                </div>
+              </template>
+              <template v-slot:actions>
+                <div>
+                  <q-btn color='dark-grey' label="Ок" @click="closeAndConfirm" v-close-popup></q-btn>
+                </div>
+              </template>
+            </Dialog>
           </q-tab-panel>
           <q-tab-panel name="blockmanual" style="min-height: 100px">
             <div class="row">
@@ -235,7 +292,10 @@ import ImageElement from 'src/pages/services/productoptions/components/imageElem
 import DialogConfirm from 'src/components/dialogs/confirm.vue';
 import { useRoute, useRouter } from 'vue-router';
 import axios from 'axios';
-// import Table_v2 from 'src/components/tables/table_simple_v2.vue';
+import {
+  defaultStructure,
+  inflowOutflowStructure,
+} from './structuresDefault';
 import Dialog from './components/dialog.vue';
 
 export default defineComponent({
@@ -263,7 +323,6 @@ export default defineComponent({
     const tableAddMaterials = ref(null);
     const tableAddMaterialsBuffer = ref(null);
     const inputDescript = ref(null);
-    const inputLaboriousnes = ref(10);
     const change = ref(false);
     const add = ref(false);
     const addMaterialsCategorySelector = ref(null);
@@ -274,7 +333,6 @@ export default defineComponent({
     const dex = ref(null);
     const removeMain = ref(false);
     const dialogAddMaterials = ref(false);
-
     // ссылки
     const initElements = ref([
       {
@@ -288,6 +346,13 @@ export default defineComponent({
         imageTop: 'recircle.svg',
         imageBottom: 'air.svg',
         name: 'Камера смешения',
+      },
+      {
+        id: 'mix_inflow',
+        imageTop: 'valve.svg',
+        imageBottom: 'air.svg',
+        name: 'Камера смешения',
+        class: 'rotate90',
       },
       {
         id: 'pf1',
@@ -318,7 +383,7 @@ export default defineComponent({
         imageTop: 'fan.svg',
         imageBottom: 'air.svg',
         name: 'Вент притока 1',
-        description: 'Вентиляторы обеспечивают подачу свежего воздуха с улицы в помещение и выброс отработанного воздуха за пределы помещения.',
+        description: 'Вентиляторы обеспечивают подачу свежего воздуха с улицы в помещение.',
       },
       {
         id: 'pv1r',
@@ -350,6 +415,18 @@ export default defineComponent({
         imageTop: 'valve.svg',
         imageBottom: 'air.svg',
         name: 'Жалюзи вент притока (рез)',
+      },
+      {
+        id: 'vvv1',
+        imageTop: 'valve.svg',
+        imageBottom: 'air.svg',
+        name: 'Жалюзи вент вытяжки (осн)',
+      },
+      {
+        id: 'vvv1r',
+        imageTop: 'valve.svg',
+        imageBottom: 'air.svg',
+        name: 'Жалюзи вент вытяжки (рез)',
       },
       {
         id: 'vvlv1',
@@ -464,12 +541,14 @@ export default defineComponent({
         imageTop: 'filter.svg',
         imageBottom: 'air.svg',
         name: 'Фильтр вытяжки 1',
+        class: 'rotate180',
       },
       {
         id: 'vf2',
         imageTop: 'filter.svg',
         imageBottom: 'air.svg',
         name: 'Фильтр вытяжки 2',
+        class: 'rotate180',
       },
       {
         id: 'fnresoutp',
@@ -483,61 +562,100 @@ export default defineComponent({
         size: 'large',
       },
       {
+        id: 'fnresoutv',
+        imageBottom: 'fan_reserve.svg',
+        size: 'large',
+      },
+      {
+        id: 'fnresinv',
+        imageBottom: 'fan_reserve.svg',
+        size: 'large',
+        class: 'scaleX',
+      },
+      {
         id: 'arrow1',
         imageBottom: 'arrow.svg',
+        class: 'grey',
       },
       {
         id: 'arrow2',
         imageBottom: 'arrow.svg',
+        class: 'grey',
       },
       {
         id: 'arrow3',
         imageBottom: 'arrow.svg',
+        class: 'grey rotate180',
       },
       {
         id: 'arrow4',
         imageBottom: 'arrow.svg',
-        class: 'rotate180',
+        class: 'grey rotate180',
+      },
+      {
+        id: 'arrow5',
+        imageBottom: 'arrow.svg',
+        class: 'grey rotate270',
       },
       {
         id: 'wall1',
         imageBottom: 'wall.svg',
+        class: 'grey',
       },
       {
         id: 'wall2',
         imageBottom: 'wall.svg',
+        class: 'grey',
       },
       {
         id: 'wall3',
         imageBottom: 'wall.svg',
+        class: 'grey',
       },
       {
         id: 'wall4',
         imageBottom: 'wall.svg',
+        class: 'grey',
       },
       {
         id: 'wall5',
         imageBottom: 'wall.svg',
+        class: 'grey',
       },
       {
         id: 'wall6',
         imageBottom: 'wall.svg',
+        class: 'grey',
       },
       {
         id: 'wall7',
         imageBottom: 'wall.svg',
+        class: 'grey',
       },
       {
         id: 'wall8',
         imageBottom: 'wall.svg',
+        class: 'grey',
       },
       {
         id: 'wall9',
         imageBottom: 'wall.svg',
+        class: 'grey',
       },
       {
         id: 'wall10',
         imageBottom: 'wall.svg',
+        class: 'grey',
+      },
+      {
+        id: 'wall11',
+        imageBottom: 'wall.svg',
+        class: 'grey',
+      },
+      {
+        id: 'wall12',
+        imageBottom: 'wall.svg',
+        class: 'grey',
       },
       {
         id: 'air1',
@@ -643,6 +761,85 @@ export default defineComponent({
         id: 'air26',
         imageBottom: 'air.svg',
       },
+      // Для вытяжки
+      {
+        id: 'air27',
+        imageBottom: 'air.svg',
+      },
+      {
+        id: 'air28',
+        imageBottom: 'air.svg',
+      },
+      {
+        id: 'air29',
+        imageBottom: 'air.svg',
+      },
+      {
+        id: 'air30',
+        imageBottom: 'air.svg',
+      },
+      {
+        id: 'air31',
+        imageBottom: 'air.svg',
+      },
+      {
+        id: 'air32',
+        imageBottom: 'air.svg',
+      },
+      {
+        id: 'air33',
+        imageBottom: 'air.svg',
+      },
+      {
+        id: 'air34',
+        imageBottom: 'air.svg',
+      },
+      {
+        id: 'air35',
+        imageBottom: 'air.svg',
+      },
+      {
+        id: 'air36',
+        imageBottom: 'air.svg',
+      },
+      {
+        id: 'air37',
+        imageBottom: 'air.svg',
+      },
+      {
+        id: 'air38',
+        imageBottom: 'air.svg',
+      },
+      {
+        id: 'air39',
+        imageBottom: 'air.svg',
+      },
+      {
+        id: 'air40',
+        imageBottom: 'air.svg',
+      },
+      {
+        id: 'air41',
+        imageBottom: 'air.svg',
+      },
+      {
+        id: 'air42',
+        imageBottom: 'air.svg',
+      },
+      {
+        id: 'air43',
+        imageBottom: 'air.svg',
+        class: 'rotate90',
+      },
+      {
+        id: 'air1_up_border',
+        imageBottom: 'air_up_border.svg',
+      },
+      {
+        id: 'air2_up_border',
+        imageBottom: 'air_up_border.svg',
+        class: 'rotate180',
+      },
     ]);
     // const elements = {};
     const columnsElements = [{
@@ -662,7 +859,15 @@ export default defineComponent({
     const descriptDefault = 'Включите либо отключите необходимые узлы системы';
     const descriptElement = ref(descriptDefault);
     const dialogName = ref('');
-    const confTypeOptions = ['Приточная', 'Приточно - вытяжная'];
+    const confTypeOptions = [
+      {
+        id: 0,
+        label: 'Приточная/Вытяжная',
+      },
+      {
+        id: 1,
+        label: 'Приточно - вытяжная',
+      }];
     const confType = ref(confTypeOptions[0]);
     const orderFlows = ref(['outflow', 'inflow']);
     const confRecup = ref('Да');
@@ -688,33 +893,31 @@ export default defineComponent({
     let object = null;
     const syncObject = ref(null);
 
-    function syncTableMaterials() {
+    let structure = {};
+    function sync() {
       object.descript = inputDescript.value;
-      object.laboriousness = inputLaboriousnes.value;
+      const writeStruct = {
+        type: confType.value.id,
+        elements: structure,
+      };
+      object.structure = writeStruct;
       syncObject.value = JSON.stringify(object);
-    }
-
-    function resetChange() {
-      // update(
-      //   () => {
-      //     syncTableMaterials();
-      //     change.value = false;
-      //   },
-      // );
     }
     function writeDatabase() {
       const query = object;
       query.descript = inputDescript.value;
-      query.operations = inputLaboriousnes.value;
+      const writeStruct = {
+        type: confType.value.id,
+        elements: structure,
+      };
+      query.structure = JSON.stringify(writeStruct);
       axios.post(`${getQueryUpdate()}/${object.id}`, query).then((res) => {
         if (res.data.result === 'ok') {
           object = res.data.data;
-          // update();
           change.value = false;
         }
       });
     }
-
     function confirmExitAndSave() {
       writeDatabase();
       confirmExit();
@@ -791,10 +994,10 @@ export default defineComponent({
       }
     }
     // формирует область объектов из структуры
-    function build(structure) {
+    function build(struct) {
       visibleAllElements(false);
-      for (let index = 0; index < structure.length; index += 1) {
-        const element = structure[index];
+      for (let index = 0; index < struct.length; index += 1) {
+        const element = struct[index];
         const elementDOM = getObject(initElements.value, 'id', element.el);
         const elementDOMbottom = getObject(initElements.value, 'id', element.bottom);
         if (elementDOM != null) {
@@ -808,14 +1011,14 @@ export default defineComponent({
         }
       }
     }
-    function setEnable(structure, val) {
-      for (let index = 0; index < structure.length; index += 1) {
-        const element = structure[index];
+    // включает или выключает все элементы в структуре
+    function setEnable(struct, val) {
+      for (let index = 0; index < struct.length; index += 1) {
+        const element = struct[index];
         if (element.enabled) {
           element.enable = val;
         }
       }
-      build(structure);
     }
     // добавляеь элемент в массив
     // function addElementInArray(array, el, x, y, w, h) {
@@ -826,617 +1029,6 @@ export default defineComponent({
     //     w,
     //     h,
     //   });
-    // }
-    const structure = [
-      {
-        el: 'wall1',
-        x: 2,
-        y: 1,
-      },
-      {
-        el: 'wall2',
-        x: 2,
-        y: 3,
-      },
-      {
-        el: 'wall3',
-        x: 2,
-        y: 5,
-      },
-      {
-        el: 'pvlv1',
-        x: 2,
-        y: 2,
-      },
-      {
-        el: 'mix',
-        x: 3,
-        y: 2,
-      },
-      {
-        el: 'air3',
-        x: 3,
-        y: 4,
-        w: 7,
-        h: 1,
-      },
-      {
-        el: 'pf1',
-        x: 4,
-        y: 2,
-      },
-      {
-        el: 'pf2',
-        x: 5,
-        y: 2,
-      },
-      {
-        el: 'pf3',
-        x: 6,
-        y: 2,
-      },
-      {
-        el: 'prhe',
-        x: 7,
-        y: 2,
-      },
-      {
-        el: 'rec',
-        x: 8,
-        y: 2,
-        w: 2,
-        h: 3,
-      },
-      {
-        el: 'vv2',
-        x: 11,
-        y: 2,
-      },
-      {
-        el: 'vv1',
-        x: 12,
-        y: 2,
-      },
-      {
-        el: 'air3',
-        x: 10,
-        y: 2,
-        w: 1,
-        h: 1,
-      },
-      {
-        el: 'air4',
-        x: 15,
-        y: 2,
-        w: 10,
-        h: 1,
-      },
-      {
-        el: 'vf1',
-        x: 13,
-        y: 2,
-      },
-      {
-        el: 'vf2',
-        x: 14,
-        y: 2,
-      },
-      {
-        el: 'vvlv1',
-        x: 2,
-        y: 4,
-      },
-      {
-        el: 'air5',
-        x: 3,
-        y: 4,
-      },
-      {
-        el: 'toh1',
-        x: 10,
-        y: 4,
-      },
-      {
-        el: 'toh2',
-        x: 11,
-        y: 4,
-      },
-      {
-        el: 'toh3',
-        x: 12,
-        y: 4,
-      },
-      {
-        el: 'toc1',
-        x: 13,
-        y: 4,
-      },
-      {
-        el: 'toc2',
-        x: 14,
-        y: 4,
-      },
-      {
-        el: 'hum',
-        x: 15,
-        y: 4,
-      },
-      {
-        el: 'fnresinp',
-        x: 16,
-        y: 4,
-        w: 1,
-        h: 2,
-      },
-      {
-        el: 'vpv1',
-        x: 17,
-        y: 4,
-      },
-      {
-        el: 'vpv1r',
-        x: 17,
-        y: 5,
-      },
-      {
-        el: 'pv1',
-        x: 18,
-        y: 4,
-      },
-      {
-        el: 'pv1r',
-        x: 18,
-        y: 5,
-      },
-      {
-        el: 'fnresoutp',
-        x: 19,
-        y: 4,
-        w: 1,
-        h: 2,
-      },
-      {
-        el: 'pv2',
-        x: 20,
-        y: 4,
-      },
-      {
-        el: 'tkan',
-        x: 24,
-        y: 4,
-      },
-      {
-        el: 'tnar',
-        x: 1,
-        y: 3,
-      },
-      {
-        el: 'tud',
-        x: 3,
-        y: 4,
-      },
-      {
-        el: 'hummes',
-        x: 21,
-        y: 4,
-      },
-      {
-        el: 'co2',
-        x: 22,
-        y: 4,
-      },
-      {
-        el: 'troom',
-        x: 25,
-        y: 3,
-      },
-      {
-        el: 'press',
-        x: 23,
-        y: 4,
-      },
-      // {
-      //   el: 'air6',
-      //   x: 19,
-      //   y: 4,
-      //   w: 5,
-      //   h: 1,
-      // },
-      {
-        el: 'air7',
-        x: 4,
-        y: 4,
-        w: 4,
-        h: 1,
-      },
-      {
-        el: 'arrow1',
-        x: 1,
-        y: 2,
-      },
-      {
-        el: 'arrow2',
-        x: 25,
-        y: 2,
-      },
-      {
-        el: 'arrow3',
-        x: 1,
-        y: 4,
-      },
-      {
-        el: 'arrow4',
-        x: 25,
-        y: 4,
-      },
-    ];
-    const structureInflow = [
-      {
-        el: 'air12',
-        x: 7,
-        y: 2,
-      },
-      {
-        el: 'air21',
-        x: 14,
-        y: 2,
-        w: 2,
-        h: 1,
-      },
-      {
-        enabled: false,
-        el: 'wall1',
-        x: 2,
-        y: 1,
-      },
-      {
-        enabled: false,
-        el: 'wall2',
-        x: 2,
-        y: 3,
-      },
-      {
-        enabled: false,
-        el: 'wall3',
-        x: 2,
-        y: 4,
-      },
-      {
-        enabled: false,
-        el: 'wall4',
-        x: 2,
-        y: 5,
-      },
-      {
-        enabled: false,
-        el: 'wall5',
-        x: 2,
-        y: 6,
-      },
-      {
-        enabled: false,
-        el: 'wall6',
-        x: 26,
-        y: 1,
-      },
-      {
-        enabled: false,
-        el: 'wall7',
-        x: 26,
-        y: 3,
-      },
-      {
-        enabled: false,
-        el: 'wall8',
-        x: 26,
-        y: 4,
-      },
-      {
-        enabled: false,
-        el: 'wall9',
-        x: 26,
-        y: 5,
-      },
-      {
-        enabled: false,
-        el: 'wall10',
-        x: 26,
-        y: 6,
-      },
-      {
-        enabled: false,
-        el: 'pvlv1',
-        x: 2,
-        y: 2,
-      },
-      {
-        enabled: true,
-        el: 'mix',
-        manual: true,
-        enable: true,
-        bottom: 'air1',
-        x: 3,
-        y: 2,
-      },
-      {
-        enabled: true,
-        enable: false,
-        manual: true,
-        el: 'pf1',
-        bottom: 'air13',
-        x: 4,
-        y: 2,
-      },
-      {
-        enabled: true,
-        el: 'pf2',
-        manual: true,
-        enable: true,
-        bottom: 'air2',
-        x: 5,
-        y: 2,
-      },
-      {
-        enabled: true,
-        el: 'pf3',
-        manual: true,
-        enable: true,
-        bottom: 'air3',
-        x: 6,
-        y: 2,
-      },
-      {
-        enabled: true,
-        enable: true,
-        manual: true,
-        el: 'toh1',
-        bottom: 'air4',
-        x: 8,
-        y: 2,
-      },
-      {
-        enabled: true,
-        enable: true,
-        manual: true,
-        el: 'toh2',
-        bottom: 'air5',
-        x: 9,
-        y: 2,
-      },
-      {
-        enabled: true,
-        enable: true,
-        manual: true,
-        el: 'toh3',
-        bottom: 'air6',
-        x: 10,
-        y: 2,
-      },
-      {
-        enabled: true,
-        enable: true,
-        manual: true,
-        el: 'toc1',
-        bottom: 'air7',
-        x: 11,
-        y: 2,
-      },
-      {
-        enabled: true,
-        enable: true,
-        manual: true,
-        el: 'toc2',
-        bottom: 'air8',
-        x: 12,
-        y: 2,
-      },
-      {
-        enabled: true,
-        enable: true,
-        manual: true,
-        el: 'hum',
-        bottom: 'air9',
-        x: 13,
-        y: 2,
-      },
-      {
-        enabled: true,
-        manual: false,
-        enable: true,
-        el: 'fnresinp',
-        bottom: 'air10',
-        x: 16,
-        y: 2,
-        w: 1,
-        h: 2,
-      },
-      {
-        enabled: true,
-        manual: false,
-        enable: true,
-        el: 'vpv1',
-        bottom: 'air11',
-        x: 17,
-        y: 2,
-      },
-      {
-        enabled: true,
-        manual: false,
-        enable: true,
-        el: 'vpv1r',
-        x: 17,
-        y: 3,
-      },
-      {
-        enabled: false,
-        el: 'pv1',
-        x: 18,
-        y: 2,
-      },
-      {
-        enabled: true,
-        enable: true,
-        manual: true,
-        el: 'pv1r',
-        enableElements: ['vpv1r', 'vpv1', 'fnresoutp', 'fnresinp'],
-        x: 18,
-        y: 3,
-      },
-      {
-        enabled: true,
-        enable: true,
-        manual: false,
-        bottom: 'air14',
-        el: 'fnresoutp',
-        x: 19,
-        y: 2,
-        w: 1,
-        h: 2,
-      },
-
-      {
-        enabled: true,
-        enable: true,
-        manual: true,
-        el: 'pv2',
-        bottom: 'air15',
-        x: 20,
-        y: 2,
-      },
-      {
-        enabled: true,
-        enable: false,
-        manual: true,
-        el: 'tkan',
-        bottom: 'air19',
-        x: 25,
-        y: 2,
-      },
-      {
-        enabled: true,
-        manual: true,
-        enable: true,
-        el: 'tnar',
-        x: 1,
-        y: 3,
-      },
-      {
-        enabled: true,
-        enable: true,
-        manual: true,
-        el: 'hummes',
-        bottom: 'air16',
-        x: 21,
-        y: 2,
-      },
-      {
-        enabled: true,
-        enable: true,
-        manual: true,
-        bottom: 'air17',
-        el: 'co2',
-        x: 22,
-        y: 2,
-      },
-      {
-        el: 'air23',
-        x: 23,
-        y: 2,
-      },
-      {
-        enabled: true,
-        enable: true,
-        manual: true,
-        el: 'troom',
-        x: 27,
-        y: 3,
-      },
-      {
-        enabled: true,
-        enable: true,
-        manual: true,
-        el: 'press',
-        bottom: 'air18',
-        x: 24,
-        y: 2,
-      },
-      {
-        enabled: true,
-        enable: false,
-        el: 'pvlv2',
-        manual: true,
-        bottom: 'air22',
-        x: 26,
-        y: 2,
-      },
-      {
-        enabled: false,
-        el: 'arrow1',
-        x: 1,
-        y: 2,
-      },
-      {
-        enabled: false,
-        el: 'arrow2',
-        x: 27,
-        y: 2,
-      },
-    ];
-    function updateType() {
-      if (confType.value === 'Приточная') {
-        setEnable(structureInflow, false);
-      } else if (confType.value === 'Приточно - вытяжная') {
-        build(structure);
-      }
-    }
-    // function updateRowsElements(newSelected) {
-    //   function getObjectsEnadledManualsInStrc(struct) {
-    //     const objects = [];
-    //     for (let index = 0; index < struct.length; index += 1) {
-    //       const element = struct[index];
-    //       if (element.enabled) {
-    //         if (element.manual) {
-    //           objects.push(element);
-    //         }
-    //       }
-    //     }
-    //     return objects;
-    //   }
-    //   // очищает список
-    //   rowsElements.value.length = 0;
-    //   console.log(newSelected);
-    //   // если идёт обновление по изменению конфигурации
-    //   if (newSelected) {
-    //     getObjectsEnadledManualsInStrc(structureInflow).forEach((elementStruct) => {
-    //       if (elementStruct.el === 'pf2') {
-    //         console.log('pf1');
-    //       }
-    //       newSelected.forEach((elementNewSelected) => {
-    //         console.log(elementStruct, elementNewSelected);
-    //       });
-    //     });
-    //   } else { // если идёт обновление без изменения конфигурации
-    //     for (let index = 0; index < structureInflow.length; index += 1) {
-    //       const element = structureInflow[index];
-    //       if (element.enabled) {
-    //         if (element.manual) {
-    //           const en = true;
-    //           if (en) {
-    //             const elementDOM = getObject(initElements.value, 'id', element.el);
-    //             if (elementDOM.name) {
-    //               rowsElements.value.push(
-    //                 {
-    //                   id: element.el,
-    //                   name: elementDOM.name,
-    //                   icon: elementDOM.imageTop,
-    //                 },
-    //               );
-    //             }
-    //           }
-    //         }
-    //       }
-    //     }
-    //   }
     // }
     function getObjectsEnadledManualsInStrc(struct) {
       const objects = [];
@@ -1451,45 +1043,48 @@ export default defineComponent({
       return objects;
     }
     function closeAndConfirm() {
-      setEnable(structureInflow, false);
-      for (let index = 0; index < selectedElements.value.length; index += 1) {
-        const element = selectedElements.value[index];
-        const elementStructure = getObject(structureInflow, 'el', element.id);
-        elementStructure.enable = true;
-        if (elementStructure.enableElements) {
-          for (let i = 0; i < elementStructure.enableElements.length; i += 1) {
-            const val = elementStructure.enableElements[i];
-            const enableEl = getObject(structureInflow, 'el', val);
-            enableEl.enable = true;
+      if (dialogName.value === 'Изменить конфигурацию') {
+        setEnable(structure, false);
+        for (let index = 0; index < selectedElements.value.length; index += 1) {
+          const element = selectedElements.value[index];
+          const elementStructure = getObject(structure, 'el', element.id);
+          elementStructure.enable = true;
+          if (elementStructure.enableElements) {
+            for (let i = 0; i < elementStructure.enableElements.length; i += 1) {
+              const val = elementStructure.enableElements[i];
+              const enableEl = getObject(structure, 'el', val);
+              enableEl.enable = true;
+            }
           }
         }
       }
-      build(structureInflow);
+      // sync();
+      build(structure);
     }
-    function updateRowsElements(newSelected) {
-      function getElement(elId) {
-        return getObject(structureInflow, 'el', elId);
-      }
-      function resetSelect(elId) {
-        if (newSelected) {
-          removeElementInArray(newSelected, 'id', elId);
-          getElement(elId).enable = false;
-        }
-      }
+    function getElement(elId) {
+      return getObject(structure, 'el', elId);
+    }
+    function resetSelect(elId) {
+      removeElementInArray(selectedElements.value, 'id', elId);
+      getElement(elId).enable = false;
+    }
+    function createListElements() {
       // очищает список
       rowsElements.value.length = 0;
-      // console.log(newSelected);
-
-      if (newSelected) { // если идёт обновление по изменению конфигурации
-        getObjectsEnadledManualsInStrc(structureInflow).forEach((elementStruct) => {
-          elementStruct.enable = false;
-        });
-        newSelected.forEach((elementNewSelected) => {
-          getObject(structureInflow, 'el', elementNewSelected.id).enable = true;
-        });
-      }
-      getObjectsEnadledManualsInStrc(structureInflow).forEach((elementStruct) => {
+      selectedElements.value.length = 0;
+      getObjectsEnadledManualsInStrc(structure).forEach((elementStruct) => {
         let en = true;
+
+        // if (!elementStruct.enable) {
+        //   if (elementStruct.disableElements) {
+        //     elementStruct.disableElements.forEach((elDisable) => {
+        //       if (hideElements.indexOf(elementStruct.el) === -1) {
+        //         hideElements.push(elDisable);
+        //       }
+        //     });
+        //   }
+        // }
+
         if (elementStruct.el === 'pf1') {
           if (!getElement('pf1').enable) {
             resetSelect('pf2');
@@ -1499,6 +1094,7 @@ export default defineComponent({
         if (elementStruct.el === 'pf2') {
           if (!getElement('pf1').enable) {
             en = false;
+            resetSelect('pf3');
           }
         }
         if (elementStruct.el === 'pf3') {
@@ -1554,73 +1150,90 @@ export default defineComponent({
             en = false;
           }
         }
+        // вытяжка
+        if (elementStruct.el === 'vv2') {
+          if (getElement('vv1r').enable) {
+            en = false;
+          }
+        }
+        if (elementStruct.el === 'vv1r') {
+          if (getElement('vv2').enable) {
+            en = false;
+          }
+        }
         if (en) {
           const elementDOM = getObject(initElements.value, 'id', elementStruct.el);
           if (elementDOM.name) {
+            const elem = {
+              id: elementStruct.el,
+              name: elementDOM.name,
+              icon: elementDOM.imageTop,
+            };
             rowsElements.value.push(
-              {
-                id: elementStruct.el,
-                name: elementDOM.name,
-                icon: elementDOM.imageTop,
-              },
+              elem,
             );
+            if (elementStruct.enable) {
+              selectedElements.value.push(elem);
+            }
           }
         }
       });
-      build(structureInflow);
+    }
+    function updateRowsElements(newSelected) {
+      // console.log(newSelected);
+
+      if (newSelected) { // если идёт обновление по изменению конфигурации
+        getObjectsEnadledManualsInStrc(structure).forEach((elementStruct) => {
+          elementStruct.enable = false;
+        });
+        newSelected.forEach((elementNewSelected) => {
+          const sel = getObject(structure, 'el', elementNewSelected.id);
+          sel.enable = true;
+          console.log(sel);
+          if (sel.el === 'pf1') {
+            if (!getElement('pf1').enable) {
+              resetSelect('pf2');
+              resetSelect('pf3');
+            }
+          }
+        });
+      }
+      // else {
+      //   selectedElements.value.length = 0;
+      // }
+      createListElements();
     }
     function selectClickElement(elName) {
-      dialogName.value = elName;
+      const obj = getObject(initElements.value, 'id', elName);
+      if (obj) {
+        dialogName.value = obj.name;
+      } else {
+        dialogName.value = elName;
+      }
       updateRowsElements();
       elementDialog.value = true;
     }
-    function update() {
-      axios.get(`${getQueryAll()}/${id}`)
-        .then((res) => {
-          if (res.data.result === 'ok') {
-            object = res.data.data;
-            name.value = object.name;
-            document.title = object.name;
-            updatedAt.value = object.updatedAt;
-            inputDescript.value = object.descript;
-            console.log(id, path);
-            axios
-              .get(`${host}/services/genprice/Setting`).then((responseS) => {
-                console.log(responseS);
-              });
-          }
-        });
-    }
-    onMounted(() => {
-      for (let index = 0; index < initElements.value.length; index += 1) {
-        const element = initElements.value[index];
-        initElement(element.id);
+    function updateType(value) {
+      if (value) {
+        if (value.id === confTypeOptions[0].id) {
+          structure = defaultStructure.elements;
+          console.log(55);
+        } else if (value.id === confTypeOptions[1].id) {
+          structure = inflowOutflowStructure.elements;
+          console.log(5);
+        }
+        setEnable(structure, false);
+        build(structure);
+        sync();
       }
-
-      // visibleAllElements(true);
-      // initElement('rec');
-
-      updateType();
-      update();
-    });
+    }
     function selectRowElements(event, row) {
       console.log(event, row);
-      // selectedElements.value.push(row);
+      selectedElements.value.push(row);
     }
 
     function tableMaterialsUpdate(selected) {
       add.value = selected.length > 0;
-    }
-    function actionRemoveMaterial() {
-      const arr = tableMaterials.value.selected;
-      let objectsNames = arr[0].name;
-      for (let index = 1; index < arr.length; index += 1) {
-        const element = arr[index];
-        objectsNames += `, ${element.name}`;
-      }
-      dc.value.setName('Удаление');
-      dc.value.setText(`Удалить "${objectsNames}"?`);
-      dc.value.show();
     }
     function overElement(val) {
       const obj = getObject(initElements.value, 'id', val);
@@ -1638,7 +1251,53 @@ export default defineComponent({
       change.value = (newValue !== oldValue);
     }, { flush: 'sync' });
     // новые функции
+    function update(callback) {
+      axios.get(`${getQueryAll()}/${id}`)
+        .then((res) => {
+          if (res.data.result === 'ok') {
+            object = res.data.data;
+            name.value = object.name;
+            document.title = object.name;
+            updatedAt.value = object.updatedAt;
+            inputDescript.value = object.descript;
+            console.log(id, path);
+            const readStruct = JSON.parse(object.structure);
+            confType.value = confTypeOptions[readStruct.type];
+            structure = readStruct.elements;
+            // updateType(confTypeOptions[readStruct.type]);
+            build(structure);
+            // build(inflowOutflowStructure.elements);
+            // setEnable(defaultStructure.elements, false);
+            // build(defaultStructure.elements);
+            axios
+              .get(`${host}/services/genprice/Setting`).then((responseS) => {
+                console.log(responseS);
+                if (callback) {
+                  callback();
+                }
+              });
+          }
+        });
+    }
+    function resetChange() {
+      update(
+        () => {
+          sync();
+          change.value = false;
+        },
+      );
+    }
+    onMounted(() => {
+      for (let index = 0; index < initElements.value.length; index += 1) {
+        const element = initElements.value[index];
+        initElement(element.id);
+      }
 
+      // visibleAllElements(true);
+      // initElement('rec');
+
+      update();
+    });
     return {
       // новые
       Dialog,
@@ -1666,7 +1325,7 @@ export default defineComponent({
       confirmExit,
       exit,
       downloadPDF,
-      syncTableMaterials,
+      sync,
       dc,
       dex,
       removeMain,
@@ -1675,12 +1334,10 @@ export default defineComponent({
       updateSearch,
       add,
       removeFromBuffer,
-      actionRemoveMaterial,
       tableAddMaterials,
       change,
       writeDatabase,
       inputDescript,
-      inputLaboriousnes,
       getPathList,
       name,
       updatedAt,
@@ -1693,7 +1350,9 @@ export default defineComponent({
       tab,
       dialogAddMaterials,
       resetChange,
-      splitterModel: ref(60),
+      splitterModelMain: ref(70),
+      splitterModelMainSettings: ref(65),
+      splitterModelChangeConfigure: ref(60),
       closeAndConfirm,
       pagination: ref({
         rowsPerPage: 0,
@@ -1709,12 +1368,10 @@ export default defineComponent({
 </script>
 <style>
 .grid-container {
-  width: 100%;
-  height: 100%;
   margin: 5px;
-  border: 1px solid #212226;
+  border: 1px solid grey;
   display: grid;
-  grid-template-rows: repeat(6, 1fr);
+  grid-template-rows: repeat(7, 1fr);
   grid-template-columns: repeat(27, 1fr);
   grid-template-areas:
     ". . . . . . . . . . . . . . . . . . . . . . . ."
@@ -1722,11 +1379,8 @@ export default defineComponent({
     "item2-1 item2-2 item2-3 item2-4 item2-5 item2-6 item2-7 item2-8 item2-9 item2-10 item2-11 item2-12 item2-13 item2-14 item2-15 item2-16 item2-17 item2-18 item2-19 item2-20 item2-21 item2-22 item2-23 item2-24 item2-25 item2-26 item2-27"
     "item3-1 item3-2 item3-3 item3-4 item3-5 item3-6 item3-7 item3-8 item3-9 item3-10 item3-11 item3-12 item3-13 item3-14 item3-15 item3-16 item3-17 item3-18 item3-19 item3-20 item3-21 item3-22 item3-23 item3-24 item3-25 item3-26 item3-27"
     "item4-1 item4-2 item4-3 item4-4 item4-5 item4-6 item4-7 item4-8 item4-9 item4-10 item4-11 item4-12 item4-13 item4-14 item4-15 item4-16 item4-17 item4-18 item4-19 item4-20 item4-21 item4-22 item4-23 item4-24 item4-25 item4-26 item4-27"
+    "item5-1 item5-2 item5-3 item5-4 item5-5 item5-6 item5-7 item5-8 item5-9 item5-10 item5-11 item5-12 item5-13 item5-14 item5-15 item5-16 item5-17 item5-18 item5-19 item5-20 item5-21 item5-22 item5-23 item5-24 item5-25 item5-26 item5-27"
     ". . . . . . . . . . . . . . . . . . . . . . . .";
-}
-
-.recuperator {
-  grid-area: 2 / 10 / span 3 / span 1;
 }
 
 .grid-item {

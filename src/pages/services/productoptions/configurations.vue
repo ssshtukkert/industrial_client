@@ -1,15 +1,15 @@
 <template>
-  <q-page class="justify-center full-width">
-    <q-card class="bg-secondary text-white">
-      <q-card-section>
+  <q-page class="justify-center full-width text-white" style="background-color: rgb(60, 60, 60);">
+    <q-card class="" style="background-color: rgb(60, 60, 60);">
+      <q-card-section style="background-color: rgb(80, 80, 80);">
         <div class="text-h6">Конфигурации</div>
       </q-card-section>
       <Table ref="table" :columnsDef="columns" :rowsDef="rows" createNewName="Новая конфигурация"
         :queryAll="getQueryAll()" :queryUpdate="getQueryUpdate()" :queryDelete="getQueryDelete()"
-        :queryCreate="getQueryCreate()" :actionRow="actionRow" >
+        :queryCreate="getQueryCreate()" :actionRow="actionRow">
         <template v-slot:actions>
-          <q-btn color='orange' label='Открыть' v-show="isOneSelect()" @click="goRoot" />
-          <q-btn color='green' label='Скопировать' v-show="isOneSelect()" @click="copy" />
+          <q-btn color='dark-grey' icon="open_in_new" v-show="isOneSelect()" @click="goRoot" />
+          <q-btn color='dark-grey' icon="content_copy" v-show="isOneSelect()" @click="copy" />
         </template>
       </Table>
       <q-dialog v-model="dialog" persistent>
@@ -25,9 +25,9 @@
             <slot name="content" />
           </q-card-section>
           <q-card-actions align="right" class="bg-grey-4 text-black">
-            <q-btn v-show="allowCopy()" color="orange" label="Создать копию" @click="confirmCopy"
+            <q-btn v-show="allowCopy()" color="dark-grey" label="Создать копию" @click="confirmCopy"
               :disabled="!createInputName" />
-            <q-btn color="primary" label="Отмена" v-close-popup @click="cancelConfirm" />
+            <q-btn color="dark-grey" label="Отмена" v-close-popup @click="cancelConfirm" />
           </q-card-actions>
         </q-card>
       </q-dialog>
@@ -42,6 +42,9 @@ import {
 import Table from 'src/components/tables/table.vue';
 import axios from 'axios';
 import { useRouter } from 'vue-router';
+import {
+  defaultStructure,
+} from './structuresDefault';
 
 export default defineComponent({
   name: 'GenPricePage',
@@ -128,8 +131,7 @@ export default defineComponent({
     onMounted(() => {
       table.value.createConfirmAction = () => {
         const query = table.value.getQueryData();
-        query.elements = '[]';
-        query.kip = '[]';
+        query.structure = JSON.stringify(defaultStructure);
         query.descript = '';
         axios.post(getQueryCreate(), query)
           .then((res) => {

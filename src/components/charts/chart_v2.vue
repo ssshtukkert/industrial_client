@@ -17,12 +17,12 @@
     <q-card-section align="center" style="padding: 0px;">
       <div class="row" v-show="vis" style="padding: 5px;">
         <div class="col-6">
-          <q-badge style="background-color: rgb(80, 80, 80);">
+          <q-badge v-if="valueMeasure !== ''" style="background-color: rgb(80, 80, 80);">
             <div :class="classValue">{{ v }} {{ valueMeasure }}</div>
           </q-badge>
         </div>
         <div class="col-6" v-show="s != ''">
-          <q-badge style="background-color: rgb(80, 80, 80);">
+          <q-badge v-if="valueMeasure !== ''" style="background-color: rgb(80, 80, 80);">
             <div :class="classSetpoint">Уст: {{ s }} {{ valueMeasure }}</div>
           </q-badge>
         </div>
@@ -232,6 +232,9 @@ export default defineComponent({
     },
     setVisible(val) {
       this.vis = val;
+    },
+    setName(val) {
+      this.nam = val;
     },
     getVisible() {
       return this.vis;

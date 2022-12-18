@@ -1,7 +1,7 @@
 <template>
-  <q-page class="justify-center full-width">
-    <q-card class="bg-secondary text-white">
-      <q-card-section>
+  <q-page class="justify-center full-width text-white" style="background-color: rgb(60, 60, 60);">
+    <q-card class="" style="background-color: rgb(60, 60, 60);">
+      <q-card-section style="background-color: rgb(80, 80, 80);">
         <div class="text-h6">Расчеты</div>
       </q-card-section>
       <Table ref="table" :columnsDef="columns" :rowsDef="rows" createNewName="Новый расчет себестоимости"
