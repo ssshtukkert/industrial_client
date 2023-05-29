@@ -28,9 +28,7 @@
         </div>
       </div>
     </q-card-section>
-    <q-card-section align="center" style="padding: 0px;">
-      <canvas style="background-color: rgb(60, 60, 60);" :height="height" :id="chartId" v-show="vis"></canvas>
-    </q-card-section>
+    <canvas style="background-color: rgb(60, 60, 60);" :height="height" :id="chartId" v-show="vis"></canvas>
     <q-inner-loading :showing="!vis" color="white" label-class="text-white" label-style="font-size: 1.1em" />
     <q-dialog v-model="view" ref="dialog" persistent @show="beforeShow" full-height full-width>
       <q-card class="text-white" style="background-color: rgb(60, 60, 60);">
@@ -77,7 +75,7 @@ export default defineComponent({
     },
     name: {
       type: String,
-      default: 'График по умолчанию',
+      default: '',
     },
     parameters: {
       type: Array,
@@ -183,7 +181,7 @@ export default defineComponent({
                   maxRotation: 0,
                   autoSkip: true,
                   autoSkipPadding: 64,
-                  fontSize: tooltipsSize + 2,
+                  fontSize: tooltipsSize,
                   fontColor: 'white',
                 },
                 gridLines: {

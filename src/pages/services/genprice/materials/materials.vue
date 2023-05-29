@@ -1,24 +1,26 @@
 <template>
-  <q-page class="justify-center full-width">
-    <q-card class="my-card bg-secondary text-white">
-      <q-card-section>
+  <q-page class="justify-center" style="background-color: rgb(60, 60, 60);">
+    <q-card style="background-color: rgb(60, 60, 60);">
+      <q-card-section class="text-white" style="background-color: rgb(80, 80, 80);">
         <div class="text-h6">Материалы</div>
       </q-card-section>
-      <q-table class="my-sticky-header-table window-height" :rows="rows" :columns="columns" row-key="name"
-        :filter="filter" :filter-method="find" virtual-scroll :hide-selected-banner="true"
-        selection="multiple" v-model:selected="selected" binary-state-sort v-model:pagination="pagination"
-        :rows-per-page-options="[1]" style="max-height: 87vh"
-        :no-results-label="`По запросу '${filter}' ничего не найдено`" grid-header wrap-cells @row-click="selectRow">
+      <q-table class="my-sticky-header-table" dark dense :rows="rows" :columns="columns" row-key="name" virtual-scroll
+        :filter="filter" :filter-method="find" :hide-selected-banner="true" selection="multiple"
+        v-model:selected="selected" binary-state-sort v-model:pagination="pagination" :rows-per-page-options="[1]"
+        style="background-color: rgb(60, 60, 60);" :no-results-label="`По запросу '${filter}' ничего не найдено`"
+        grid-header @row-click="selectRow">
         <template v-slot:top>
-          <q-card-actions class="fit">
-            <q-btn color='primary' label='Создать' @click="createAction" />
-            <q-btn color='primary' label='Изменить' v-show="selected.length === 1" @click="changeAction(selected)" />
-            <q-btn color='primary' label='Удалить' v-show="selected.length > 0" @click="deleteAction(selected)"
-              disable />
+          <q-card-actions class="fit" style="background-color: rgb(60, 60, 60);">
+            <q-btn color='dark-grey' icon="add" label='Создать' @click="createAction" />
+            <q-btn color='dark-grey' icon='edit' label='Изменить' v-show="selected.length === 1"
+              @click="changeAction(selected)" />
+            <q-btn color='dark-grey' icon="delete" label='Удалить' v-show="selected.length > 0"
+              @click="deleteAction(selected)" disable />
             <q-space />
-            <q-select outlined dense v-model="filterOptions" :options="op" class="text-h6"
-              options-selected-class="text-h6" popup-content-class="text-h6" style="width: 220px; margin-right: 10px" />
-            <q-input class="text-h6" outlined dense debounce="300" color="primary" v-model="filter" clearable
+            <q-select dark outlined dense v-model="filterOptions" :options="op" class="text-h6"
+              options-selected-class="text-h6 text-grey" popup-content-class="text-h6"
+              style="width: 220px; margin-right: 10px" />
+            <q-input dark class="text-h6" outlined dense debounce="300" color="primary" v-model="filter" clearable
               placeholder="Поиск">
               <template v-slot:append>
                 <q-icon name="search" />
@@ -27,12 +29,12 @@
           </q-card-actions>
         </template>
         <template v-slot:pagination>
-          <div class="text-h6">
+          <div class="text-h6" style="background-color: rgb(60, 60, 60);">
             {{ getSelectedString() }}
           </div>
         </template>
         <template v-slot:header-cell="props">
-          <q-th :props="props">
+          <q-th :props="props" style="background-color: rgb(60, 60, 60);">
             <div class="text-h6">{{ props.col.label }}</div>
           </q-th>
         </template>
@@ -54,14 +56,21 @@
         </template>
         <template v-slot:body-cell-category="props">
           <q-td :props="props">
-            <q-badge color="primary">
+            <q-badge color="grey-8">
               <div class="text-h6">{{ props.row.category }}</div>
+            </q-badge>
+          </q-td>
+        </template>
+        <template v-slot:body-cell-status="props">
+          <q-td :props="props">
+            <q-badge :color="getColor(props.row.status)">
+              <div class="text-h6">{{ getStatusData()[props.row.status].label }}</div>
             </q-badge>
           </q-td>
         </template>
         <template v-slot:body-cell-measure="props">
           <q-td :props="props">
-            <q-badge color="primary">
+            <q-badge color="grey-8">
               <div class="text-h6">{{ props.row.measure }}</div>
             </q-badge>
           </q-td>
@@ -69,64 +78,68 @@
       </q-table>
     </q-card>
     <q-dialog v-model="dialog" persistent>
-      <q-card class="bg-secondary text-white q-pt-none" style="width: 900px; max-width: 95vw;">
-        <q-card-section>
+      <q-card class="text-white q-pt-none" style="width: 900px; max-width: 95vw; background-color: rgb(60, 60, 60);">
+        <q-card-section style="background-color: rgb(80, 80, 80);">
           <div class="text-h6">{{ dialogName }}</div>
         </q-card-section>
-        <q-card-section class="bg-white text-black">
+        <q-card-section class="text-white" style="background-color: rgb(60, 60, 60);">
           <q-card-section class="row">
-            <q-input class="fit text-h6" v-model="inputName" clearable outlined label="Наименование" lazy-rules
+            <q-input dark class="fit text-h6" v-model="inputName" clearable outlined label="Наименование" lazy-rules
               :rules="validationName" />
           </q-card-section>
           <q-card-section class="row" style="padding: 0px;">
             <q-card-section class="col-3">
-              <q-input class="text-h6" v-model.number="inputCost" type="number" label="Цена" suffix="руб." outlined
+              <q-input dark class="text-h6" v-model.number="inputCost" type="number" label="Цена" suffix="руб." outlined
                 lazy-rules :rules="createInputRealValueRules" />
             </q-card-section>
             <q-card-section class="col-3">
-              <q-input class="text-h6" v-model.number="inputWeight" type="number" label="Вес" suffix="кг." outlined
+              <q-input dark class="text-h6" v-model.number="inputWeight" type="number" label="Вес" suffix="кг." outlined
                 lazy-rules :rules="createInputRealValueRules" />
             </q-card-section>
             <q-card-section class="col-3">
-              <q-input class="text-h6" v-model.number="inputWidth" type="number" label="Ширина" suffix="мм." outlined
+              <q-input dark class="text-h6" v-model.number="inputWidth" type="number" label="Ширина" suffix="мм." outlined
                 lazy-rules :rules="createInputRealValueRules" />
             </q-card-section>
             <q-card-section class="col-3">
-              <q-input class="text-h6" v-model.number="inputHeight" type="number" label="Высота" suffix="мм." outlined
-                lazy-rules :rules="createInputRealValueRules" />
+              <q-input dark class="text-h6" v-model.number="inputHeight" type="number" label="Высота" suffix="мм."
+                outlined lazy-rules :rules="createInputRealValueRules" />
             </q-card-section>
           </q-card-section>
           <q-card-section class="row" style="padding: 0px;">
-            <q-card-section class="col-4">
-              <q-select class="text-h6" label="Категория" options-selected-class="text-h6" popup-content-class="text-h6"
-                outlined v-model="categoryOptions" :options="categoryOp" />
+            <q-card-section class="col-3">
+              <q-select dark class="text-h6" label="Категория" options-selected-class="text-h6 text-grey"
+                popup-content-class="text-h6" outlined v-model="categoryOptions" :options="categoryOp" />
             </q-card-section>
-            <q-card-section class="col-4">
-              <q-select class="text-h6" label="Ед. измерения" options-selected-class="text-h6"
+            <q-card-section class="col-3">
+              <q-select dark class="text-h6" label="Ед. измерения" options-selected-class="text-h6 text-grey"
                 popup-content-class="text-h6" outlined v-model="measureOptions" :options="measureOp" />
             </q-card-section>
-            <q-card-section class="col-4">
-              <q-input class="fit text-h6" v-model="inputArticle" clearable outlined label="Артикул" />
+            <q-card-section class="col-3">
+              <q-input dark class="fit text-h6" v-model="inputArticle" clearable outlined label="Артикул" />
+            </q-card-section>
+            <q-card-section class="col-3">
+              <q-select dark class="text-h6" label="Статус" options-selected-class="text-h6 text-grey"
+                popup-content-class="text-h6" outlined v-model="status" :options="statusOp" />
             </q-card-section>
           </q-card-section>
           <q-card-section class="row">
-            <q-input class="text-h6 fit" v-model="inputDescript" outlined label="Описание" type="textarea" />
+            <q-input dark class="text-h8 fit" v-model="inputDescript" outlined label="Описание" type="textarea" />
           </q-card-section>
         </q-card-section>
-        <q-card-actions align="right" class="bg-grey-4 text-black">
-          <q-btn v-show="action === 0" class="bg-teal text-white" label="Создать" @click="createConfirmAction"
+        <q-card-actions align="right" class="text-black" style="background-color: rgb(60, 60, 60);">
+          <q-btn v-show="action === 0" color="dark-grey" class="text-white" label="Создать" @click="createConfirmAction"
             :disabled="isValidationConfirm()" />
-          <q-btn v-show="action === 1" class="bg-teal text-white" label="Изменить" @click="changeConfirmAction"
+          <q-btn v-show="action === 1" color="dark-grey" class="text-white" label="Изменить" @click="changeConfirmAction"
             :disabled="isValidationConfirm()" />
-          <q-btn class="bg-teal text-white" label="Отмена" v-close-popup @click="cancelConfirm" />
+          <q-btn class="text-white" color="dark-grey" label="Отмена" v-close-popup @click="cancelConfirm" />
         </q-card-actions>
       </q-card>
     </q-dialog>
     <DialogError ref="de" />
     <DialogConfirm ref="dc">
       <template v-slot:buttons>
-        <q-btn color='primary' label="Да" @click="deleteConfirmAction" />
-        <q-btn color='primary' label="Отмена" v-close-popup />
+        <q-btn color='dark-grey' label="Да" @click="deleteConfirmAction" />
+        <q-btn color='dark-grey' label="Отмена" v-close-popup />
       </template>
     </DialogConfirm>
   </q-page>
@@ -149,7 +162,7 @@ export default defineComponent({
   setup() {
     document.title = 'Материалы';
     const {
-      host, getProp, getId, validationName,
+      host, getProp, getId, validationName, getRubFormat, getStatusData,
     } = inject('store');
     const de = ref(null);
     const dc = ref(null);
@@ -167,6 +180,9 @@ export default defineComponent({
     const categoryOp = ref([]);
     const measures = [];
     const measureOp = ref([]);
+
+    const statusOp = ref(getStatusData());
+    const status = ref(statusOp.value[0]);
     const categoryOptions = ref('');
     const measureOptions = ref('');
     const selected = ref([]);
@@ -182,11 +198,19 @@ export default defineComponent({
         sortable: true,
       },
       {
+        name: 'status',
+        align: 'left',
+        label: 'Статус',
+        field: 'status',
+        sortable: true,
+      },
+      {
         name: 'cost',
         align: 'left',
         label: 'Цена, руб',
         field: 'cost',
         sortable: true,
+        format: (val) => getRubFormat().format(val),
       },
       {
         name: 'category',
@@ -277,6 +301,7 @@ export default defineComponent({
       inputWidth.value = object.width;
       inputHeight.value = object.height;
       inputArticle.value = object.article;
+      status.value = getProp(statusOp.value, object.status, 'label');
       categoryOptions.value = getProp(categoryOptions, object.category, 'name');
       measureOptions.value = getProp(measureOptions, object.measure, 'name');
       action.value = 1;
@@ -309,6 +334,7 @@ export default defineComponent({
                     rows.value.push({
                       id: m.id,
                       name: m.name,
+                      status: m.status,
                       category: getProp(categories, m.category, 'name'),
                       categoryId: m.category,
                       cost: m.cost,
@@ -332,13 +358,24 @@ export default defineComponent({
       query.article = inputArticle.value;
       query.cost = inputCost.value;
       query.weight = inputWeight.value;
-      query.measure = 0;
+      query.measure = getId(measures, 'name', measureOptions.value);
+      query.status = 0;
       query.width = inputWidth.value;
       query.height = inputHeight.value;
-      query.category = 0;
+      query.category = getId(categories, 'name', categoryOptions.value);
       query.descript = inputDescript.value;
-      query.status = 0;
-
+      query.depth = 0;
+      query.current_catalog_nom_inductive = 0;
+      query.current_catalog_nom_resistive = 0;
+      query.current_nom_inductive = 0;
+      query.current_nom_resistive = 0;
+      query.voltage = 0;
+      query.article_server = 0;
+      query.time_mount = 0;
+      query.time_metalwork = 0;
+      query.time_commutation = 0;
+      query.time_pack = 0;
+      query.time_run_up = 0;
       axios.post(getQueryCreate(), query)
         .then((res) => {
           if (res.data.result === 'ok') {
@@ -362,8 +399,19 @@ export default defineComponent({
       query.height = inputHeight.value;
       query.category = getId(categories, 'name', categoryOptions.value);
       query.descript = inputDescript.value;
-      query.status = 0;
-
+      query.status = status.value.id;
+      query.depth = 0;
+      query.current_catalog_nom_inductive = 0;
+      query.current_catalog_nom_resistive = 0;
+      query.current_nom_inductive = 0;
+      query.current_nom_resistive = 0;
+      query.voltage = 0;
+      query.article_server = 0;
+      query.time_mount = 0;
+      query.time_metalwork = 0;
+      query.time_commutation = 0;
+      query.time_pack = 0;
+      query.time_run_up = 0;
       axios
         .post(`${getQueryUpdate()}/${selected.value[0].id}`, query)
         .then((res) => {
@@ -448,6 +496,7 @@ export default defineComponent({
       createConfirmAction,
       deleteConfirmAction,
       changeConfirmAction,
+      getStatusData,
       selectRow,
       op,
       filterOptions,
@@ -455,9 +504,14 @@ export default defineComponent({
       filter,
       rows,
       columns,
+      status,
+      statusOp,
       pagination: ref({
         rowsPerPage: 0,
       }),
+      getColor(params) {
+        return (params === 0) ? 'grey-8' : 'red';
+      },
       selected,
       getSelectedString() {
         return selected.value.length === 0 ? `Всего объектов: ${rows.value.length}` : `Объектов выбрано: ${selected.value.length} из ${rows.value.length}`;
@@ -466,25 +520,49 @@ export default defineComponent({
   },
 });
 </script>
-<style lang="sass">
-.my-sticky-header-table
+<style>
+.my-sticky-header-table {
   /* height or max-height is important */
-  height: 310px
-
-  .q-table__top,
-  .q-table__bottom,
-  thead tr:first-child th
-    /* bg color is important for th; just specify one */
-    background-color: white
-
-  thead tr th
-    position: sticky
-    z-index: 1
-  thead tr:first-child th
-    top: 0
-
+  height: 87vh;
   /* this is when the loading indicator appears */
-  &.q-table--loading thead tr:last-child th
-    /* height of all previous header rows */
-    top: 48px
+}
+
+.my-sticky-header-table .q-table__top,
+.my-sticky-header-table .q-table__bottom,
+.my-sticky-header-table thead tr:first-child th {
+  /* bg color is important for th; just specify one */
+  background-color: rgb(60, 60, 60);
+}
+
+.my-sticky-header-table thead tr th {
+  position: sticky;
+  z-index: 1;
+}
+
+.my-sticky-header-table thead tr:first-child th {
+  top: 0;
+}
+
+.my-sticky-header-table.q-table--loading thead tr:last-child th {
+  /* height of all previous header rows */
+  top: 48px;
+}
+
+.scroll::-webkit-scrollbar {
+  width: 15px;
+  background: rgb(60, 60, 60);
+  opacity: 0 !important;
+}
+
+.scroll::-webkit-scrollbar-thumb {
+  background: grey
+}
+
+.scroll:hover::-webkit-scrollbar-thumb {
+  background: grey
+}
+
+.scroll::-webkit-scrollbar-thumb:hover {
+  background: grey
+}
 </style>

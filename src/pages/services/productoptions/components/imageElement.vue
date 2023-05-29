@@ -1,7 +1,14 @@
 <template>
-  <div :style="styleContent">
+  <div class="fit text-h10" :style="styleContent">
+    <q-icon v-if="name == ''" class="bottom fit">
+      <img :src="imageBottom" :id="size" @click="clickSelect('empty')"
+        style="margin: 0px; min-height: var(--sizeY);   min-width: var(--sizeX);">
+    </q-icon>
     <q-btn v-if="name != ''" class="fit" style="padding: 0px;" @click="clickSelect(idname)">
-      <div class="fit" :id="size" style="margin: 0px; min-height: var(--sizeY);  min-width: var(--sizeX);" >
+      <div class="fit" :id="size" style="margin: 0px; min-height: var(--sizeY);  min-width: var(--sizeX);">
+        <div class="index-text" style="color: rgb(0, 0, 0);">
+          {{ text }}
+        </div>
         <img v-if="imageBottom != ''" class="bottom fit" :src="imageBottom" />
         <img v-if="imageTop != ''" class="top fit" :src="imageTop" />
       </div>
@@ -9,14 +16,9 @@
         <div class="text-h6">
           {{ name }}
         </div>
-        <p class="text-h6" style="white-space: pre-line; max-width: 300px;">
-          {{ descript }}
-        </p>
       </q-tooltip>
     </q-btn>
-    <q-icon v-if="name == ''" class="fit">
-      <img class="" :src="imageBottom" :id="size" style="min-height: var(--sizeY);   min-width: var(--sizeX);">
-    </q-icon>
+
   </div>
 </template>
 <script>
@@ -57,6 +59,10 @@ export default defineComponent({
       type: String,
       default: '',
     },
+    text: {
+      type: String,
+      default: '',
+    },
   },
 });
 </script>
@@ -75,11 +81,24 @@ export default defineComponent({
   z-index: 1;
 }
 
+.index-text {
+  position: relative;
+  left: 0px;
+  top: -18px;
+  z-index: 2;
+  color: black;
+}
+
 .white {
   filter: brightness(0) invert(1);
 }
+
 .grey {
   filter: invert(100%) sepia(100%) saturate(0%) hue-rotate(35deg) brightness(100%) contrast(0%);
+}
+
+.green {
+  filter: invert(74%) sepia(24%) saturate(4389%) hue-rotate(353deg) brightness(90%) contrast(80%);
 }
 
 #xsmall {
@@ -120,11 +139,11 @@ export default defineComponent({
   -o-transform: rotate(270deg);
   transform: rotate(270deg);
 }
+
 .scaleY {
   transform: scaleY(-1);
 }
 
 .scaleX {
   transform: scaleX(-1);
-}
-</style>
+}</style>

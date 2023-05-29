@@ -1,0 +1,10 @@
+<svg width="150" height="200" xmlns="http://www.w3.org/2000/svg">
+ <title>norecupinflow</title>
+ <g>
+  <title>Layer 1</title>
+  <line id="svg_4" y2="0.57106" x2="25" y1="0.57106" x1="0" stroke-width="2" stroke="#000000" fill="none"/>
+  <line id="svg_5" y2="199.57143" x2="150.1424" y1="199.57143" x1="125.1424" stroke-width="2" stroke="#000000" fill="none"/>
+  <line stroke="#000000" id="svg_7" y2="151.99907" x2="150.4283" y1="-0.00037" x1="24.71447" stroke-width="2" fill="none"/>
+  <line stroke="#000000" id="svg_8" y2="200.57032" x2="125.85696" y1="48.57089" x1="0.14313" stroke-width="2" fill="none"/>
+ </g>
+</svg>

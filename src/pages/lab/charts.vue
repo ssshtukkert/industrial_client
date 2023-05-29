@@ -4,93 +4,87 @@
       <div class="text-h6">Графики</div>
     </q-card-section>
     <div class="row">
-        <div class="col-6">
-          <Chart :ref="charts[0]" name='Т_21(1-6) °С' :parameters="[
-            { name: 'T21_1', color: 'red' },
-            { name: 'T21_2', color: 'green' },
-            { name: 'T21_3', color: 'blue' },
-            { name: 'T21_4', color: 'yellow' },
-            { name: 'T21_5', color: 'white' },
-            { name: 'T21_6', color: 'orange' },
-          ]" chartId="chart0" :legend="true" classTitle="text-h6" :height="70"/>
-        </div>
-        <div class="col-6">
-          <Chart :ref="charts[1]" name='Rh_21(1-6) %' :parameters="[
+      <div class="col-6">
+        <Chart_v4 :ref="charts[0]" name='Т_21(1-6) °С' :parameters="parameters[0].datails" :chartId="parameters[0].name" :legend="true" classTitle="text-h6"
+          :height="70" />
+      </div>
+      <div class="col-6">
+        <Chart :ref="charts[1]" name='Rh_21(1-6) %' :parameters="[
           { name: 'Rh21_1', color: 'red' },
           { name: 'Rh21_2', color: 'green' },
           { name: 'Rh21_3', color: 'blue' },
           { name: 'Rh21_4', color: 'yellow' },
           { name: 'Rh21_5', color: 'white' },
           { name: 'Rh21_6', color: 'orange' },
-        ]" chartId="chart1" :legend="true" classTitle="text-h6" :height="70"/>
-        </div>
+        ]" chartId="chart1" :legend="true" classTitle="text-h6" :height="70" />
       </div>
-      <div class="row">
-        <div class="col-6">
-          <Chart :ref="charts[2]" name='Т_22(13-18) °С' :parameters="[
+    </div>
+    <div class="row">
+      <div class="col-6">
+        <Chart :ref="charts[2]" name='Т_22(13-18) °С' :parameters="[
           { name: 'T22_13', color: 'red' },
           { name: 'T22_14', color: 'green' },
           { name: 'T22_15', color: 'blue' },
           { name: 'T22_16', color: 'yellow' },
           { name: 'T22_17', color: 'white' },
           { name: 'T22_18', color: 'orange' },
-        ]" chartId="chart2" :legend="true" classTitle="text-h6" :height="70"/>
-        </div>
-        <div class="col-6">
-          <Chart :ref="charts[3]" name='Rh_22(13-18) %' :parameters="[
+        ]" chartId="chart2" :legend="true" classTitle="text-h6" :height="70" />
+      </div>
+      <div class="col-6">
+        <Chart :ref="charts[3]" name='Rh_22(13-18) %' :parameters="[
           { name: 'Rh22_13', color: 'red' },
           { name: 'Rh22_14', color: 'green' },
           { name: 'Rh22_15', color: 'blue' },
           { name: 'Rh22_16', color: 'yellow' },
           { name: 'Rh22_17', color: 'white' },
           { name: 'Rh22_18', color: 'orange' },
-        ]" chartId="chart3" :legend="true" classTitle="text-h6" :height="70"/>
-        </div>
+        ]" chartId="chart3" :legend="true" classTitle="text-h6" :height="70" />
       </div>
-      <div class="row">
-        <div class="col-6">
-          <Chart :ref="charts[4]" name='Т_11(19-24) °С' :parameters="[
+    </div>
+    <div class="row">
+      <div class="col-6">
+        <Chart :ref="charts[4]" name='Т_11(19-24) °С' :parameters="[
           { name: 'T11_19', color: 'red' },
           { name: 'T11_20', color: 'green' },
           { name: 'T11_21', color: 'blue' },
           { name: 'T11_22', color: 'yellow' },
           { name: 'T11_23', color: 'white' },
           { name: 'T11_24', color: 'orange' },
-        ]" chartId="chart4" :legend="true" classTitle="text-h6" :height="70"/>
-        </div>
-        <div class="col-6">
-          <Chart :ref="charts[5]" name='Rh_11(19-24) %' :parameters="[
+        ]" chartId="chart4" :legend="true" classTitle="text-h6" :height="70" />
+      </div>
+      <div class="col-6">
+        <Chart :ref="charts[5]" name='Rh_11(19-24) %' :parameters="[
           { name: 'Rh11_19', color: 'red' },
           { name: 'Rh11_20', color: 'green' },
           { name: 'Rh11_21', color: 'blue' },
           { name: 'Rh11_22', color: 'yellow' },
           { name: 'Rh11_23', color: 'white' },
           { name: 'Rh11_24', color: 'orange' },
-        ]" chartId="chart5" :legend="true" classTitle="text-h6" :height="70"/>
-        </div>
+        ]" chartId="chart5" :legend="true" classTitle="text-h6" :height="70" />
       </div>
-      <div class="row">
-        <div class="col-6">
-          <Chart :ref="charts[6]" name='Т_12(7-12) °С' :parameters="[
+    </div>
+    <div class="row">
+      <div class="col-6">
+        <Chart :ref="charts[6]" name='Т_12(7-12) °С' :parameters="[
           { name: 'T12_7', color: 'red' },
           { name: 'T12_8', color: 'green' },
           { name: 'T12_9', color: 'blue' },
           { name: 'T12_10', color: 'yellow' },
           { name: 'T12_11', color: 'white' },
           { name: 'T12_12', color: 'orange' },
-        ]" chartId="chart6" :legend="true" classTitle="text-h6" :height="70"/>
-        </div>
-        <div class="col-6">
-          <Chart :ref="charts[7]" name='Rh_12(7-12) %' :parameters="[
+        ]" chartId="chart6" :legend="true" classTitle="text-h6" :height="70" />
+      </div>
+      <div class="col-6">
+        <Chart :ref="charts[7]" name='Rh_12(7-12) %' :parameters="[
           { name: 'Rh12_7', color: 'red' },
           { name: 'Rh12_8', color: 'green' },
           { name: 'Rh12_9', color: 'blue' },
           { name: 'Rh12_10', color: 'yellow' },
           { name: 'Rh12_11', color: 'white' },
           { name: 'Rh12_12', color: 'orange' },
-        ]" chartId="chart7" :legend="true" classTitle="text-h6" :height="70"/>
-        </div>
+        ]" chartId="chart7" :legend="true" classTitle="text-h6" :height="70" />
       </div>
+    </div>
   </q-page>
 </template>
 
@@ -99,19 +93,38 @@ import {
   inject, ref, onMounted, onBeforeUnmount,
 } from 'vue';
 import Chart from 'src/components/charts/chart_v3.vue';
+import Chart_v4 from 'src/components/charts/chart_v4.vue';
 import axios from 'axios';
+import {
+  loadChartsFromData, updateChart_v4,
+} from './fun';
 
 export default {
   name: 'Charts',
   components: {
     Chart,
+    Chart_v4,
   },
   setup() {
     document.title = 'Графики';
     const charts = [];
     const info = ref('');
     const dataValues = [];
-    const load = ref(0);
+    const parameters = ref([
+      {
+        name: 'chart0',
+        parameters: ['T_TMA1_21', 'T_TMA2_21', 'T_TMA3_21', 'T_TMA4_21', 'T_TMA5_21', 'T_TMA6_21'],
+        datails: [
+          { name: 'T21_1', color: 'red' },
+          { name: 'T21_2', color: 'green' },
+          { name: 'T21_3', color: 'blue' },
+          { name: 'T21_4', color: 'yellow' },
+          { name: 'T21_5', color: 'white' },
+          { name: 'T21_6', color: 'orange' },
+        ],
+        label: 'Т_21(1-6) °С',
+      },
+    ]);
     for (let index = 0; index < 8; index += 1) {
       charts.push(ref(null));
     }
@@ -125,31 +138,9 @@ export default {
         charts[index].value.pushValues(values, getCurrentTime(), direct, update);
       }
     }
-    // function hoverTooltip(tooltipModel) {
-    //   info.value = '';
-    //   if (tooltipModel.title) {
-    //     info.value += `\n${tooltipModel.title}`;
-    //   }
-    //   if (tooltipModel.body) {
-    //     for (let index = 0; index < tooltipModel.body.length; index += 1) {
-    //       const element = tooltipModel.body[index];
-    //       info.value += `\n${element.lines}`;
-    //     }
-    //   }
-    // }
     function shift() {
       if (dataValues.length > 0) {
         const mes = dataValues[dataValues.length - 1];
-        const valuesT_TMA1_6 = [];
-        valuesT_TMA1_6.push(
-          { value: mes.T_TMA1_21 },
-          { value: mes.T_TMA2_21 },
-          { value: mes.T_TMA3_21 },
-          { value: mes.T_TMA4_21 },
-          { value: mes.T_TMA5_21 },
-          { value: mes.T_TMA6_21 },
-        );
-        updateChart(0, valuesT_TMA1_6, mes.time, false, false);
         const valuesRh_TMA1_6 = [];
         valuesRh_TMA1_6.push(
           { value: mes.Rh_TMA1_21 },
@@ -221,7 +212,6 @@ export default {
         );
         updateChart(7, valuesRh_TMA7_12, mes.time, false, false);
         dataValues.pop();
-        load.value = dataValues.length;
         setImmediate(shift);
       } else {
         for (let index = 0; index < 8; index += 1) {
@@ -235,16 +225,15 @@ export default {
         if (json.type === 'sendDataRecup') {
           console.log(mes);
           if (dataValues.length === 0) {
-            const valuesT_TMA1_6 = [];
-            valuesT_TMA1_6.push(
-              { value: mes.T_TMA1_21.value },
-              { value: mes.T_TMA2_21.value },
-              { value: mes.T_TMA3_21.value },
-              { value: mes.T_TMA4_21.value },
-              { value: mes.T_TMA5_21.value },
-              { value: mes.T_TMA6_21.value },
-            );
-            updateChart(0, valuesT_TMA1_6, mes.time, true, true);
+            const valuesT_TMA1_6 = [
+              mes.T_TMA1_21.value,
+              mes.T_TMA2_21.value,
+              mes.T_TMA3_21.value,
+              mes.T_TMA4_21.value,
+              mes.T_TMA5_21.value,
+              mes.T_TMA6_21.value,
+            ];
+            updateChart_v4(charts[0], valuesT_TMA1_6, null, null, mes.сreatedAt.value);
             const valuesRh_TMA1_6 = [];
             valuesRh_TMA1_6.push(
               { value: mes.Rh_TMA1_21.value },
@@ -324,8 +313,6 @@ export default {
             dataValues.push(obj);
             shift();
           }
-        } else if (json.type === 'sendDataRecup') {
-          console.log(mes);
         }
       }
     }
@@ -338,6 +325,7 @@ export default {
           }
           shift();
         });
+      loadChartsFromData([charts[0]], 'DataRecup', parameters.value, 720);
       // написать удаление элементов при размонтировании образа
       WebSocket_Create('recup', { getMain: 1 });
       WebSocket_Listen('recup', listen);
@@ -348,8 +336,9 @@ export default {
     return {
       Chart,
       charts,
-      load,
+      parameters,
       info,
+      Chart_v4,
       // hoverTooltip,
     };
   },

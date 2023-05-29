@@ -1,8 +1,8 @@
 <template>
-  <q-page padding>
-    <q-card class="bg-white">
-      <q-card-section class="bg-secondary">
-        <div class="text-h6 text-white">
+  <q-page padding style="background-color: rgb(60, 60, 60);">
+    <q-card class="text-white" style="background-color: rgb(60, 60, 60);">
+      <q-card-section style="background-color: rgb(80, 80, 80);">
+        <div class="text-h6">
           Расчет {{ name }} от {{ updatedAt }}
           <a v-show="change"> *
             <q-tooltip :delay="800">
@@ -10,12 +10,10 @@
             </q-tooltip>
           </a>
         </div>
+        Номер расчёта: {{ id }}
       </q-card-section>
-      <q-card-section class="text-black">
-        <q-btn color='orange' label='< Назад к списку' style="margin-right: 15px;" @click="exit">
-          <q-tooltip :delay="800">
-            Вернуться к списку расчетов
-          </q-tooltip>
+      <q-card-actions class="text-black">
+        <q-btn color='dark-grey' icon="arrow_back" label='Назад' @click="exit">
         </q-btn>
         <DialogConfirm ref="dex">
           <template v-slot:buttons>
@@ -24,24 +22,31 @@
             <q-btn color='primary' label="Отмена" v-close-popup />
           </template>
         </DialogConfirm>
-        <q-btn color='primary' :disabled="!change" label='Записать' @click="writeDatabase" style="margin-right: 15px;">
-          <q-tooltip :delay="800">
-            Сохранить расчет в базе данных
-          </q-tooltip>
+        <q-btn color='dark-grey' :disabled="!change" icon="save" label='Записать' @click="writeDatabase">
         </q-btn>
-        <q-btn color='primary' v-show="change" label='Отменить изменения' @click="resetChange"
-          style="margin-right: 15px;">
-          <q-tooltip v-if="change" :delay="800">
-            Обновить содержимое
-          </q-tooltip>
+        <q-btn color='dark-grey' v-show="change" icon="cancel" label='Отменить изменения' @click="resetChange">
         </q-btn>
-        <q-btn color='primary' :disable="change" label='Экспорт в PDF' :href="downloadPDF" target="_self"
-          style="margin-right: 15px;" >
-          <q-tooltip :delay="800">
-            Скачать данные в pdf файле
-          </q-tooltip>
-        </q-btn>
-      </q-card-section>
+        <q-btn-dropdown color='dark-grey' icon="download" label="Экспорт" :disable="change">
+          <q-list>
+            <q-item class="dark-grey text-white" clickable v-close-popup :href="downloadPDF" target="_self" style="background-color: rgb(60, 60, 60);">
+              <q-item-section avatar>
+                <q-avatar icon="picture_as_pdf" text-color="white"/>
+              </q-item-section>
+              <q-item-section>
+                <q-item-label>Отчёт в PDF</q-item-label>
+              </q-item-section>
+            </q-item>
+            <q-item class="dark-grey text-white" clickable v-close-popup :href="downloadEXCEL" style="background-color: rgb(60, 60, 60);">
+              <q-item-section avatar>
+                <q-avatar icon="download" text-color="white"/>
+              </q-item-section>
+              <q-item-section>
+                <q-item-label>Спецификация в EXCEL</q-item-label>
+              </q-item-section>
+            </q-item>
+          </q-list>
+        </q-btn-dropdown>
+      </q-card-actions>
       <div class="row">
         <q-card-section class="text-h6 col-6">
           <div>
@@ -62,8 +67,8 @@
               Стоимость работ электромонтажных и проверочных работ, выполненных за 1 час
             </q-tooltip>
           </div>
-          <q-badge color="primary" class="text-h6">
-            Себестоимость: {{ costAll }} руб.
+          <q-badge color="grey-7" class="text-h6">
+            Себестоимость: {{ getDisplayCostAll() }}
             <q-tooltip :delay="800">
               Расчетная себестоимость:
               <br />
@@ -88,8 +93,8 @@
           </div>
         </q-card-section>
       </div>
-      <div class="bg-white text-h6">
-        <q-tabs v-model="tab" class="text-black" no-caps align="justify" active-color="teal" indicator-color="teal">
+      <div class="text-h6">
+        <q-tabs v-model="tab" class="text-grey" no-caps align="justify" active-color="white" indicator-color="white">
           <q-tab name="materials">
             <div class="text-h6">Материалы ({{ getMaterialsCount() }})</div>
             <q-tooltip :delay="800">
@@ -108,58 +113,69 @@
               Вкладка для формирования трудозатрат
             </q-tooltip>
           </q-tab>
-          <q-tab name="files">
+          <!-- <q-tab name="files">
             <div class="text-h6">Файлы</div>
             <q-tooltip :delay="800">
               Хранилище загруженный файлов
             </q-tooltip>
-          </q-tab>
+          </q-tab> -->
         </q-tabs>
-        <q-separator />
-        <q-tab-panels v-model="tab" animated keep-alive @transition="updateTabPanels">
+        <q-tab-panels v-model="tab" animated keep-alive @transition="updateTabPanels"
+          style="background-color: rgb(60, 60, 60);">
           <q-tab-panel name="card" style="min-height: 400px">
             <div class="row">
-              <q-input v-model="inputDescript" class=" fit" clearable outlined label="Описание" type="textarea"
-                @update:model-value="syncTableMaterials" :input-style="{resize: 'none', height: '50vh' }" />
+              <q-input dark v-model="inputDescript" class=" fit" clearable outlined label="Описание" type="textarea"
+                @update:model-value="syncTableMaterials" :input-style="{ resize: 'none', height: '50vh' }" />
             </div>
           </q-tab-panel>
           <q-tab-panel name="materials" style="min-height: 400px">
-            <Table :setChange="changeCount" :keyEnter="keyEnter" ref="tableMaterials" :columnsDef="columns" :rowsDef="rowsEntryMaterials"
-              :updateSelected="updateSelectedTableMaterials" style="max-height: 55vh;">
+            <Table dense dark :setChange="changeCount" :keyEnter="keyEnter" ref="tableMaterials" :columnsDef="columns"
+              :rowsDef="rowsEntryMaterials" :updateSelected="updateSelectedTableMaterials"
+              style="max-height: 55vh; background-color: rgb(60, 60, 60);">
               <template v-slot:actions>
-                <q-btn color='primary' label='Добавить' @click="actionAddMaterial" />
-                <q-btn v-show="removeMain" color='primary' label='Удалить' @click="actionRemoveMaterial" />
+                <q-btn color='dark-grey' icon="add" label="Добавить" @click="actionAddMaterial" />
+                <q-btn v-show="removeMain" color='dark-grey' icon="delete" label="Исключить"
+                  @click="actionRemoveMaterial" />
+                <q-btn v-show="removeMain" color='dark-grey' icon="edit" label="Заменить"
+                  @click="actionReplaceMaterial" />
                 <q-dialog v-model="dialogAddMaterials" persistent transition-show="scale" transition-hide="scale">
-                  <q-card style="min-width: 95vw;">
-                    <q-card-section class="row bg-teal text-white">
-                      <div class="text-h6">Добавить материалы</div>
+                  <q-card style="min-width: 95vw; background-color: rgb(60, 60, 60);">
+                    <q-card-section class="row text-white" style="background-color: rgb(80, 80, 80);">
+                      <div class="text-h6">Добавить материалы для: {{ name }}</div>
                       <q-space />
-                      <q-btn color='primary' label="Закрыть" v-close-popup @click="updateSearch" />
+                      <q-btn dense icon="close" v-close-popup @click="updateSearch" />
                     </q-card-section>
-                    <q-card-section class="bg-white text-h6 q-pt-none">
+                    <q-card-section class="text-h6 q-pt-none">
                       {{ text }}
                     </q-card-section>
                     <q-card-section>
                       <q-splitter v-model="splitterModel" style="height: 70vh">
                         <template v-slot:before>
-                          <Table_v2 ref="tableAddMaterials" :columnsDef="columnsAddMaterials"
-                            :rowsDef="rowsAllMaterials" style="height: 90vh;" :updateSelect="tableMaterialsUpdate"
-                            :updateSearch="updateSearch" :actionRow="confirmAddMaterial"
-                            styleContent="max-height: 70vh;">
-                            <template v-slot:actions>
-                              <q-select outlined dense v-model="addMaterialsCategorySelector"
-                                @update:model-value="addMaterialsCategoryUpdate"
-                                :options="addMaterialsCategorySelectorOp" class="text-h6"
-                                options-selected-class="text-h6" popup-content-class="text-h6"
-                                style="width: 220px; margin-left: 15px" />
-                              <q-btn v-show="add" color='orange' label='В список' @click="confirmAddMaterial"
-                                style="margin-left: 15px; margin-right: 15px;" />
-                            </template>
-                          </Table_v2>
+                          <q-scroll-area visible :delay="0" style=" max-width: 100%; height: 100%;"
+                            :vertical-thumb-style="{ right: '2px', borderRadius: '0px', background: 'grey', width: '15px', opacity: 1 }"
+                            :horizontal-thumb-style="{ bottom: '2px', borderRadius: '0px', background: 'grey', height: '15px', opacity: 1 }"
+                            :vertical-bar-style="{ right: '2px', borderRadius: '0px', background: 'grey', opacity: 0.3, width: '15px' }"
+                            :horizontal-bar-style="{ bottom: '2px', borderRadius: '0px', background: 'grey', opacity: 0.3, height: '15px' }">
+                            <Table_v2 ref="tableAddMaterials" dense :columnsDef="columnsAddMaterials"
+                              :rowsDef="rowsAllMaterials" style="height: 90vh;" :updateSelect="tableMaterialsUpdate"
+                              :updateSearch="updateSearch" :actionRow="confirmAddMaterial"
+                              styleContent="max-height: 70vh;">
+                              <template v-slot:actions>
+                                <q-select outlined dense dark v-model="addMaterialsCategorySelector"
+                                  @update:model-value="addMaterialsCategoryUpdate"
+                                  :options="addMaterialsCategorySelectorOp" class="text-h6"
+                                  options-selected-class="text-h6" popup-content-class="text-h6"
+                                  style="width: 220px; margin-left: 15px" />
+                                <q-btn v-show="add" color='orange' label='В список' @click="confirmAddMaterial"
+                                  style="margin-left: 15px; margin-right: 15px;" />
+                              </template>
+                            </Table_v2>
+                          </q-scroll-area>
                         </template>
                         <template v-slot:after>
-                          <Table ref="tableAddMaterialsBuffer" :columnsDef="columnsAddMaterialsBuffer"
-                            styleContent="max-height: 70vh;" :rowsDef="rowsAddMaterialsBuffer" :hideShearch="true"
+                          <Table ref="tableAddMaterialsBuffer" dense dark :columnsDef="columnsAddMaterialsBuffer"
+                            styleContent="max-height: 70vh; background-color: rgb(60, 60, 60);"
+                            :rowsDef="rowsAddMaterialsBuffer" :hideShearch="true"
                             :updateSelected="updateSelectedTableMaterialsBuffer">
                             <template v-slot:actions>
                               <q-btn v-show="rowsAddMaterialsBuffer.length > 0" color='green' label='Обновить и закрыть'
@@ -171,6 +187,30 @@
                         </template>
                       </q-splitter>
                     </q-card-section>
+                  </q-card>
+                </q-dialog>
+                <q-dialog v-model="dialogReplaceMaterials" persistent transition-show="scale" transition-hide="scale">
+                  <q-card style="min-width: 95vw; background-color: rgb(60, 60, 60);">
+                    <q-card-section class="row text-white" style="background-color: rgb(80, 80, 80);">
+                      <div class="text-h6">Заменить материал</div>
+                      <q-space />
+                      <q-btn dense icon="close" v-close-popup @click="updateSearch" />
+                    </q-card-section>
+                    <q-card-section class="text-h6 q-pt-none">
+                      {{ text }}
+                    </q-card-section>
+                    <Table_v2 ref="tableAddMaterials" dense :columnsDef="columnsAddMaterials" :rowsDef="rowsAllMaterials"
+                      style="height: 90vh;" :updateSelect="tableMaterialsUpdate" :updateSearch="updateSearch"
+                      :actionRow="confirmAddMaterial" selection="single" styleContent="max-height: 70vh;">
+                      <template v-slot:actions>
+                        <q-select outlined dense dark v-model="addMaterialsCategorySelector"
+                          @update:model-value="addMaterialsCategoryUpdate" :options="addMaterialsCategorySelectorOp"
+                          class="text-h6" options-selected-class="text-h6" popup-content-class="text-h6"
+                          style="width: 220px; margin-left: 15px" />
+                        <q-btn v-show="add" color='orange' label='Заменить' @click="confirmReplaceMaterial"
+                          style="margin-left: 15px; margin-right: 15px;" />
+                      </template>
+                    </Table_v2>
                   </q-card>
                 </q-dialog>
               </template>
@@ -186,16 +226,16 @@
             </DialogConfirm>
           </q-tab-panel>
           <q-tab-panel name="laboriousness" style="min-height: 600px">
-            <q-input v-model="inputLaboriousnes" @update:model-value="syncTableMaterials" class="text-h6" outlined
+            <q-input dark v-model="inputLaboriousnes" @update:model-value="syncTableMaterials" class="text-h6" outlined
               label="Трудозатраты" type="number" :rules="validationNumberNoZero" suffix="ч." style="width: 160px;"
               auto-save />
           </q-tab-panel>
-          <q-tab-panel name="files" style="min-height: 400px">
+          <!-- <q-tab-panel name="files" style="min-height: 400px">
             <div class="q-pa-md">
               <q-uploader url="http://10.154.152.88:3001/upload/disk"
                 :headers="[{name: 'X-Custom-Timestamp', value: 1550240306080}]" style="max-width: 300px" />
             </div>
-          </q-tab-panel>
+          </q-tab-panel> -->
         </q-tab-panels>
       </div>
     </q-card>
@@ -220,9 +260,13 @@ export default defineComponent({
     DialogConfirm,
   },
   setup() {
-    const { host, getProp, validationNumberNoZero } = inject('store');
+    const {
+      host, getProp, getObject, validationNumberNoZero,
+    } = inject('store');
     const path = `${host}/services/genprice/calculation/pdf/`;
+    const pathExcel = `${host}/services/genprice/calculation/excel/`;
     const downloadPDF = ref(host);
+    const downloadEXCEL = ref(host);
     const route = useRoute();
     const router = useRouter();
     const { id } = route.params;
@@ -242,6 +286,7 @@ export default defineComponent({
     const dex = ref(null);
     const removeMain = ref(false);
     const dialogAddMaterials = ref(false);
+    const dialogReplaceMaterials = ref(false);
     const cost = ref(0);
     const wh = ref([0, 0]);
     const weight = ref(0);
@@ -260,14 +305,14 @@ export default defineComponent({
       },
       {
         name: 'count',
-        align: 'left',
+        align: 'center',
         label: 'Количество',
         field: 'count',
         sortable: true,
       },
       {
         name: 'cost',
-        align: 'left',
+        align: 'center',
         label: 'Цена за 1 ед., руб',
         field: 'cost',
         sortable: true,
@@ -294,14 +339,22 @@ export default defineComponent({
       },
       {
         name: 'count',
-        align: 'left',
+        align: 'center',
         label: 'Количество',
         field: 'count',
+        sortable: true,
+      },
+      {
+        name: 'meas',
+        align: 'center',
+        label: 'Ед. изм',
+        field: 'meas',
         sortable: true,
       },
     ];
     const allMaterials = [];
     const allMaterialCaterories = [];
+    const allMaterialMeasures = [];
     const rowsEntryMaterials = ref([]);
     const rowsAllMaterials = ref([]);
     const rowsAddMaterialsBuffer = ref([]);
@@ -328,6 +381,7 @@ export default defineComponent({
         mat.push({
           id: Number(element.id),
           count: Number(element.count),
+          meas: element.meas,
         });
       }
       return mat;
@@ -336,7 +390,7 @@ export default defineComponent({
       let sum = 0;
       for (let index = 0; index < listMaterials.length; index += 1) {
         const element = listMaterials[index];
-        sum += Number(getProp(rowsAllMaterials.value, element.id, 'cost') || 0) * element.count;
+        sum += Number(getProp(allMaterials, element.id, 'cost') || 0) * element.count;
       }
       return sum.toFixed(2);
     }
@@ -403,59 +457,68 @@ export default defineComponent({
       const selectDefault = addMaterialsCategorySelectorOp.value[0];
       addMaterialsCategorySelector.value = selectDefault;
       axios
-        .get(`${host}/services/genprice/MaterialCategory`).then((responseC) => {
-          for (let index = 0; index < responseC.data.length; index += 1) {
-            const m = responseC.data[index];
-            allMaterialCaterories.push(m);
-            addMaterialsCategorySelectorOp.value.push(m.name);
-          }
+        .get(`${host}/services/genprice/MaterialMeasure`).then((responseME) => {
+          allMaterialMeasures.length = 0;
+          responseME.data.forEach((element) => {
+            allMaterialMeasures.push(element);
+          });
           axios
-            .get(`${host}/services/genprice/Material`).then((responseM) => {
-              for (let index = 0; index < responseM.data.length; index += 1) {
-                const m = responseM.data[index];
-                rowsAllMaterials.value.push(m);
-                allMaterials.push(m);
-                console.log(rowsAllMaterials);
+            .get(`${host}/services/genprice/MaterialCategory`).then((responseC) => {
+              for (let index = 0; index < responseC.data.length; index += 1) {
+                const m = responseC.data[index];
+                allMaterialCaterories.push(m);
+                addMaterialsCategorySelectorOp.value.push(m.name);
               }
-              rowsEntryMaterials.value.length = 0;
-              axios.get(`${getQueryAll()}/${id}`)
-                .then((res) => {
-                  if (res.data.result === 'ok') {
-                    object = res.data.data;
-                    name.value = object.name;
-                    document.title = object.name;
-                    updatedAt.value = object.updatedAt;
-                    inputDescript.value = object.descript;
-                    const materialsEntry = JSON.parse(object.materials);
-                    for (let index = 0; index < materialsEntry.length; index += 1) {
-                      const element = materialsEntry[index];
-                      rowsEntryMaterials.value.push({
-                        id: Number(element.id),
-                        name: getProp(rowsAllMaterials.value, element.id, 'name'),
-                        count: Number(element.count),
-                        cost: Number(getProp(rowsAllMaterials.value, element.id, 'cost')),
-                      });
-                    }
-                    axios
-                      .get(`${host}/services/genprice/Setting`).then((responseS) => {
-                        costOneHourWorker.value = responseS.data[0].value;
-                        percentOfMaterials.value = responseS.data[1].value;
-                        inputLaboriousnes.value = object.operations;
-                        cost.value = getCost(materialsEntry);
-                        weight.value = getWeight(materialsEntry);
-                        wh.value = getWidthHeight(materialsEntry);
-                        costAll.value = getCostAll(cost.value, inputLaboriousnes.value);
-                        if (callback) {
-                          callback();
-                        }
-                        const query = {
-                          name: encodeURIComponent(object.name),
-                          wh: wh.value,
-                          weight: weight.value,
-                        };
-                        downloadPDF.value = `${path}${object.id}/${JSON.stringify(query)}`;
-                      });
+              axios
+                .get(`${host}/services/genprice/Material`).then((responseM) => {
+                  for (let index = 0; index < responseM.data.length; index += 1) {
+                    const m = responseM.data[index];
+                    rowsAllMaterials.value.push(m);
+                    allMaterials.push(m);
                   }
+                  rowsEntryMaterials.value.length = 0;
+                  axios.get(`${getQueryAll()}/${id}`)
+                    .then((res) => {
+                      if (res.data.result === 'ok') {
+                        object = res.data.data;
+                        name.value = object.name;
+                        document.title = object.name;
+                        updatedAt.value = object.updatedAt;
+                        inputDescript.value = object.descript;
+                        const materialsEntry = JSON.parse(object.materials);
+                        for (let index = 0; index < materialsEntry.length; index += 1) {
+                          const element = materialsEntry[index];
+                          rowsEntryMaterials.value.push({
+                            id: Number(element.id),
+                            name: getProp(rowsAllMaterials.value, element.id, 'name'),
+                            count: Number(element.count),
+                            cost: Number(getProp(rowsAllMaterials.value, element.id, 'cost')),
+                            meas: getProp(responseME.data, getProp(allMaterials, element.id, 'measure'), 'name'),
+                            status: getProp(allMaterials, element.id, 'status'),
+                          });
+                        }
+                        axios
+                          .get(`${host}/services/genprice/Setting`).then((responseS) => {
+                            costOneHourWorker.value = responseS.data[0].value;
+                            percentOfMaterials.value = responseS.data[1].value;
+                            inputLaboriousnes.value = object.operations;
+                            cost.value = getCost(materialsEntry);
+                            weight.value = getWeight(materialsEntry);
+                            wh.value = getWidthHeight(materialsEntry);
+                            costAll.value = getCostAll(cost.value, inputLaboriousnes.value);
+                            if (callback) {
+                              callback();
+                            }
+                            const query = {
+                              name: encodeURIComponent(object.name),
+                              wh: wh.value,
+                              weight: weight.value,
+                            };
+                            downloadPDF.value = `${path}${object.id}/${JSON.stringify(query)}`;
+                            downloadEXCEL.value = `${pathExcel}${object.id}/${JSON.stringify(query)}`;
+                          });
+                      }
+                    });
                 });
             });
         });
@@ -532,6 +595,7 @@ export default defineComponent({
       add.value = false;
     }
     function actionAddMaterial() {
+      addMaterialsCategorySelector.value = 'Все';
       updateRowsAllMaterials();
       rowsAddMaterialsBuffer.value.length = 0;
       for (let index = 0; index < rowsEntryMaterials.value.length; index += 1) {
@@ -539,6 +603,19 @@ export default defineComponent({
         rowsAddMaterialsBuffer.value.push(element);
       }
       dialogAddMaterials.value = true;
+    }
+    function actionReplaceMaterial() {
+      const cat = getObject(allMaterials, 'id', tableMaterials.value.selected[0].id).category;
+      updateRowsAllMaterials();
+      rowsAllMaterials.value.length = 0;
+      for (let index = 0; index < allMaterials.length; index += 1) {
+        const element = allMaterials[index];
+        if (element.category === cat) {
+          rowsAllMaterials.value.push(element);
+        }
+      }
+      dialogReplaceMaterials.value = true;
+      addMaterialsCategorySelector.value = getObject(allMaterialCaterories, 'id', cat).name;
     }
     function addMaterialsCategoryUpdate() {
       updateRowsAllMaterials();
@@ -584,16 +661,59 @@ export default defineComponent({
             id: tableAddMaterials.value.selected[i].id,
             name: tableAddMaterials.value.selected[i].name,
             count: 1,
+            meas: getObject(allMaterialMeasures, 'id', getObject(allMaterials, 'id', tableAddMaterials.value.selected[i].id).measure).name,
           };
           rowsAddMaterialsBuffer.value.push(material);
         }
       }
     }
+    function confirmReplaceMaterial() {
+      let i = -1;
+      let obj = null;
+      const replaceObj = getObject(allMaterials, 'id', tableAddMaterials.value.selected[0].id);
+
+      const isElementInEntryMaterials = getObject(rowsEntryMaterials.value, 'id', replaceObj.id);
+      if (isElementInEntryMaterials == null) {
+        for (let index = 0; index < rowsEntryMaterials.value.length; index += 1) {
+          const element = rowsEntryMaterials.value[index];
+          if (tableMaterials.value.selected[0].id === element.id) {
+            i = index;
+            obj = element;
+            obj = {
+              id: replaceObj.id,
+              count: element.count,
+              cost: replaceObj.cost,
+              name: replaceObj.name,
+              meas: getProp(allMaterialMeasures, getProp(allMaterials, element.id, 'measure'), 'name'),
+            };
+            break;
+          }
+        }
+        if (i !== -1 && obj !== null) {
+          rowsEntryMaterials.value.splice(i, 1);
+          rowsEntryMaterials.value.push(obj);
+        }
+      } else {
+        const objCurrent = getObject(rowsEntryMaterials.value, 'id', tableMaterials.value.selected[0].id);
+        for (let index = 0; index < rowsEntryMaterials.value.length; index += 1) {
+          const element = rowsEntryMaterials.value[index];
+          if (tableMaterials.value.selected[0].id === element.id) {
+            i = index;
+          }
+        }
+        isElementInEntryMaterials.count += objCurrent.count;
+        if (i !== -1) {
+          rowsEntryMaterials.value.splice(i, 1);
+        }
+      }
+      dialogReplaceMaterials.value = false;
+      syncTableMaterials();
+    }
     function confirmAddEntryMaterial() {
       rowsEntryMaterials.value.length = 0;
       for (let index = 0; index < rowsAddMaterialsBuffer.value.length; index += 1) {
         const element = rowsAddMaterialsBuffer.value[index];
-        element.cost = Number(getProp(rowsAllMaterials.value, element.id, 'cost'));
+        element.cost = Number(getProp(allMaterials, element.id, 'cost'));
         rowsEntryMaterials.value.push(element);
       }
       syncTableMaterials();
@@ -640,10 +760,14 @@ export default defineComponent({
       }
       return materialsCount;
     }
+    function getDisplayCostAll() {
+      return new Intl.NumberFormat('ru', { style: 'currency', currency: 'RUB' }).format(Number(costAll.value));
+    }
     watch(syncObject, (newValue, oldValue) => {
       change.value = (newValue !== oldValue);
     }, { flush: 'sync' });
     return {
+      id,
       addMaterialsCategoryUpdate,
       addMaterialsCategorySelector,
       addMaterialsCategorySelectorOp,
@@ -654,6 +778,7 @@ export default defineComponent({
       confirmExit,
       exit,
       downloadPDF,
+      downloadEXCEL,
       costOneHourWorker,
       percentOfMaterials,
       syncTableMaterials,
@@ -668,6 +793,7 @@ export default defineComponent({
       columnsAddMaterials,
       actionAddMaterial,
       actionRemoveMaterial,
+      actionReplaceMaterial,
       tableAddMaterials,
       changeCount,
       change,
@@ -691,8 +817,10 @@ export default defineComponent({
       tab,
       columns,
       dialogAddMaterials,
+      dialogReplaceMaterials,
       confirmAddMaterial,
       confirmAddEntryMaterial,
+      confirmReplaceMaterial,
       confirmDeleteAction,
       updateSelectedTableMaterials,
       updateSelectedTableMaterialsBuffer,
@@ -700,6 +828,7 @@ export default defineComponent({
       weight,
       wh,
       costAll,
+      getDisplayCostAll,
       update,
       resetChange,
       splitterModel: ref(50),

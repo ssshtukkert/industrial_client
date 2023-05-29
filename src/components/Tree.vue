@@ -1,31 +1,16 @@
 <template>
-  <div class="q-pa-md q-gutter-sm text-h5" style="background-color: rgb(60, 60, 60);">
-
+  <div class="q-pa-sm q-gutter-sm text-h6" style="background-color: rgb(60, 60, 60);">
     <q-tree dark :nodes="data" v-model:selected="selected" v-model:expanded="expanded" node-key="label" dense
       no-selection-unset no-transition color="grey" text-color="grey" selected-color="grey" control-color="grey"
       tick-strategy="none">
       <template v-slot:header-root="prop">
         <q-item dark class="fit" v-ripple>
           <div v-if="prop.node.icon">
-            <q-icon :name="prop.node.icon" size="28px" class="q-mr-sm" />
+            <q-icon :name="prop.node.icon" size="14px" class="q-mr-sm" />
           </div>
-          {{ prop.node.label }}
-        </q-item>
-        <!-- <div class="row items-center">
-          <div>
             {{ prop.node.label }}
-            <q-badge color="orange" class="q-ml-sm">New!</q-badge>
-          </div>
-        </div> -->
-      </template>
-      <!-- <template v-slot:default-header="prop">
-        <q-item dark class="fit" v-ripple clickable :to="prop.node.to">
-          <div v-if="prop.node.icon">
-            <q-icon :name="prop.node.icon" size="28px" class="q-mr-sm" />
-          </div>
-          {{ prop.node.label }}
         </q-item>
-      </template> -->
+      </template>
       <template v-slot:default-header="prop">
         <q-item class="row fit items-center" v-ripple clickable :to="prop.node.to">
           <div v-if="prop.node.icon">
@@ -105,7 +90,6 @@ export default defineComponent({
       // if (isIdPAram) {
       selected.value = this.expanded[this.expanded.length - 1];
       // }
-      console.log(selected.value);
     }
     return {
       expand,

@@ -12,7 +12,7 @@
         <slot name="actions" />
         <q-space v-show="!hideShearch"/>
         <div v-show="!hideShearch">
-          <q-input class="text-h6" outlined dense debounce="300" color="primary" v-model="filter" clearable
+          <q-input dark class="text-h6" outlined dense debounce="300" v-model="filter" clearable
             placeholder="Поиск" style="margin: 10px;">
             <template v-slot:append>
               <q-icon name="search" />
@@ -33,6 +33,7 @@
     </template>
     <template v-slot:body-cell-name="props">
       <q-td key="name" :props="props">
+        <q-badge color="red" class="text-white" v-if="props.row.status">Запрещено к применению</q-badge>
         <div class="text-h6">{{ props.row.name }}</div>
       </q-td>
     </template>
@@ -48,6 +49,11 @@
     <template v-slot:body-cell-cost="props">
       <q-td key="cost" :props="props">
         <div class="text-h6">{{ props.row.cost }}</div>
+      </q-td>
+    </template>
+    <template v-slot:body-cell-meas="props">
+      <q-td key="cost" :props="props">
+        <div class="text-h6">{{ props.row.meas }}</div>
       </q-td>
     </template>
   </q-table>

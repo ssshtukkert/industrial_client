@@ -1,11 +1,11 @@
 <template>
-  <q-card>
-    <q-card-section class="text-white" style="background-color: rgb(80, 80, 80);">
+  <q-page style="background-color: rgb(80, 80, 80);">
+    <q-card-section v-show="loadComplete" class="text-white" >
       <div class="text-h6">
         Испытания
       </div>
     </q-card-section>
-    <q-card-section class="text-black q-pa-sm" style="background-color: rgb(60, 60, 60);">
+    <q-card-section v-show="loadComplete" class="text-black q-pa-sm" style="background-color: rgb(60, 60, 60);">
       <div class="row">
         <div class="col-4 q-pa-xs">
           <q-card class="col-4 fit text-white" style="background-color: rgb(60, 60, 60);">
@@ -220,22 +220,43 @@
           </q-card>
         </div>
         <div class="col-2 q-pa-xs">
-          <q-card class="col-3 fit text-white" style="background-color: rgb(60, 60, 60);">
-            <q-card-section style="background-color: rgb(80, 80, 80);">
-              <div class="text-h8">
-                Перепад давления воздуха между каналами №11 и №12
-              </div>
-            </q-card-section>
-            <q-card-section>
-              <div class="row">
-                <div class="col-12 text-grey" align="center">
-                  <div class="text-h6 text-white">
-                    {{ deltap_11_12 }} Па
+          <div class="row fit">
+            <q-card class="text-white" style="background-color: rgb(60, 60, 60);">
+              <q-card-section style="background-color: rgb(80, 80, 80);">
+                <div class="text-h8">
+                  Перепад давления воздуха между каналами №11 и №12
+                </div>
+              </q-card-section>
+              <q-card-section>
+                <div class="row">
+                  <div class="col-12 text-grey" align="center">
+                    <div class="text-h6 text-white">
+                      {{ deltap_11_12 }} Па
+                    </div>
                   </div>
                 </div>
-              </div>
-            </q-card-section>
-          </q-card>
+              </q-card-section>
+            </q-card>
+            <q-card class="text-white full-width" style="background-color: rgb(60, 60, 60);">
+              <q-card-section style="background-color: rgb(80, 80, 80);">
+                <div class="text-h8">
+                  Увлажнение/осушение
+                </div>
+              </q-card-section>
+              <q-card-section>
+                <div class="row">
+                  <div class="col-12 text-grey" align="center">
+                    <div class="text-h6 text-white">
+                      {{ deltahum_vyt }} г/кг
+                    </div>
+                    <div class="text-h6 text-white">
+                      {{ masshum_vyt }} кг/ч
+                    </div>
+                  </div>
+                </div>
+              </q-card-section>
+            </q-card>
+          </div>
         </div>
         <div class="col-2 q-pa-xs">
           <q-card class="col-4 fit text-white" style="background-color: rgb(60, 60, 60);">
@@ -426,6 +447,12 @@
                   Влажностный КПД:
                   <div class="text-h6 text-white">
                     {{ KPD_H }}
+                  </div>
+                </div>
+                <div v-if="alarmsBURR" class="col-2 text-grey" align="center">
+                  Скорость БУРР:
+                  <div class="text-h6 text-white">
+                    {{ rotorSpeed }} ({{ rotorSpeedCalc }}) об/мин
                   </div>
                 </div>
               </div>
@@ -653,22 +680,43 @@
           </q-card>
         </div>
         <div class="col-2 q-pa-xs">
-          <q-card class="col-4 fit text-white" style="background-color: rgb(60, 60, 60);">
-            <q-card-section style="background-color: rgb(80, 80, 80);">
-              <div class="text-h8">
-                Перепад давления воздуха между каналами №21 и №22
-              </div>
-            </q-card-section>
-            <q-card-section>
-              <div class="row">
-                <div class="col-12 text-grey">
-                  <div class="text-h6 text-white" align="center">
-                    {{ deltap_21_22 }} Па
+          <div class="row fit">
+            <q-card class="text-white" style="background-color: rgb(60, 60, 60);">
+              <q-card-section style="background-color: rgb(80, 80, 80);">
+                <div class="text-h8">
+                  Перепад давления воздуха между каналами №21 и №22
+                </div>
+              </q-card-section>
+              <q-card-section>
+                <div class="row">
+                  <div class="col-12 text-grey">
+                    <div class="text-h6 text-white" align="center">
+                      {{ deltap_21_22 }} Па
+                    </div>
                   </div>
                 </div>
-              </div>
-            </q-card-section>
-          </q-card>
+              </q-card-section>
+            </q-card>
+            <q-card class="text-white full-width" style="background-color: rgb(60, 60, 60);">
+              <q-card-section style="background-color: rgb(80, 80, 80);">
+                <div class="text-h8">
+                  Увлажнение/осушение
+                </div>
+              </q-card-section>
+              <q-card-section>
+                <div class="row">
+                  <div class="col-12 text-grey" align="center">
+                    <div class="text-h6 text-white">
+                      {{ deltahum_pr }} г/кг
+                    </div>
+                    <div class="text-h6 text-white">
+                      {{ masshum_pr }} кг/ч
+                    </div>
+                  </div>
+                </div>
+              </q-card-section>
+            </q-card>
+          </div>
         </div>
         <div class="col-2 q-pa-xs">
           <q-card class="col-4 fit text-white" style="background-color: rgb(60, 60, 60);">
@@ -905,7 +953,6 @@
           </div>
         </q-card-section>
       </q-card>
-
       <div class="row">
         <q-card class="col-4 fit text-white" style="background-color: rgb(60, 60, 60);">
           <q-card-section style="background-color: rgb(80, 80, 80);">
@@ -939,7 +986,7 @@
                   @update:model-value="enterPassword(updateModeWrite)" />
               </div>
               <div class="col-3">
-                <q-toggle v-model="autoWrite" class="full-width" label="Автозапись"
+                <q-toggle v-model="autoWrite" :disable="!pause" class="full-width" label="Автозапись"
                   @update:model-value="enterPassword(updateAutoWrite)" />
               </div>
               <div class="col-3">
@@ -952,27 +999,34 @@
                   @keydown.enter.prevent="enterPassword(updateCountRegisterWrite)" />
               </div>
               <div class="col-3">
-                <q-toggle v-model="pause" class="full-width" label="Пауза" :disable="lock_pause > 0"
-                  @update:model-value="enterPassword(updatePause)" />
+                <!-- <q-toggle v-model="pause" class="full-width" label="Пауза" :disable="lock_pause > 0"
+                  @update:model-value="enterPassword(updatePause)" /> -->
+                  <q-btn class="text-white" :disable="!modeWrite" :color="colorPause" :label="labelPause" @click="send('togglePause')" />
               </div>
             </div>
             <div class="row">
-              <div class="col-4">
+              <div class="col-3">
                 <div class="text-h6">
                   Всего записей:
                   {{ countAutoWrite }}
                 </div>
               </div>
-              <div class="col-4">
+              <div class="col-3">
                 <div class="text-h6">
                   Количество текущих регистраций:
                   {{ countWrite }}
                 </div>
               </div>
-              <div class="col-4">
+              <div class="col-3">
                 <div class="text-h6">
-                  <q-btn :disable="statusWrite !== ''" color="teal" label="Скачать отчёт"
-                    href="http://10.154.152.88:3001/download/local/cyclic_pressures.xlsx" target="_self" />
+                  <!-- <q-btn :disable="statusWrite !== ''" color="teal" label="Загруз отчёт"
+                    href="http://10.154.152.88:3001/download/local/cyclic_pressures.xlsx" target="_self" /> -->
+                </div>
+              </div>
+              <div class="col-3">
+                <div class="text-h6">
+                  <q-btn :disable="dateStart == ''" color="teal" label="Загрузить промежуточный отчёт" target="_self"
+                    :href="getRouteOrder" />
                 </div>
               </div>
             </div>
@@ -1146,11 +1200,11 @@
               </div>
             </div>
           </q-card-section>
-          <q-inner-loading :showing="!loadComplete" color="white" label-class="text-white"
-            label-style="font-size: 1.1em" />
         </q-card>
       </div>
     </q-card-section>
+    <q-inner-loading :showing="!loadComplete" color="white" style="height: 100%" label-class="text-white"
+            label-style="font-size: 1.1em" label="Получение данных с щита управления"/>
     <q-dialog v-model="changeDialog" ref="comp_inputPassword" persistent>
       <q-card style="width: 700px; max-width: 80vw;">
         <q-card-section style="background-color: rgb(80, 80, 80);">
@@ -1185,7 +1239,17 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
-  </q-card>
+    <q-dialog v-model="alarmMessage" :position="position">
+      <q-card class="bg-red" style="width: 350px">
+        <q-card-section class="row items-center no-wrap">
+          <div class="col text-h6 text-white">
+            Авария
+          </div>
+          <q-btn class="col text-white" color="primary" label="Журнал аварий" href="http://10.154.152.88:3001/#/lab/recup/alarms"/>
+        </q-card-section>
+      </q-card>
+    </q-dialog>
+  </q-page>
 
 </template>
 <script>
@@ -1207,7 +1271,7 @@ export default {
     const load = ref(0);
     const changeDialog = ref(false);
     const errorPasswordDialog = ref(false);
-    let password = '';
+    let password = localStorage.getItem('passwordLab') || '';
     const inputPassword = ref(password);
     const comp_inputPassword = ref(null);
     const confirmPass = ref(null);
@@ -1219,12 +1283,15 @@ export default {
     for (let index = 0; index < 2; index += 1) {
       charts.push(ref(null));
     }
+    const alarmMessage = ref(false);
+    const position = ref('top');
     const modeWrite = ref(false);
     const lock_modeWrite = ref(0);
     const autoWrite = ref(false);
     const lock_autoWrite = ref(0);
-    const pause = ref(false);
-    const lock_pause = ref(0);
+    const pause = ref(true);
+    // const lock_pause = ref(0);
+    const colorPause = ref('grey');
     const countRegisterWrite = ref(10);
     const comp_countRegisterWrite = ref(null);
     const focus_countRegisterWrite = ref(false);
@@ -1241,6 +1308,10 @@ export default {
     const Patm = ref(0);
     // тепловой баланс
     const warmBalance = ref(0);
+    // скорость вращения роторного рекуператора
+    const rotorSpeed = ref(0);
+    // расчётная скорость вращения роторного рекуператора
+    const rotorSpeedCalc = ref(0);
     // температура
     const T_TMA1_21 = ref(0);
     const T_TMA2_21 = ref(0);
@@ -1363,6 +1434,16 @@ export default {
     const Rh_21 = ref(0);
     const Rh_22 = ref(0);
 
+    const deltahum_vyt = ref(0);
+    const deltahum_pr = ref(0);
+    const masshum_vyt = ref(0);
+    const masshum_pr = ref(0);
+
+    const dateStart = ref('');
+    const getRouteOrder = ref('');
+    let npause = 0;
+    const labelPause = ref('Пауза');
+    const alarmsBURR = ref(false);
     function updateChart(index, value, setpoint, time, direct, update) {
       if (time) {
         charts[index].value.pushValues([{ value }], time, direct, update);
@@ -1590,6 +1671,11 @@ export default {
           Hc_Lab.value = mes.Hc_Lab.value;
           Rh_Lab.value = mes.Rh_Lab.value;
 
+          masshum_pr.value = mes.masshum_pr.value;
+          masshum_vyt.value = mes.masshum_vyt.value;
+          deltahum_pr.value = mes.deltahum_pr.value;
+          deltahum_vyt.value = mes.deltahum_vyt.value;
+
           loadComplete.value = true;
         } else if (json.type === 'sendAirDevices') {
           if (mes.rabota.value === 'СТОП') {
@@ -1611,7 +1697,10 @@ export default {
           SCo_t_nar.value = mes.SCo_t_nar.value;
           SCo_Rh_nar.value = mes.SCo_Rh_nar.value;
           SCo_Abs_nar.value = mes.SCo_Abs_nar.value;
-
+          dateStart.value = mes.StartTimeWriteFreeze.value;
+          getRouteOrder.value = `http://10.154.152.88:3001/testrecup/download/get_all_from_start/${dateStart.value}`;
+          rotorSpeed.value = mes.Oborot_RR_BURR.value;
+          rotorSpeedCalc.value = mes.Calc_RR_BURR.value;
           // запись
           if (mes.TextStatusWrite) {
             statusWrite.value = mes.TextStatusWrite.value;
@@ -1628,18 +1717,18 @@ export default {
           } else if (!changeDialog.value) {
             autoWrite.value = mes.AutoWrite.value;
           }
-          if (lock_pause.value > 0) {
-            lock_pause.value -= 1;
-          } else {
-            if (pause.value !== mes.SetPause.value) {
-              WebSocket_Send('recup', {
-                id: 2, type: 'pause', value: !pause.value, timestamp: getCurrentTime(),
-              });
-            }
-            if (!changeDialog.value) {
-              pause.value = mes.SetPause.value;
-            }
-          }
+          // if (lock_pause.value > 0) {
+          //   lock_pause.value -= 1;
+          // } else {
+          // if (pause.value !== mes.SetPause.value) {
+          //   WebSocket_Send('recup', {
+          //     id: 2, type: 'pause', value: !pause.value, timestamp: getCurrentTime(),
+          //   });
+          // }
+          // if (!changeDialog.value) {
+          pause.value = mes.SetPause.value;
+          // }
+          // }
           if (lock_modeWrite.value > 0) {
             lock_modeWrite.value -= 1;
           } else if (!changeDialog.value) {
@@ -1658,9 +1747,13 @@ export default {
     }
     function updateModeWrite() {
       lock_modeWrite.value = 2;
+      pause.value = true;
       WebSocket_Send('recup', {
         id: 2, type: 'modeWrite', value: modeWrite.value, timestamp: getCurrentTime(),
       });
+      if (modeWrite.value) {
+        console.log('завершение записи');
+      }
     }
     function updateAutoWrite() {
       lock_autoWrite.value = 2;
@@ -1669,9 +1762,15 @@ export default {
       });
     }
     function updatePause() {
-      lock_pause.value = 2;
+      // lock_pause.value = 2;
+      // WebSocket_Send('recup', {
+      //   id: 2, type: 'pause', value: pause.value, timestamp: getCurrentTime(),
+      // });
+    }
+    function send(toggle) {
+      pause.value = !pause.value;
       WebSocket_Send('recup', {
-        id: 2, type: 'pause', value: pause.value, timestamp: getCurrentTime(),
+        id: 2, type: 'manual', value: toggle, timestamp: getCurrentTime(),
       });
     }
     let varFunction = null;
@@ -1679,10 +1778,9 @@ export default {
       if (password !== TRUE_PASSWORD) {
         changeDialog.value = true;
         inputPassword.value = '';
-        console.log('введите пароль');
         varFunction = action;
       } else {
-        console.log('пароль введён');
+        localStorage.setItem('passwordLab', password);
         action();
       }
     }
@@ -1715,6 +1813,27 @@ export default {
       // написать удаление элементов при размонтировании образа
       WebSocket_Create('recup', { getMain: 1 });
       WebSocket_Listen('recup', listen);
+      setInterval(() => {
+        if (!pause.value && modeWrite.value) {
+          npause += 1;
+          if (npause > 1) {
+            colorPause.value = 'red';
+            labelPause.value = 'Запись';
+            npause = 0;
+          } else {
+            colorPause.value = 'grey';
+          }
+        } else {
+          npause = 0;
+          labelPause.value = 'Пауза';
+          colorPause.value = 'grey';
+        }
+      }, 500);
+      const res = localStorage.getItem('workBURR');
+      alarmsBURR.value = res === 'true';
+      if (alarmsBURR.value) {
+        // alarmMessage.value = true;
+      }
     });
     onBeforeUnmount(() => {
       WebSocket_Close('recup');
@@ -1844,7 +1963,9 @@ export default {
       modeWrite,
       autoWrite,
       pause,
-      lock_pause,
+      colorPause,
+      // lock_pause,
+      labelPause,
       loadComplete,
       T_11,
       T_12,
@@ -1866,6 +1987,18 @@ export default {
       ds: ref(() => {
         console.log(1);
       }),
+      deltahum_vyt,
+      deltahum_pr,
+      masshum_vyt,
+      masshum_pr,
+      dateStart,
+      getRouteOrder,
+      send,
+      rotorSpeed,
+      rotorSpeedCalc,
+      alarmsBURR,
+      alarmMessage,
+      position,
     };
   },
 };

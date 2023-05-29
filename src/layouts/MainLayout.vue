@@ -1,14 +1,24 @@
-<template>
-  <q-layout view="hHh LpR fFf">
+<template >
+  <q-layout view="lHh Lpr lFf">
     <q-header elevated>
       <q-toolbar>
         <q-btn flat dense round icon="menu" aria-label="Menu" @click="toggleLeftDrawer" />
-        <q-toolbar-title>
-          <Header />
-        </q-toolbar-title>
-        <div style="padding-right: 60px;">
-          v.0.12.1
-        </div>
+        <!-- <Header /> -->
+        <!-- <q-toolbar-title>
+
+        </q-toolbar-title> -->
+        <q-card-section class="q-pa-sm row items-center full-width">
+          <div class="text-h4 text-weight-bolder text-white">
+            nevatom
+          </div>
+          <div class="col main-font text-h10 text-grey q-pa-sm" align="left" float="">
+            технический сервер
+          </div>
+          <div class="col-2 text-grey"  align="right">
+            v.0.12.7
+          </div>
+        </q-card-section>
+
       </q-toolbar>
     </q-header>
 
@@ -31,7 +41,7 @@
 
     </q-drawer>
     <q-page-container>
-      <router-view style="padding: 0px; margin: 0px; " />
+      <router-view  style="padding: 0px; margin: 0px; " />
     </q-page-container>
   </q-layout>
 </template>
@@ -42,7 +52,7 @@ import {
   ref,
   onMounted,
 } from 'vue';
-import Header from 'components/Header/Header.vue';
+// import Header from 'components/Header/Header.vue';
 import Tree from 'components/Tree.vue';
 import { useRoute } from 'vue-router';
 
@@ -50,7 +60,7 @@ export default defineComponent({
   name: 'MainLayout',
   active: false,
   components: {
-    Header,
+    // Header,
     Tree,
   },
   props: {
@@ -70,12 +80,12 @@ export default defineComponent({
           icon: 'home',
           to: '/home',
         },
-        {
-          label: 'Производство',
-          icon: 'precision_manufacturing',
-          selectable: false,
-          node: '/plant',
-        },
+        // {
+        //   label: 'Производство',
+        //   icon: 'precision_manufacturing',
+        //   selectable: false,
+        //   node: '/plant',
+        // },
         {
           label: 'Вентиляция',
           icon: 'hvac',
@@ -118,8 +128,23 @@ export default defineComponent({
                   to: '/lab/recup/tests',
                 },
                 {
+                  label: 'Менеджер испытаний',
+                  to: '/lab/recup/testmanager',
+                },
+                {
                   label: 'Графики',
-                  to: '/lab/recup/charts',
+                  selectable: false,
+                  node: 'lab/recup/charts/',
+                  children: [
+                    {
+                      label: 'Датчики',
+                      to: '/lab/recup/charts/sensors',
+                    },
+                    {
+                      label: 'Исторические данные',
+                      to: '/lab/recup/charts/history',
+                    },
+                  ],
                 },
                 {
                   label: 'Калибровка',
@@ -130,6 +155,10 @@ export default defineComponent({
                   to: '/lab/recup/alarms',
                 },
               ],
+            },
+            {
+              label: 'Испытания РТК',
+              to: '/lab/test_rtk',
             },
           ],
         },
@@ -148,29 +177,6 @@ export default defineComponent({
                   label: 'Расчеты',
                   to: '/services/genprice/calculations',
                 },
-                {
-                  label: 'Справочники',
-                  selectable: false,
-                  node: '/services/genprice/references',
-                  children: [
-                    {
-                      label: 'Материалы',
-                      to: '/services/genprice/references/materials',
-                    },
-                    {
-                      label: 'Категории материалов',
-                      to: '/services/genprice/references/materials_categories',
-                    },
-                    {
-                      label: 'Eд. измерения материалов',
-                      to: '/services/genprice/references/materials_measures',
-                    },
-                  ],
-                },
-                {
-                  label: 'Настройки',
-                  to: '/services/genprice/settings',
-                },
               ],
             },
             {
@@ -183,6 +189,37 @@ export default defineComponent({
                   to: '/services/productoptions/configurations',
                 },
               ],
+            },
+            {
+              label: 'ChatOA',
+              to: '/services/chatOA',
+            },
+            {
+              label: 'Справочники',
+              selectable: false,
+              node: '/services/references',
+              children: [
+                {
+                  label: 'Материалы',
+                  to: '/services/references/materials',
+                },
+                {
+                  label: 'Категории материалов',
+                  to: '/services/references/materials_categories',
+                },
+                {
+                  label: 'Eд. измерения материалов',
+                  to: '/services/references/materials_measures',
+                },
+                {
+                  label: 'Вентиляторы',
+                  to: '/services/references/fans',
+                },
+              ],
+            },
+            {
+              label: 'Настройки',
+              to: '/services/genprice/settings',
             },
           ],
         },

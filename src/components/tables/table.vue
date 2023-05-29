@@ -1,81 +1,81 @@
 <template>
-  <q-table dark class="window-height fit" :rows="rows" :columns="columns" row-key="name" :filter="filter"
-    :filter-method="find" virtual-scroll :hide-selected-banner="true" selection="multiple" v-model:selected="selected"
-    binary-state-sort v-model:pagination="pagination" :rows-per-page-options="[1]"
-    :no-results-label="`По запросу '${filter}' ничего не найдено`" grid-header wrap-cells :no-data-label="noDataText"
-    @row-click="selectRow" @row-dblclick="actionRow" style="max-height: 87vh; background-color: rgb(60, 60, 60);">
-    <template v-slot:top>
-      <q-card-actions v-show="!hideButtons" class="fit">
-        <q-btn color='dark-grey' icon="add" @click="createAction" >
-          <q-tooltip :delay="800">
-            Создать новую запись
-          </q-tooltip>
-        </q-btn>
-        <q-btn color='dark-grey' icon="edit" v-show="isOneSelect()" @click="changeAction(selected)" >
-          <q-tooltip :delay="800">
-            Редактировать запись
-          </q-tooltip>
-        </q-btn>
-        <q-btn color='dark-grey' icon="delete" v-show="selected.length > 0" @click="deleteAction(selected)" >
-          <q-tooltip :delay="800">
-            Удалить запись/записи
-          </q-tooltip>
-        </q-btn>
-        <slot name="actions" />
-        <q-space />
-        <q-input dark class="text-h6" outlined dense debounce="300" color="primary" v-model="filter" clearable
-          placeholder="Поиск" style="margin: 10px;">
-          <template v-slot:append>
-            <q-icon name="search" />
-          </template>
-        </q-input>
-      </q-card-actions>
-    </template>
-    <template v-slot:pagination>
-      <div class="text-h6">
-        {{ getSelectedString() }}
-      </div>
-    </template>
-    <template v-slot:header-cell="props">
-      <q-th :props="props">
-        <div class="text-h6">{{ props.col.label }}</div>
-      </q-th>
-    </template>
-    <template v-slot:body-cell="props">
-      <q-td :props="props">
+  <q-table dark dense class="window-height fit" :rows="rows" :columns="columns" row-key="name" :filter="filter"
+      :filter-method="find" virtual-scroll :hide-selected-banner="true" selection="multiple" v-model:selected="selected"
+      binary-state-sort v-model:pagination="pagination" :rows-per-page-options="[1]"
+      :no-results-label="`По запросу '${filter}' ничего не найдено`" grid-header wrap-cells :no-data-label="noDataText"
+      @row-click="selectRow" @row-dblclick="actionRow" style="max-height: 87vh; background-color: rgb(60, 60, 60);">
+      <template v-slot:top>
+        <q-card-actions v-show="!hideButtons" class="fit">
+          <q-btn color='dark-grey' label="Создать" icon="add" @click="createAction">
+            <q-tooltip :delay="800">
+              Создать новую запись
+            </q-tooltip>
+          </q-btn>
+          <q-btn color='dark-grey' label="Редактировать" icon="edit" v-show="isOneSelect()" @click="changeAction(selected)">
+            <q-tooltip :delay="800">
+              Редактировать запись
+            </q-tooltip>
+          </q-btn>
+          <q-btn color='dark-grey' :disable="deleted" label="Удалить" icon="delete" v-show="selected.length > 0" @click="deleteAction(selected)">
+            <q-tooltip :delay="800">
+              Удалить запись/записи
+            </q-tooltip>
+          </q-btn>
+          <slot name="actions" />
+          <q-space />
+          <q-input dark class="text-h6" outlined dense debounce="300" v-model="filter" clearable
+            placeholder="Поиск" style="margin: 10px;">
+            <template v-slot:append>
+              <q-icon name="search" />
+            </template>
+          </q-input>
+        </q-card-actions>
+      </template>
+      <template v-slot:pagination>
         <div class="text-h6">
-          {{ props.value }}
+          {{ getSelectedString() }}
         </div>
-        <q-tooltip v-if="props.row.descript" :delay="800">
-          <template v-slot:default>
-            <div v-if="props.row.descript.length > 0">
-              <p style="white-space: pre;">
-                {{ props.row.descript }}
-              </p>
-            </div>
-          </template>
-        </q-tooltip>
-      </q-td>
-    </template>
-  </q-table>
+      </template>
+      <template v-slot:header-cell="props">
+        <q-th :props="props">
+          <div class="text-h6">{{ props.col.label }}</div>
+        </q-th>
+      </template>
+      <template v-slot:body-cell="props">
+        <q-td :props="props">
+          <div class="text-h6">
+            {{ props.value }}
+          </div>
+          <q-tooltip v-if="props.row.descript" :delay="800">
+            <template v-slot:default>
+              <div v-if="props.row.descript.length > 0">
+                <p style="white-space: pre;">
+                  {{ props.row.descript }}
+                </p>
+              </div>
+            </template>
+          </q-tooltip>
+        </q-td>
+      </template>
+    </q-table>
   <q-dialog v-model="dialog" persistent>
-    <q-card class="bg-secondary text-white q-pt-none" style="width: 900px; max-width: 95vw;">
-      <q-card-section>
+    <q-card class="text-white q-pt-none" style="width: 900px; max-width: 95vw; background-color: rgb(60, 60, 60);">
+      <q-bar style="background-color: rgb(80, 80, 80);">
         <div class="text-h6">{{ dialogName }}</div>
-      </q-card-section>
-      <q-card-section class="bg-white text-black">
+      </q-bar>
+      <q-card-section>
         <q-card-section class="row">
-          <q-input class="fit text-h6" v-model="createInputName" clearable outlined label="Наименование" lazy-rules
+          <q-input dark class="fit text-h6" v-model="createInputName" clearable outlined label="Наименование" lazy-rules
             :rules="validationName" />
         </q-card-section>
         <slot name="content" />
       </q-card-section>
-      <q-card-actions align="right" class="bg-grey-4 text-black">
-        <q-btn v-show="action === 0" color="orange" label="Создать" @click="createConfirmAction"
+      <q-card-actions align="center">
+        <q-btn v-show="action === 0" color="dark-grey" label="Создать" @click="createConfirmAction"
           :disabled="!createInputName" />
-        <q-btn v-show="action === 1" color="orange" label="Изменить" @click="changeConfirmAction"
+        <q-btn v-show="action === 1" color="dark-grey" label="Изменить" @click="changeConfirmAction"
           :disabled="!createInputName" />
-        <q-btn color="primary" label="Отмена" v-close-popup @click="cancelConfirm" />
+        <q-btn color="dark-grey" label="Отмена" v-close-popup @click="cancelConfirm" />
       </q-card-actions>
     </q-card>
   </q-dialog>
@@ -145,6 +145,10 @@ export default defineComponent({
     actionRow: {
       type: Function,
     },
+    deleted: {
+      type: Boolean,
+      default: true,
+    },
   },
   setup(props) {
     const { validationName } = inject('store');
@@ -208,7 +212,7 @@ export default defineComponent({
     function isOneSelect() {
       return getSelect().length === 1;
     }
-    function selectRow(event, row) {
+    function selectRow(_event, row) {
       selected.value.length = 0;
       selected.value.push(row);
     }
@@ -328,3 +332,23 @@ export default defineComponent({
 
 });
 </script>
+<style>
+.scroll::-webkit-scrollbar {
+  width: 10px;
+  background: rgb(90, 90, 90);
+  opacity: 0.3 !important;
+  width: 15px;
+}
+
+.scroll::-webkit-scrollbar-thumb {
+  background: grey;
+}
+
+.scroll:hover::-webkit-scrollbar-thumb {
+  background: grey;
+}
+
+.scroll::-webkit-scrollbar-thumb:hover {
+  background: grey;
+}
+</style>

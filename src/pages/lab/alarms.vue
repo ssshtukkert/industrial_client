@@ -225,10 +225,79 @@
           </table>
         </div>
       </div>
-      <div class="row">
-        <q-btn color="teal" label="Сброс" v-show="!load" @click="enterPassword(reset)" />
+      <div class="row justify-center">
+        <q-btn color="teal" label="Сброс" :disable="load" @click="enterPassword(reset)" />
       </div>
-      <q-inner-loading :showing="load" color="white" label-class="text-white" style="height: 60vh;"
+      <q-inner-loading :showing="load" color="grey"  label-class="text-grey" style="height: 100%;"
+        label-style="font-size: 1.1em" />
+    </q-card-section>
+    <q-card-section v-if="alarmsBURR" class="text-white" style="background-color: rgb(80, 80, 80);">
+      <div class="text-h6">Журнал аварий БУРР</div>
+    </q-card-section>
+    <q-card-section v-if="alarmsBURR">
+      <div class="row">
+        <div class="col-4 text-white" style="padding: 10px;">
+          <table style="width: 100%;">
+            <div class="text-h6"></div>
+            <q-tr>
+              <q-th>Перечень аварий</q-th>
+              <q-th>Авария</q-th>
+            </q-tr>
+            <q-tr>
+              <q-td>Авария связи с рекуператором</q-td>
+              <q-td :class="getcolor(AlarmStatusRecup[0])">{{ parsebool(AlarmStatusRecup[0]) }}</q-td>
+            </q-tr>
+            <q-tr>
+              <q-td>Превышение макс допустимой температуры драйвером</q-td>
+              <q-td :class="getcolor(AlarmStatusRecup[1])">{{ parsebool(AlarmStatusRecup[1]) }}</q-td>
+            </q-tr>
+            <q-tr>
+              <q-td>Превышение заданного тока в обмотке А</q-td>
+              <q-td :class="getcolor(AlarmStatusRecup[2])">{{ parsebool(AlarmStatusRecup[2]) }}</q-td>
+            </q-tr>
+            <q-tr>
+              <q-td>Превышение заданного тока в обмотке В</q-td>
+              <q-td :class="getcolor(AlarmStatusRecup[3])">{{ parsebool(AlarmStatusRecup[3]) }}</q-td>
+            </q-tr>
+            <q-tr>
+              <q-td>Ошибка предварительного драйвера А</q-td>
+              <q-td :class="getcolor(AlarmStatusRecup[4])">{{ parsebool(AlarmStatusRecup[4]) }}</q-td>
+            </q-tr>
+            <q-tr>
+              <q-td>Ошибка предварительного драйвера В</q-td>
+              <q-td :class="getcolor(AlarmStatusRecup[5])">{{ parsebool(AlarmStatusRecup[5]) }}</q-td>
+            </q-tr>
+            <q-tr>
+              <q-td>Пониженное напряжение питания</q-td>
+              <q-td :class="getcolor(AlarmStatusRecup[6])">{{ parsebool(AlarmStatusRecup[6]) }}</q-td>
+            </q-tr>
+            <q-tr>
+              <q-td>Обнаружение пульсаций момента на валу двигателя</q-td>
+              <q-td :class="getcolor(AlarmStatusRecup[7])">{{ parsebool(AlarmStatusRecup[7]) }}</q-td>
+            </q-tr>
+            <q-tr>
+              <q-td>Обнружение блокировки вала двигателя</q-td>
+              <q-td :class="getcolor(AlarmStatusRecup[8])">{{ parsebool(AlarmStatusRecup[8]) }}</q-td>
+            </q-tr>
+            <q-tr>
+              <q-td>Обрыв ремня</q-td>
+              <q-td :class="getcolor(AlarmStatusRecup[9])">{{ parsebool(AlarmStatusRecup[9]) }}</q-td>
+            </q-tr>
+            <q-tr>
+              <q-td>Ошибка определения коэффициента передачи</q-td>
+              <q-td :class="getcolor(AlarmStatusRecup[10])">{{ parsebool(AlarmStatusRecup[10]) }}</q-td>
+            </q-tr>
+            <q-tr>
+              <q-td>Скорость вращения ротора не совпадает с расчётной</q-td>
+              <q-td :class="getcolor(AlarmStatusRecup[15])">{{ parsebool(AlarmStatusRecup[15]) }}</q-td>
+            </q-tr>
+          </table>
+        </div>
+      </div>
+      <div class="row justify-center">
+        <q-btn color="teal" label="Сброс" :disable="loadRecupAlarm" @click="enterPassword(resetRecup)" />
+      </div>
+      <q-inner-loading :showing="loadRecupAlarm" color="grey" label-class="text-white" style="height: 100%;"
         label-style="font-size: 1.1em" />
     </q-card-section>
     <q-dialog v-model="changeDialog" ref="comp_inputPassword" persistent>
@@ -286,7 +355,10 @@ export default {
     const AlarmStatus1 = ref([]);
     const AlarmStatus2 = ref([]);
     const AlarmStatus3 = ref([]);
+    const AlarmStatusRecup = ref([]);
     const load = ref(true);
+    const loadRecupAlarm = ref(true);
+    const alarmsBURR = ref(false);
     const {
       WebSocket_Create, WebSocket_Listen, WebSocket_Close, WebSocket_Send, getCurrentTime, TRUE_PASSWORD,
     } = inject('store');
@@ -327,13 +399,24 @@ export default {
             AlarmStatus3.value.unshift(Number(0));
           }
           AlarmStatus3.value.reverse();
+          AlarmStatusRecup.value = convertToBinary(mes.IntCodeAlarms4.value).split('');
+          while (AlarmStatusRecup.value.length < 16) {
+            AlarmStatusRecup.value.unshift(Number(0));
+          }
+          AlarmStatusRecup.value.reverse();
           load.value = false;
+          loadRecupAlarm.value = false;
         }
       }
     }
     function reset() {
       WebSocket_Send('recup', {
         id: 2, type: 'alarmsReset', value: true, timestamp: getCurrentTime(),
+      });
+    }
+    function resetRecup() {
+      WebSocket_Send('recup', {
+        id: 2, type: 'alarmsResetRecup', value: true, timestamp: getCurrentTime(),
       });
     }
     let varFunction = null;
@@ -362,18 +445,24 @@ export default {
       // написать удаление элементов при размонтировании образа
       WebSocket_Create('recup', { getMain: 1 });
       WebSocket_Listen('recup', listen);
+      const res = localStorage.getItem('workBURR');
+      alarmsBURR.value = res === 'true';
     });
     onBeforeUnmount(() => {
       WebSocket_Close('recup');
     });
     return {
       reset,
+      resetRecup,
+      alarmsBURR,
       AlarmStatus1,
       AlarmStatus2,
       AlarmStatus3,
+      AlarmStatusRecup,
       parsebool,
       getcolor,
       load,
+      loadRecupAlarm,
       changeDialog,
       errorPasswordDialog,
       inputPassword,

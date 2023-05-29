@@ -3,7 +3,7 @@
   "version": "0.0.2",
   "description": "nevatom",
   "productName": "nevatom",
-  "author": "Nikolay Karavan <energo_ceh@mail.ru>",
+  "author": "Victor Funk <energo_ceh@mail.ru>",
   "private": true,
   "scripts": {
     "lint": "eslint --ext .js,.vue ./",
@@ -26,6 +26,8 @@
   "devDependencies": {
     "@babel/eslint-parser": "^7.13.14",
     "@quasar/app": "^3.0.0",
+    "electron": "^22.0.0",
+    "electron-packager": "^15.5.2",
     "eslint": "^7.14.0",
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-plugin-import": "^2.20.1",

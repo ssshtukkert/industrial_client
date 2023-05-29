@@ -1,1 +1,7 @@
-/* app global css */
+@font-face {
+  font-family: customfont;
+  src: url(src/css/fonts/centurygothic.ttf);
+}
+.main-font {
+  font-family: 'customfont';
+}

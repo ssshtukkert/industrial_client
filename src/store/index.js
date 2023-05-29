@@ -118,9 +118,25 @@ function WebSocket_Listen(name, fun) {
     return false;
   }
 }
-
-function getCurrentDate() {
-  const currentDate = new Date();
+function getStatusData() {
+  return [
+    {
+      id: 0,
+      label: 'Разрешено к применению',
+    },
+    {
+      id: 1,
+      label: 'Запрещено к применению',
+    },
+  ];
+}
+function getCurrentDate(date) {
+  let currentDate;
+  if (date) {
+    currentDate = date;
+  } else {
+    currentDate = new Date();
+  }
   // .toLocaleFormat('%Y-%m-%d %h:%i:%s');
   // `${currentDate.toLocaleDateString()} ${currentDate.toLocaleTimeString()}`
   let day = currentDate.getDate();
@@ -147,7 +163,6 @@ function getCurrentDate() {
   const format = `${year}-${month}-${day} ${h}:${m}:${s}`;
   return format;
 }
-
 function getCurrentTime() {
   const currentDate = new Date();
   let h = currentDate.getHours();
@@ -194,6 +209,11 @@ function getId(array, prop, value) {
     }
   }
   return -1;
+}
+
+// возвращает формат отображение цены
+function getRubFormat() {
+  return new Intl.NumberFormat('ru', { style: 'currency', currency: 'RUB' });
 }
 // удалет элемент из массива с полем field равным value
 function removeElementInArray(array, field, value) {
@@ -261,6 +281,8 @@ export default {
   getId,
   removeElementInArray,
   getMaterialsCategories,
+  getRubFormat,
+  getStatusData,
   validationName,
   validationNumber,
   validationNumberNoZero,

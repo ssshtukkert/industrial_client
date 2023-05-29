@@ -1,13 +1,12 @@
 <template>
-  <q-page class="flex flex-center">
-    <q-card class="my-card bg-secondary text-white">
-      <q-card-section>
+  <q-page class="flex flex-center" style="background-color: rgb(60, 60, 60);">
+    <q-card class="text-white">
+      <q-card-section style="background-color: rgb(80, 80, 80);">
         <div class="text-h6">О сервере</div>
       </q-card-section>
-      <q-separator dark />
-      <q-card-section class="my-card bg-white text-black">
+      <q-card-section style="background-color: rgb(60, 60, 60);">
           <div class="q-pa-md">
-            <div class="text-h6">Наименование: Технический сервер "Цифровое производство 4.0"</div>
+            <div class="text-h6">Наименование: Технический сервер "Неватом"</div>
             <div class="text-h6">Контакты: vfynk@nevatom.ru</div>
           </div>
       </q-card-section>

@@ -51,6 +51,15 @@
         </div>
       </div>
     </q-card-section>
+    <!-- <q-toggle class="text-white" color="white" v-model="toggleWrite" label="Режим запись"
+      @click="send('toggleWrite')" />
+    <q-toggle class="text-white" color="white" v-model="toggleAutoWrite" label="Автозапись"
+      @click="send('toggleAutoWrite')" />
+    <q-btn class="bg-grey text-white" label="Пауза" @click="send('togglePause')" />
+    <div class="text-h6 text-white">
+      {{ statusWrite }}
+    </div> -->
+
     <q-dialog v-model="changeDialog" ref="comp_inputPassword" persistent>
       <q-card style="width: 700px; max-width: 80vw;">
         <q-card-section style="background-color: rgb(80, 80, 80);">
@@ -107,10 +116,14 @@ export default {
     const calibration4 = ref(0);
     const changeDialog = ref(false);
     const errorPasswordDialog = ref(false);
-    let password = '';
+    let password = localStorage.getItem('passwordLab') || '';
     const inputPassword = ref(password);
     const comp_inputPassword = ref(null);
     const confirmPass = ref(null);
+
+    const toggleWrite = ref(false);
+    const toggleAutoWrite = ref(false);
+    const statusWrite = ref('');
     const {
       WebSocket_Create, WebSocket_Listen, WebSocket_Close, WebSocket_Send, getCurrentTime, TRUE_PASSWORD,
     } = inject('store');
@@ -136,13 +149,16 @@ export default {
           pa2.value = mes.Pressure_12.value;
           pa3.value = mes.Pressure_22.value;
           pa4.value = mes.Pressure_11.value;
-          console.log(mes);
         } else if (json.type === 'sendAirDevices') {
-          console.log(mes);
           calibration1.value = mes.calibration1.value;
           calibration2.value = mes.calibration2.value;
           calibration3.value = mes.calibration3.value;
           calibration4.value = mes.calibration4.value;
+        } else if (json.type === 'sendManual') {
+          console.log(mes);
+          toggleWrite.value = mes.write;
+          toggleAutoWrite.value = mes.autowrite;
+          statusWrite.value = mes.statusWrite;
         }
       }
     }
@@ -152,11 +168,10 @@ export default {
       if (password !== TRUE_PASSWORD) {
         changeDialog.value = true;
         inputPassword.value = '';
-        console.log('введите пароль');
         varFunction = action;
         paD = pa;
       } else {
-        console.log('пароль введён');
+        localStorage.setItem('passwordLab', password);
         action(pa);
       }
     }
@@ -169,6 +184,11 @@ export default {
       } else {
         errorPasswordDialog.value = true;
       }
+    }
+    function send(toggle) {
+      WebSocket_Send('recup', {
+        id: 2, type: 'manual', value: toggle, timestamp: getCurrentTime(),
+      });
     }
     onMounted(() => {
       // написать удаление элементов при размонтировании образа
@@ -195,6 +215,10 @@ export default {
       inputPassword,
       comp_inputPassword,
       confirmPass,
+      toggleWrite,
+      toggleAutoWrite,
+      statusWrite,
+      send,
     };
   },
 };

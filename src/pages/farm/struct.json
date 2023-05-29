@@ -1,0 +1,111 @@
+{
+  "partInflow": {
+    "valve": {
+      "preheating": false,
+      "preheatingPower": 0,
+      "perimeterHeat": false,
+      "unitCount": 1,
+      "unittype": 0
+    },
+    "recircle": {
+      "enable": false
+    },
+    "filters": {
+      "count": 1,
+      "kipList": [
+        10
+      ]
+    },
+    "waterExchanger": {
+      "enable": true,
+      "type": 0,
+      "pump": {
+        "pressureIndicator": true,
+        "voltage": 0,
+        "current": 0.2
+      },
+      "kipList": [
+        5,
+        12,
+        9
+      ]
+    },
+    "electricExchanger": {
+      "enable": true,
+      "stage1": 12,
+      "stage2": 12,
+      "stage3": 0,
+      "stage4": 0,
+      "stage5": 0
+    },
+    "coolerFreon": {
+      "enable": false,
+      "contours": 0
+    },
+    "fans": {
+      "type": 0,
+      "voltage": 0,
+      "power": 1.5,
+      "current": 4.4,
+      "pressureIndicator": true,
+      "count": 1,
+      "reserve": false,
+      "thermoContact": false,
+      "speedControl": true,
+      "kipList": [
+        10,
+        13
+      ]
+    },
+    "recuperator": {
+      "enable": false,
+      "type": 0,
+      "unitBypass": true,
+      "unitType": 0,
+      "heatPallet": true,
+      "freezingPressureIndicator": true,
+      "voltage": 1,
+      "current": 0.2
+    }
+  },
+  "partOutflow": {
+    "filters": {
+      "count": 1,
+      "kipList": [
+        10
+      ]
+    },
+    "fans": {
+      "type": 0,
+      "voltage": 0,
+      "power": 1.5,
+      "current": 4.4,
+      "pressureIndicator": true,
+      "count": 1,
+      "reserve": false,
+      "thermoContact": false,
+      "speedControl": true,
+      "kipList": [
+        10,
+        13
+      ]
+    }
+  },
+  "parameters": {
+    "remoteСontrol": 0,
+    "lum": false,
+    "clima": false,
+    "modbusControl": false,
+    "fanBlockControl": true
+  },
+  "kipList": [
+    0,
+    6
+  ],
+  "blockManual": {
+    "material": 0,
+    "calculateId": 0,
+    "price": 0,
+    "name": ""
+  }
+}

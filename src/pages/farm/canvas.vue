@@ -1,5 +1,5 @@
 <template>
-  <div id="vue-canvas"></div>
+  <div class="bg-red" id="vue-canvas"></div>
 </template>
 
 <script>
@@ -32,7 +32,7 @@ export default {
 #vue-canvas {
   display: block;
   margin: 0 auto;
-  padding: 0;
+  padding: 10px;
   overflow: hidden;
 }
 </style>

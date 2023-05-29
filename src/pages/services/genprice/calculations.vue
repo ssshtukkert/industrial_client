@@ -1,31 +1,31 @@
 <template>
   <q-page class="justify-center full-width text-white" style="background-color: rgb(60, 60, 60);">
-    <q-card class="" style="background-color: rgb(60, 60, 60);">
+    <q-card style="background-color: rgb(60, 60, 60);">
       <q-card-section style="background-color: rgb(80, 80, 80);">
         <div class="text-h6">Расчеты</div>
       </q-card-section>
       <Table ref="table" :columnsDef="columns" :rowsDef="rows" createNewName="Новый расчет себестоимости"
         :queryAll="getQueryAll()" :queryUpdate="getQueryUpdate()" :queryDelete="getQueryDelete()"
-        :queryCreate="getQueryCreate()" :actionRow="actionRow" >
+        :queryCreate="getQueryCreate()" :actionRow="actionRow" :deleted="false" :renderRow="renderRow">
         <template v-slot:actions>
-          <q-btn color='orange' label='Открыть' v-show="isOneSelect()" @click="goCalculation" />
-          <q-btn color='green' label='Скопировать' v-show="isOneSelect()" @click="copy" />
+          <q-btn color='dark-grey' label='Открыть' icon="open_in_new" v-show="isOneSelect()" @click="goCalculation" />
+          <q-btn color='dark-grey' label='Скопировать' icon="content_copy" v-show="isOneSelect()" @click="copy" />
+          <q-btn color='dark-grey' label='Обновить' icon="update" v-show="isOneSelect()" @click="updateCalc" />
         </template>
       </Table>
       <q-dialog v-model="dialog" persistent>
-        <q-card class="bg-secondary text-white q-pt-none" style="width: 900px; max-width: 95vw;">
-          <q-card-section>
+        <q-card class="text-white q-pt-none" style="width: 900px; max-width: 95vw; background-color: rgb(60, 60, 60);">
+          <q-bar>
             <div class="text-h6">{{ dialogName }}</div>
-          </q-card-section>
+          </q-bar>
           <q-card-section class="bg-white text-black">
             <q-card-section class="row">
               <q-input class="fit text-h6" v-model="createInputName" clearable outlined label="Наименование" lazy-rules
                 :rules="validationName" />
             </q-card-section>
-            <slot name="content" />
           </q-card-section>
-          <q-card-actions align="right" class="bg-grey-4 text-black">
-            <q-btn v-show="allowCopy()" color="orange" label="Создать копию" @click="confirmCopy"
+          <q-card-actions align="center">
+            <q-btn v-show="allowCopy()" color="dark-grey" label="Создать копию" @click="confirmCopy"
               :disabled="!createInputName" />
             <q-btn color="primary" label="Отмена" v-close-popup @click="cancelConfirm" />
           </q-card-actions>
@@ -50,7 +50,7 @@ export default defineComponent({
   },
   setup() {
     document.title = 'Расчеты';
-    const { host } = inject('store');
+    const { host, getProp, getRubFormat } = inject('store');
     const router = useRouter();
     const table = ref(null);
     const dialog = ref(false);
@@ -72,7 +72,7 @@ export default defineComponent({
         label: 'Себестоимость, руб',
         field: 'cost',
         sortable: true,
-        format: (val) => val.toFixed(2),
+        format: (val) => getRubFormat().format(val),
       },
       {
         name: 'createdAt',
@@ -116,21 +116,58 @@ export default defineComponent({
       dialogName.value = 'Наименование для копии щита';
       createInputName.value = table.value.selected[0].name;
     }
+    // обновить расчёт в соответствии с текущими ценами
+    function updateCalc() {
+      axios
+        .get(`${host}/services/genprice/Setting`).then((responseS) => {
+          axios
+            .get(`${host}/services/genprice/Calculation/${table.value.selected[0].id}`).then((responseC) => {
+              const query = responseC.data.data;
+              const cost = Number((query.cost).toFixed(0));
+              const allMaterials = [];
+              axios
+                .get(`${host}/services/genprice/Material`).then((responseM) => {
+                  for (let index = 0; index < responseM.data.length; index += 1) {
+                    const m = responseM.data[index];
+                    allMaterials.push(m);
+                  }
+                  const materials = JSON.parse(responseC.data.data.materials);
+                  let sum = 0;
+                  for (let index = 0; index < materials.length; index += 1) {
+                    const element = materials[index];
+                    sum += Number(getProp(allMaterials, element.id, 'cost') || 0) * element.count;
+                  }
+                  const summaryCost = (sum * (responseS.data[1].value / 100 + 1) + Number(responseC.data.data.operations) * responseS.data[0].value).toFixed(0);
+                  if (cost !== summaryCost) {
+                    query.cost = summaryCost;
+                    axios.post(`${getQueryUpdate()}/${table.value.selected[0].id}`, query).then((res) => {
+                      if (res.data.result === 'ok') {
+                        table.value.update();
+                      }
+                    });
+                  }
+                });
+            });
+        });
+    }
     function confirmCopy() {
-      const query = {};
-      query.name = createInputName.value;
-      query.cost = table.value.selected[0].cost;
-      query.materials = table.value.selected[0].materials;
-      query.operations = table.value.selected[0].operations;
-      query.descript = table.value.selected[0].descript;
-      axios.post(getQueryCreate(), query)
-        .then((res) => {
-          if (res.data.result === 'ok') {
-            table.value.update();
-            dialog.value = false;
-          } else if (res.data.data === 'name must be unique') {
-            table.value.showError(`Расчет "${query.name}" уже существует в базе данных`);
-          }
+      axios
+        .get(`${host}/services/genprice/Calculation/${table.value.selected[0].id}`).then((responseC) => {
+          const query = {};
+          query.name = createInputName.value;
+          query.cost = Number(responseC.data.data.cost);
+          query.materials = responseC.data.data.materials;
+          query.operations = responseC.data.data.operations;
+          query.descript = responseC.data.data.descript;
+          axios.post(getQueryCreate(), query)
+            .then((res) => {
+              if (res.data.result === 'ok') {
+                table.value.update();
+                dialog.value = false;
+              } else if (res.data.data === 'name must be unique') {
+                table.value.showError(`Расчет "${query.name}" уже существует в базе данных`);
+              }
+            });
         });
     }
     onMounted(() => {
@@ -180,6 +217,7 @@ export default defineComponent({
       createInputName,
       columns,
       copy,
+      updateCalc,
     };
   },
 });

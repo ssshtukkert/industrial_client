@@ -6,25 +6,25 @@
       </q-card-section>
       <Table ref="table" :columnsDef="columns" :rowsDef="rows" createNewName="Новая конфигурация"
         :queryAll="getQueryAll()" :queryUpdate="getQueryUpdate()" :queryDelete="getQueryDelete()"
-        :queryCreate="getQueryCreate()" :actionRow="actionRow">
+        :queryCreate="getQueryCreate()" :actionRow="actionRow" :deleted="false">
         <template v-slot:actions>
-          <q-btn color='dark-grey' icon="open_in_new" v-show="isOneSelect()" @click="goRoot" />
-          <q-btn color='dark-grey' icon="content_copy" v-show="isOneSelect()" @click="copy" />
+          <q-btn color='dark-grey' label="Открыть" icon="open_in_new" v-show="isOneSelect()" @click="goRoot" />
+          <q-btn color='dark-grey' label="Скопировать" icon="content_copy" v-show="isOneSelect()" @click="copy" />
         </template>
       </Table>
       <q-dialog v-model="dialog" persistent>
-        <q-card class="bg-secondary text-white q-pt-none" style="width: 900px; max-width: 95vw;">
-          <q-card-section>
+        <q-card class="text-white q-pt-none" style="width: 900px; max-width: 95vw; background-color: rgb(60, 60, 60);">
+          <q-bar style="background-color: rgb(80, 80, 80);">
             <div class="text-h6">{{ dialogName }}</div>
-          </q-card-section>
-          <q-card-section class="bg-white text-black">
+          </q-bar>
+          <q-card-section>
             <q-card-section class="row">
-              <q-input class="fit text-h6" v-model="createInputName" clearable outlined label="Наименование" lazy-rules
+              <q-input dark class="fit text-h6" v-model="createInputName" clearable outlined label="Наименование" lazy-rules
                 :rules="validationName" />
             </q-card-section>
             <slot name="content" />
           </q-card-section>
-          <q-card-actions align="right" class="bg-grey-4 text-black">
+          <q-card-actions align="center" class="text-black" style="background-color: rgb(60, 60, 60);">
             <q-btn v-show="allowCopy()" color="dark-grey" label="Создать копию" @click="confirmCopy"
               :disabled="!createInputName" />
             <q-btn color="dark-grey" label="Отмена" v-close-popup @click="cancelConfirm" />
