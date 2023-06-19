@@ -12,12 +12,12 @@ const state = reactive({
   sockets: {},
   socketData: {},
 });
-
-const host = 'http://10.154.152.88:3001';
+const ip = '10.8.5.76';
+const host = `http://${ip}:3001`;
 
 function WebSocket_UpServer(onopenMessage) {
   console.log('Настроена связь с WebSocketServer');
-  const ws = new WebSocket('ws://10.154.152.88:3080/wss');
+  const ws = new WebSocket(`ws://${ip}:3080/wss`);
   ws.onopen = function () {
     ws.send(JSON.stringify(onopenMessage));
   };
@@ -27,7 +27,7 @@ function WebSocket_UpServer(onopenMessage) {
 }
 function WebSocket_Create(name, onopenMessage) {
   console.log(`Создан WebSocket: ${name}`);
-  const ws = new WebSocket(`ws://10.154.152.88:1880/${name}`);
+  const ws = new WebSocket(`ws://${ip}:1880/${name}`);
   ws.onopen = function () {
     ws.send(JSON.stringify(onopenMessage));
   };
@@ -130,6 +130,13 @@ function getStatusData() {
     },
   ];
 }
+const newObjectCalculation = {
+  cost: 0,
+  materials: '[]',
+  operations: 7.5,
+  descript: '',
+};
+
 function getCurrentDate(date) {
   let currentDate;
   if (date) {
@@ -283,6 +290,7 @@ export default {
   getMaterialsCategories,
   getRubFormat,
   getStatusData,
+  newObjectCalculation,
   validationName,
   validationNumber,
   validationNumberNoZero,

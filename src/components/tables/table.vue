@@ -1,12 +1,12 @@
 <template>
-  <q-table dark dense class="window-height fit" :rows="rows" :columns="columns" row-key="name" :filter="filter"
+  <q-table dark dense flat class="m-table"  :rows="rows" :columns="columns" row-key="name" :filter="filter"
       :filter-method="find" virtual-scroll :hide-selected-banner="true" selection="multiple" v-model:selected="selected"
       binary-state-sort v-model:pagination="pagination" :rows-per-page-options="[1]"
       :no-results-label="`По запросу '${filter}' ничего не найдено`" grid-header wrap-cells :no-data-label="noDataText"
       @row-click="selectRow" @row-dblclick="actionRow" style="max-height: 87vh; background-color: rgb(60, 60, 60);">
       <template v-slot:top>
         <q-card-actions v-show="!hideButtons" class="fit">
-          <q-btn color='dark-grey' label="Создать" icon="add" @click="createAction">
+          <q-btn color='dark-grey' label="" icon="add" @click="createAction">
             <q-tooltip :delay="800">
               Создать новую запись
             </q-tooltip>
@@ -176,6 +176,12 @@ export default defineComponent({
     function hideDialog() {
       dialog.value = false;
     }
+    function hideDCDialog() {
+      dc.value.hide();
+    }
+    function hideDEDialog() {
+      de.value.hide();
+    }
     function update(callback) {
       const query_rows = [];
       axios
@@ -262,9 +268,12 @@ export default defineComponent({
           }
         });
     }
+    function getNewName() {
+      return String(createInputName.value);
+    }
     function changeConfirmAction() {
       const query = {};
-      query.name = createInputName.value;
+      query.name = getNewName();
       axios.post(`${props.queryUpdate}/${selected.value[0].id}`, query)
         .then((res) => {
           if (res.data.result === 'ok') {
@@ -287,6 +296,9 @@ export default defineComponent({
                 dc.value.hide();
                 resetSelect();
               });
+            } else if (res.data.result === 'error') {
+              dc.value.hide();
+              showError(res.data.data);
             }
           });
       }
@@ -299,11 +311,14 @@ export default defineComponent({
       getSelect,
       isOneSelect,
       hideDialog,
+      hideDCDialog,
+      hideDEDialog,
       getQueryData,
       showError,
       action,
       validationName,
       createInputName,
+      getNewName,
       createAction,
       changeAction,
       deleteAction,

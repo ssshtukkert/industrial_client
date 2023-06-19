@@ -1,52 +1,67 @@
 <template>
-  <q-page padding style="background-color: rgb(60, 60, 60);">
-    <q-card class="text-white" style="background-color: rgb(60, 60, 60);">
-      <q-card-section style="background-color: rgb(80, 80, 80);">
-        <div class="text-h6">
-          Расчет {{ name }} от {{ updatedAt }}
-          <a v-show="change"> *
-            <q-tooltip :delay="800">
-              * - означает что внесены изменения, для сохранения изменений необходимо "Записать" расчет в базу данных
-            </q-tooltip>
-          </a>
+  <q-page class="text-white" padding style="background-color: rgb(60, 60, 60);">
+    <q-card-section style="background-color: rgb(80, 80, 80);">
+      <div class="text-h6">
+        Расчет {{ name }} от {{ updatedAt }}
+        <a v-show="change"> *
+          <q-tooltip :delay="800">
+            * - означает что внесены изменения, для сохранения изменений необходимо "Записать" расчет в базу данных
+          </q-tooltip>
+        </a>
+      </div>
+      Номер расчёта: {{ id }}
+    </q-card-section>
+    <q-card-actions class="text-black">
+      <q-btn color='dark-grey' icon="arrow_back" label='' @click="exit">
+      </q-btn>
+      <DialogConfirm ref="dex">
+        <template v-slot:buttons>
+          <q-btn color='red' label="Не сохранять и выйти" @click="confirmExit" />
+          <q-btn color='green' label="Сохранить и выйти" @click="confirmExitAndSave" />
+          <q-btn color='primary' label="Отмена" v-close-popup />
+        </template>
+      </DialogConfirm>
+      <q-btn color='dark-grey' :disabled="!change" icon="save" label='' @click="writeDatabase">
+      </q-btn>
+      <q-btn color='dark-grey' v-show="change" icon="cancel" label='' @click="resetChange">
+      </q-btn>
+      <q-btn-dropdown color='dark-grey' icon="download" label="" :disable="change">
+        <q-list>
+          <q-item class="dark-grey text-white" clickable v-close-popup :href="downloadPDF" target="_self"
+            style="background-color: rgb(60, 60, 60);">
+            <q-item-section avatar>
+              <q-avatar icon="picture_as_pdf" text-color="white" />
+            </q-item-section>
+            <q-item-section>
+              <q-item-label>Отчёт в PDF</q-item-label>
+            </q-item-section>
+          </q-item>
+          <q-item class="dark-grey text-white" clickable v-close-popup :href="downloadEXCEL"
+            style="background-color: rgb(60, 60, 60);">
+            <q-item-section avatar>
+              <q-avatar icon="download" text-color="white" />
+            </q-item-section>
+            <q-item-section>
+              <q-item-label>Спецификация в EXCEL</q-item-label>
+            </q-item-section>
+          </q-item>
+        </q-list>
+      </q-btn-dropdown>
+    </q-card-actions>
+    <q-expansion-item class="q-pa-sm fit" dense expand-separator :header-style="{ backgroundColor: 'rgb(80, 80, 80)' }"
+      expand-icon-class="text-white">
+      <template v-slot:header>
+        <div class="full-width text-h6">
+          Себестоимость: {{ getDisplayCostAll() }}
+          <q-tooltip :delay="800">
+            Расчетная себестоимость:
+            <br />
+            стоимость материалов + % расходников + количество часов * стоимость 1ч. работы.
+            <br />
+            Пересчитывается автоматически
+          </q-tooltip>
         </div>
-        Номер расчёта: {{ id }}
-      </q-card-section>
-      <q-card-actions class="text-black">
-        <q-btn color='dark-grey' icon="arrow_back" label='Назад' @click="exit">
-        </q-btn>
-        <DialogConfirm ref="dex">
-          <template v-slot:buttons>
-            <q-btn color='red' label="Не сохранять и выйти" @click="confirmExit" />
-            <q-btn color='green' label="Сохранить и выйти" @click="confirmExitAndSave" />
-            <q-btn color='primary' label="Отмена" v-close-popup />
-          </template>
-        </DialogConfirm>
-        <q-btn color='dark-grey' :disabled="!change" icon="save" label='Записать' @click="writeDatabase">
-        </q-btn>
-        <q-btn color='dark-grey' v-show="change" icon="cancel" label='Отменить изменения' @click="resetChange">
-        </q-btn>
-        <q-btn-dropdown color='dark-grey' icon="download" label="Экспорт" :disable="change">
-          <q-list>
-            <q-item class="dark-grey text-white" clickable v-close-popup :href="downloadPDF" target="_self" style="background-color: rgb(60, 60, 60);">
-              <q-item-section avatar>
-                <q-avatar icon="picture_as_pdf" text-color="white"/>
-              </q-item-section>
-              <q-item-section>
-                <q-item-label>Отчёт в PDF</q-item-label>
-              </q-item-section>
-            </q-item>
-            <q-item class="dark-grey text-white" clickable v-close-popup :href="downloadEXCEL" style="background-color: rgb(60, 60, 60);">
-              <q-item-section avatar>
-                <q-avatar icon="download" text-color="white"/>
-              </q-item-section>
-              <q-item-section>
-                <q-item-label>Спецификация в EXCEL</q-item-label>
-              </q-item-section>
-            </q-item>
-          </q-list>
-        </q-btn-dropdown>
-      </q-card-actions>
+      </template>
       <div class="row">
         <q-card-section class="text-h6 col-6">
           <div>
@@ -67,16 +82,6 @@
               Стоимость работ электромонтажных и проверочных работ, выполненных за 1 час
             </q-tooltip>
           </div>
-          <q-badge color="grey-7" class="text-h6">
-            Себестоимость: {{ getDisplayCostAll() }}
-            <q-tooltip :delay="800">
-              Расчетная себестоимость:
-              <br />
-              стоимость материалов + % расходников + количество часов * стоимость 1ч. работы.
-              <br />
-              Пересчитывается автоматически
-            </q-tooltip>
-          </q-badge>
         </q-card-section>
         <q-card-section class="text-h6 col-6">
           <div>
@@ -93,152 +98,140 @@
           </div>
         </q-card-section>
       </div>
-      <div class="text-h6">
-        <q-tabs v-model="tab" class="text-grey" no-caps align="justify" active-color="white" indicator-color="white">
-          <q-tab name="materials">
-            <div class="text-h6">Материалы ({{ getMaterialsCount() }})</div>
-            <q-tooltip :delay="800">
-              Вкладка для формирования спецификации для расчета
-            </q-tooltip>
-          </q-tab>
-          <q-tab name="card">
-            <div class="text-h6">Карточка</div>
-            <q-tooltip :delay="800">
-              Основная информация о расчете
-            </q-tooltip>
-          </q-tab>
-          <q-tab name="laboriousness">
-            <div class="text-h6">Трудоёмкость</div>
-            <q-tooltip :delay="800">
-              Вкладка для формирования трудозатрат
-            </q-tooltip>
-          </q-tab>
-          <!-- <q-tab name="files">
+    </q-expansion-item>
+    <q-tabs v-model="tab" class="q-pa-sm text-grey" no-caps align="justify" active-color="white" indicator-color="white">
+      <q-tab name="materials">
+        <div class="text-h6">Материалы ({{ getMaterialsCount() }})</div>
+        <q-tooltip :delay="800">
+          Вкладка для формирования спецификации для расчета
+        </q-tooltip>
+      </q-tab>
+      <q-tab name="card">
+        <div class="text-h6">Карточка</div>
+        <q-tooltip :delay="800">
+          Основная информация о расчете
+        </q-tooltip>
+      </q-tab>
+      <q-tab name="laboriousness">
+        <div class="text-h6">Трудоёмкость</div>
+        <q-tooltip :delay="800">
+          Вкладка для формирования трудозатрат
+        </q-tooltip>
+      </q-tab>
+      <!-- <q-tab name="files">
             <div class="text-h6">Файлы</div>
             <q-tooltip :delay="800">
               Хранилище загруженный файлов
             </q-tooltip>
           </q-tab> -->
-        </q-tabs>
-        <q-tab-panels v-model="tab" animated keep-alive @transition="updateTabPanels"
-          style="background-color: rgb(60, 60, 60);">
-          <q-tab-panel name="card" style="min-height: 400px">
-            <div class="row">
-              <q-input dark v-model="inputDescript" class=" fit" clearable outlined label="Описание" type="textarea"
-                @update:model-value="syncTableMaterials" :input-style="{ resize: 'none', height: '50vh' }" />
-            </div>
-          </q-tab-panel>
-          <q-tab-panel name="materials" style="min-height: 400px">
-            <Table dense dark :setChange="changeCount" :keyEnter="keyEnter" ref="tableMaterials" :columnsDef="columns"
-              :rowsDef="rowsEntryMaterials" :updateSelected="updateSelectedTableMaterials"
-              style="max-height: 55vh; background-color: rgb(60, 60, 60);">
-              <template v-slot:actions>
-                <q-btn color='dark-grey' icon="add" label="Добавить" @click="actionAddMaterial" />
-                <q-btn v-show="removeMain" color='dark-grey' icon="delete" label="Исключить"
-                  @click="actionRemoveMaterial" />
-                <q-btn v-show="removeMain" color='dark-grey' icon="edit" label="Заменить"
-                  @click="actionReplaceMaterial" />
-                <q-dialog v-model="dialogAddMaterials" persistent transition-show="scale" transition-hide="scale">
-                  <q-card style="min-width: 95vw; background-color: rgb(60, 60, 60);">
-                    <q-card-section class="row text-white" style="background-color: rgb(80, 80, 80);">
-                      <div class="text-h6">Добавить материалы для: {{ name }}</div>
-                      <q-space />
-                      <q-btn dense icon="close" v-close-popup @click="updateSearch" />
-                    </q-card-section>
-                    <q-card-section class="text-h6 q-pt-none">
-                      {{ text }}
-                    </q-card-section>
-                    <q-card-section>
-                      <q-splitter v-model="splitterModel" style="height: 70vh">
-                        <template v-slot:before>
-                          <q-scroll-area visible :delay="0" style=" max-width: 100%; height: 100%;"
-                            :vertical-thumb-style="{ right: '2px', borderRadius: '0px', background: 'grey', width: '15px', opacity: 1 }"
-                            :horizontal-thumb-style="{ bottom: '2px', borderRadius: '0px', background: 'grey', height: '15px', opacity: 1 }"
-                            :vertical-bar-style="{ right: '2px', borderRadius: '0px', background: 'grey', opacity: 0.3, width: '15px' }"
-                            :horizontal-bar-style="{ bottom: '2px', borderRadius: '0px', background: 'grey', opacity: 0.3, height: '15px' }">
-                            <Table_v2 ref="tableAddMaterials" dense :columnsDef="columnsAddMaterials"
-                              :rowsDef="rowsAllMaterials" style="height: 90vh;" :updateSelect="tableMaterialsUpdate"
-                              :updateSearch="updateSearch" :actionRow="confirmAddMaterial"
-                              styleContent="max-height: 70vh;">
-                              <template v-slot:actions>
-                                <q-select outlined dense dark v-model="addMaterialsCategorySelector"
-                                  @update:model-value="addMaterialsCategoryUpdate"
-                                  :options="addMaterialsCategorySelectorOp" class="text-h6"
-                                  options-selected-class="text-h6" popup-content-class="text-h6"
-                                  style="width: 220px; margin-left: 15px" />
-                                <q-btn v-show="add" color='orange' label='В список' @click="confirmAddMaterial"
-                                  style="margin-left: 15px; margin-right: 15px;" />
-                              </template>
-                            </Table_v2>
-                          </q-scroll-area>
+    </q-tabs>
+    <q-tab-panels v-model="tab" animated keep-alive @transition="updateTabPanels"
+      style="background-color: rgb(60, 60, 60);">
+      <q-tab-panel name="card" style="min-height: 400px">
+        <div class="row">
+          <q-input dark v-model="inputDescript" class=" fit" clearable outlined label="Описание" type="textarea"
+            @update:model-value="syncTableMaterials" :input-style="{ resize: 'none', height: '50vh' }" />
+        </div>
+      </q-tab-panel>
+      <q-tab-panel name="materials" style="min-height: 400px">
+        <Table dense dark :setChange="changeCount" :keyEnter="keyEnter" ref="tableMaterials" :columnsDef="columns"
+          :rowsDef="rowsEntryMaterials" :updateSelected="updateSelectedTableMaterials"
+          style="max-height: 55vh; background-color: rgb(60, 60, 60);">
+          <template v-slot:actions>
+            <q-btn color='dark-grey' icon="add" label="Добавить" @click="actionAddMaterial" />
+            <q-btn v-show="removeMain" color='dark-grey' icon="delete" label="Исключить" @click="actionRemoveMaterial" />
+            <q-btn v-show="removeMain" color='dark-grey' icon="edit" label="Заменить" @click="actionReplaceMaterial" />
+            <q-dialog v-model="dialogAddMaterials" persistent transition-show="scale" transition-hide="scale">
+              <q-card style="min-width: 95vw; background-color: rgb(60, 60, 60);">
+                <q-bar class="row text-white" style="background-color: rgb(80, 80, 80);">
+                  <div class="text-h6">Добавить материалы для: {{ name }}</div>
+                  <q-space />
+                  <q-btn dense icon="close" v-close-popup @click="updateSearch" />
+                </q-bar>
+                <q-card-section class="text-h6 q-pt-none">
+                  {{ text }}
+                </q-card-section>
+                <q-card-section>
+                  <q-splitter v-model="splitterModel" style="height: 70vh">
+                    <template v-slot:before>
+                      <q-scroll-area visible :delay="0" style=" max-width: 100%; height: 100%;"
+                        :vertical-thumb-style="{ right: '2px', borderRadius: '0px', background: 'grey', width: '15px', opacity: 1 }"
+                        :horizontal-thumb-style="{ bottom: '2px', borderRadius: '0px', background: 'grey', height: '15px', opacity: 1 }"
+                        :vertical-bar-style="{ right: '2px', borderRadius: '0px', background: 'grey', opacity: 0.3, width: '15px' }"
+                        :horizontal-bar-style="{ bottom: '2px', borderRadius: '0px', background: 'grey', opacity: 0.3, height: '15px' }">
+                        <Table_v2 ref="tableAddMaterials" dense :columnsDef="columnsAddMaterials"
+                          :rowsDef="rowsAllMaterials" style="height: 90vh;" :updateSelect="tableMaterialsUpdate"
+                          :updateSearch="updateSearch" :actionRow="confirmAddMaterial" styleContent="max-height: 70vh;">
+                          <template v-slot:actions>
+                            <q-select outlined dense dark v-model="addMaterialsCategorySelector"
+                              @update:model-value="addMaterialsCategoryUpdate" :options="addMaterialsCategorySelectorOp"
+                              class="text-h6" options-selected-class="text-h6" popup-content-class="text-h6"
+                              style="width: 220px; margin-left: 15px" />
+                            <q-btn v-show="add" color='orange' label='В список' @click="confirmAddMaterial"
+                              style="margin-left: 15px; margin-right: 15px;" />
+                          </template>
+                        </Table_v2>
+                      </q-scroll-area>
+                    </template>
+                    <template v-slot:after>
+                      <Table ref="tableAddMaterialsBuffer" dense dark :columnsDef="columnsAddMaterialsBuffer"
+                        styleContent="max-height: 70vh; background-color: rgb(60, 60, 60);"
+                        :rowsDef="rowsAddMaterialsBuffer" :hideShearch="true"
+                        :updateSelected="updateSelectedTableMaterialsBuffer">
+                        <template v-slot:actions>
+                          <q-btn v-show="rowsAddMaterialsBuffer.length > 0" color='green' label='Обновить и закрыть'
+                            @click="confirmAddEntryMaterial" style="margin-right: 15px;" />
+                          <q-btn v-show="removeFromBuffer" color='red' label='Убрать' @click="actionRemoveBufferMaterial"
+                            style="margin-right: 15px;" />
                         </template>
-                        <template v-slot:after>
-                          <Table ref="tableAddMaterialsBuffer" dense dark :columnsDef="columnsAddMaterialsBuffer"
-                            styleContent="max-height: 70vh; background-color: rgb(60, 60, 60);"
-                            :rowsDef="rowsAddMaterialsBuffer" :hideShearch="true"
-                            :updateSelected="updateSelectedTableMaterialsBuffer">
-                            <template v-slot:actions>
-                              <q-btn v-show="rowsAddMaterialsBuffer.length > 0" color='green' label='Обновить и закрыть'
-                                @click="confirmAddEntryMaterial" style="margin-right: 15px;" />
-                              <q-btn v-show="removeFromBuffer" color='red' label='Убрать'
-                                @click="actionRemoveBufferMaterial" style="margin-right: 15px;" />
-                            </template>
-                          </Table>
-                        </template>
-                      </q-splitter>
-                    </q-card-section>
-                  </q-card>
-                </q-dialog>
-                <q-dialog v-model="dialogReplaceMaterials" persistent transition-show="scale" transition-hide="scale">
-                  <q-card style="min-width: 95vw; background-color: rgb(60, 60, 60);">
-                    <q-card-section class="row text-white" style="background-color: rgb(80, 80, 80);">
-                      <div class="text-h6">Заменить материал</div>
-                      <q-space />
-                      <q-btn dense icon="close" v-close-popup @click="updateSearch" />
-                    </q-card-section>
-                    <q-card-section class="text-h6 q-pt-none">
-                      {{ text }}
-                    </q-card-section>
-                    <Table_v2 ref="tableAddMaterials" dense :columnsDef="columnsAddMaterials" :rowsDef="rowsAllMaterials"
-                      style="height: 90vh;" :updateSelect="tableMaterialsUpdate" :updateSearch="updateSearch"
-                      :actionRow="confirmAddMaterial" selection="single" styleContent="max-height: 70vh;">
-                      <template v-slot:actions>
-                        <q-select outlined dense dark v-model="addMaterialsCategorySelector"
-                          @update:model-value="addMaterialsCategoryUpdate" :options="addMaterialsCategorySelectorOp"
-                          class="text-h6" options-selected-class="text-h6" popup-content-class="text-h6"
-                          style="width: 220px; margin-left: 15px" />
-                        <q-btn v-show="add" color='orange' label='Заменить' @click="confirmReplaceMaterial"
-                          style="margin-left: 15px; margin-right: 15px;" />
-                      </template>
-                    </Table_v2>
-                  </q-card>
-                </q-dialog>
-              </template>
-            </Table>
-            <DialogConfirm ref="dc">
-              <template v-slot:buttons>
-                <q-btn v-show="tableMaterials.selected[0].count > 1 || tableMaterials.selected.length > 1" color='red'
-                  label="Удалить все" @click="confirmDeleteAction(true)" />
-                <q-btn v-show="tableMaterials.selected.length === 1" color='orange' label="Удалить"
-                  @click="confirmDeleteAction(false)" />
-                <q-btn color='primary' label="Отмена" v-close-popup />
-              </template>
-            </DialogConfirm>
-          </q-tab-panel>
-          <q-tab-panel name="laboriousness" style="min-height: 600px">
-            <q-input dark v-model="inputLaboriousnes" @update:model-value="syncTableMaterials" class="text-h6" outlined
-              label="Трудозатраты" type="number" :rules="validationNumberNoZero" suffix="ч." style="width: 160px;"
-              auto-save />
-          </q-tab-panel>
-          <!-- <q-tab-panel name="files" style="min-height: 400px">
-            <div class="q-pa-md">
-              <q-uploader url="http://10.154.152.88:3001/upload/disk"
-                :headers="[{name: 'X-Custom-Timestamp', value: 1550240306080}]" style="max-width: 300px" />
-            </div>
-          </q-tab-panel> -->
-        </q-tab-panels>
-      </div>
-    </q-card>
+                      </Table>
+                    </template>
+                  </q-splitter>
+                </q-card-section>
+              </q-card>
+            </q-dialog>
+            <q-dialog v-model="dialogReplaceMaterials" persistent transition-show="scale" transition-hide="scale">
+              <q-card style="min-width: 95vw; background-color: rgb(60, 60, 60);">
+                <q-card-section class="row text-white" style="background-color: rgb(80, 80, 80);">
+                  <div class="text-h6">Заменить материал</div>
+                  <q-space />
+                  <q-btn dense icon="close" v-close-popup @click="updateSearch" />
+                </q-card-section>
+                <q-card-section class="text-h6 q-pt-none">
+                  {{ text }}
+                </q-card-section>
+                <Table_v2 ref="tableAddMaterials" dense :columnsDef="columnsAddMaterials" :rowsDef="rowsAllMaterials"
+                  style="height: 90vh;" :updateSelect="tableMaterialsUpdate" :updateSearch="updateSearch"
+                  :actionRow="confirmAddMaterial" selection="single" styleContent="max-height: 70vh;">
+                  <template v-slot:actions>
+                    <q-select outlined dense dark v-model="addMaterialsCategorySelector"
+                      @update:model-value="addMaterialsCategoryUpdate" :options="addMaterialsCategorySelectorOp"
+                      class="text-h6" options-selected-class="text-h6" popup-content-class="text-h6"
+                      style="width: 220px; margin-left: 15px" />
+                    <q-btn v-show="add" color='orange' label='Заменить' @click="confirmReplaceMaterial"
+                      style="margin-left: 15px; margin-right: 15px;" />
+                  </template>
+                </Table_v2>
+              </q-card>
+            </q-dialog>
+          </template>
+        </Table>
+        <DialogConfirm ref="dc">
+          <template v-slot:buttons>
+            <q-btn v-show="tableMaterials.selected[0].count > 1 || tableMaterials.selected.length > 1" color='red'
+              label="Удалить все" @click="confirmDeleteAction(true)" />
+            <q-btn v-show="tableMaterials.selected.length === 1" color='orange' label="Удалить"
+              @click="confirmDeleteAction(false)" />
+            <q-btn color='primary' label="Отмена" v-close-popup />
+          </template>
+        </DialogConfirm>
+      </q-tab-panel>
+      <q-tab-panel name="laboriousness" style="min-height: 600px">
+        <q-input dark v-model="inputLaboriousnes" @update:model-value="syncTableMaterials" class="text-h6" outlined
+          label="Трудозатраты" type="number" :rules="validationNumberNoZero" suffix="ч." style="width: 160px;"
+          auto-save />
+      </q-tab-panel>
+    </q-tab-panels>
   </q-page>
 </template>
 
@@ -499,8 +492,8 @@ export default defineComponent({
                         }
                         axios
                           .get(`${host}/services/genprice/Setting`).then((responseS) => {
-                            costOneHourWorker.value = responseS.data[0].value;
-                            percentOfMaterials.value = responseS.data[1].value;
+                            costOneHourWorker.value = Number(getObject(responseS.data, 'name', 'costOneHourWorker').value);
+                            percentOfMaterials.value = Number(getObject(responseS.data, 'name', 'percentOfMaterials').value);
                             inputLaboriousnes.value = object.operations;
                             cost.value = getCost(materialsEntry);
                             weight.value = getWeight(materialsEntry);
@@ -575,7 +568,7 @@ export default defineComponent({
         return confirmationMessage;
       }
       return true;
-    }, false);
+    }, { passive: true });
     onMounted(() => {
       update();
     });

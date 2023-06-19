@@ -481,7 +481,7 @@ export default {
     const comp_setRotorCount = ref(null);
     const workBURR = ref(true);
     const {
-      WebSocket_Create, WebSocket_Listen, WebSocket_Close, WebSocket_Send, getCurrentTime, validationNumber, convertToBinary, TRUE_PASSWORD,
+      host, WebSocket_Create, WebSocket_Listen, WebSocket_Close, WebSocket_Send, getCurrentTime, validationNumber, convertToBinary, TRUE_PASSWORD,
     } = inject('store');
     function listen(json) {
       const mes = json.message;
@@ -704,7 +704,7 @@ export default {
     }
     function resetDatabase(table) {
       axios
-        .get(`http://10.154.152.88:3001/1app/removeout/${table}`).then((res) => {
+        .get(`http://${host}/1app/removeout/${table}`).then((res) => {
           console.log(res.data);
         });
     }
@@ -881,7 +881,7 @@ export default {
     function updateNameTest(val) {
       const query = {};
       query.value = val;
-      axios.post('http://10.154.152.88:3001/testrecup/settings_set/nameTest', query)
+      axios.post(`http://${host}/testrecup/settings_set/nameTest`, query)
         .then((res) => {
           if (res.data.result === 'ok') {
             console.log('OK');
@@ -892,7 +892,7 @@ export default {
     }
     onMounted(() => {
       axios
-        .get('http://10.154.152.88:3001/testrecup/settings/nameTest').then((res) => {
+        .get(`http://${host}/testrecup/settings/nameTest`).then((res) => {
           nameTest.value = res.data[0].value || 'Исп. по умолчанию';
         });
 

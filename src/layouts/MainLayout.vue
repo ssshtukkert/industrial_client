@@ -169,31 +169,21 @@ export default defineComponent({
           node: '/services',
           children: [
             {
-              label: 'Расчет себестоимости',
-              selectable: false,
-              node: '/services/genprice',
-              children: [
-                {
-                  label: 'Расчеты',
-                  to: '/services/genprice/calculations',
-                },
-              ],
+              label: 'Проекты',
+              to: '/services/projects',
             },
             {
-              label: 'Подбор автоматики',
-              selectable: false,
-              node: '/services/productoptions',
-              children: [
-                {
-                  label: 'Конфигурации',
-                  to: '/services/productoptions/configurations',
-                },
-              ],
+              label: 'Расчеты',
+              to: '/services/genprice/calculations',
             },
             {
-              label: 'ChatOA',
-              to: '/services/chatOA',
+              label: 'Конфигурации',
+              to: '/services/productoptions/configurations',
             },
+            // {
+            //   label: 'ChatOA',
+            //   to: '/services/chatOA',
+            // },
             {
               label: 'Справочники',
               selectable: false,
@@ -216,6 +206,10 @@ export default defineComponent({
                   to: '/services/references/fans',
                 },
               ],
+            },
+            {
+              label: 'Файлы',
+              to: '/services/files',
             },
             {
               label: 'Настройки',

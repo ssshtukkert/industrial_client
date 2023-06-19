@@ -1018,10 +1018,6 @@
                 </div>
               </div>
               <div class="col-3">
-                <div class="text-h6">
-                  <!-- <q-btn :disable="statusWrite !== ''" color="teal" label="Загруз отчёт"
-                    href="http://10.154.152.88:3001/download/local/cyclic_pressures.xlsx" target="_self" /> -->
-                </div>
               </div>
               <div class="col-3">
                 <div class="text-h6">
@@ -1245,7 +1241,7 @@
           <div class="col text-h6 text-white">
             Авария
           </div>
-          <q-btn class="col text-white" color="primary" label="Журнал аварий" href="http://10.154.152.88:3001/#/lab/recup/alarms"/>
+          <q-btn class="col text-white" color="primary" label="Журнал аварий" :href="`http://${host}/#/lab/recup/alarms`"/>
         </q-card-section>
       </q-card>
     </q-dialog>
@@ -1698,7 +1694,7 @@ export default {
           SCo_Rh_nar.value = mes.SCo_Rh_nar.value;
           SCo_Abs_nar.value = mes.SCo_Abs_nar.value;
           dateStart.value = mes.StartTimeWriteFreeze.value;
-          getRouteOrder.value = `http://10.154.152.88:3001/testrecup/download/get_all_from_start/${dateStart.value}`;
+          getRouteOrder.value = `http://${host}:3001/testrecup/download/get_all_from_start/${dateStart.value}`;
           rotorSpeed.value = mes.Oborot_RR_BURR.value;
           rotorSpeedCalc.value = mes.Calc_RR_BURR.value;
           // запись
@@ -1999,6 +1995,7 @@ export default {
       alarmsBURR,
       alarmMessage,
       position,
+      host,
     };
   },
 };

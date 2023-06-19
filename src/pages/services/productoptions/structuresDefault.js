@@ -1,6 +1,20 @@
 const options = {
   labelVoltage: 'Напряжение, В',
   labelVoltageUnit: 'Напряжение привода, В',
+  valuesBoxMaterial: [
+    {
+      id: 0,
+      label: 'Пластик',
+    },
+    {
+      id: 1,
+      label: 'Металл',
+    },
+    {
+      id: 2,
+      label: 'Без корпуса (монтажная панель)',
+    },
+  ],
   valuesVoltage: [
     {
       id: 0,
@@ -1634,13 +1648,13 @@ const defaultStructure = {
               ],
               switches: [
                 {
-                  name: 'pressure',
+                  name: 'pressure_rec',
                   label: 'Контроль обмерзания по прессостату',
                   value: true,
                   enable: true,
                 },
                 {
-                  name: 'heat',
+                  name: 'heat_rec',
                   label: 'Греющий кабель на поддон для конденсата',
                   value: false,
                   enable: true,
@@ -1649,6 +1663,15 @@ const defaultStructure = {
             },
             {
               valueId: 1,
+              references: [
+                {
+                  name: 'voltage',
+                  label: options.labelVoltage,
+                  valueId: 0,
+                  values: options.valuesVoltage,
+                  enable: true,
+                },
+              ],
               inputs: [
                 {
                   name: 'current',

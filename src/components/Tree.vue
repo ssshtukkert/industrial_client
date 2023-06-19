@@ -2,7 +2,7 @@
   <div class="q-pa-sm q-gutter-sm text-h6" style="background-color: rgb(60, 60, 60);">
     <q-tree dark :nodes="data" v-model:selected="selected" v-model:expanded="expanded" node-key="label" dense
       no-selection-unset no-transition color="grey" text-color="grey" selected-color="grey" control-color="grey"
-      tick-strategy="none">
+      tick-strategy="none" @update:selected="setSelect">
       <template v-slot:header-root="prop">
         <q-item dark class="fit" v-ripple>
           <div v-if="prop.node.icon">
@@ -91,11 +91,16 @@ export default defineComponent({
       selected.value = this.expanded[this.expanded.length - 1];
       // }
     }
+    function setSelect(value) {
+      const node = getNodeIsLabel(value);
+      console.log(node);
+    }
     return {
       expand,
       selected,
       props,
       expanded: ref([props.data[0].label]),
+      setSelect,
     };
   },
 });

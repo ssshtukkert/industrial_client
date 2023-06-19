@@ -1,7 +1,6 @@
 <template>
-  <q-page class="justify-center full-width"  style="background-color: rgb(60, 60, 60);">
-    <q-card class="text-white"  style="background-color: rgb(80, 80, 80);">
-      <q-card-section>
+  <q-page class="justify-center full-width text-white"  style="background-color: rgb(60, 60, 60);">
+      <q-card-section  style="background-color: rgb(80, 80, 80);">
         <div class="text-h6">Единицы измерения материалов</div>
       </q-card-section>
       <Table ref="table"
@@ -13,8 +12,6 @@
       :queryDelete="getQueryDelete()"
       :queryCreate="getQueryCreate()">
       </Table>
-    </q-card>
-
   </q-page>
 </template>
 

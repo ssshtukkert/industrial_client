@@ -1,13 +1,13 @@
 <template>
-  <q-table dark class="fit" :rows="rows" :columns="columns" row-key="name" :filter="filter" :filter-method="find"
-    virtual-scroll selection="multiply" v-model:selected="selected" v-model:pagination="pagination"
+  <q-table  dark dense flat class="m-table" :rows="rows" :columns="columns" row-key="name" :filter="filter" :filter-method="find"
+    virtual-scroll selection="multiply" v-model:selected="selected" v-model:pagination="pagination" separator="none"
     :rows-per-page-options="[1]" grid-header wrap-cells :no-data-label="noDataText" :hide-bottom="true"
     :hide-header="true" @update:selected="updateSelect" @row-click="selectRow" @row-dblclick="actionRow"
     :style="styleContent" style="background-color: rgb(60, 60, 60);">
     <template v-slot:top>
       <q-card-actions class="fit" style="min-height: 10px;">
-        <q-input dark class="text-h6" @update:model-value="updateSearch" outlined dense debounce="300"
-          v-model="filter" clearable placeholder="Поиск">
+        <q-input dark class="text-h6" @update:model-value="updateSearch" outlined dense debounce="300" v-model="filter"
+          clearable placeholder="Поиск">
           <template v-slot:append>
             <q-icon name="search" />
           </template>
@@ -73,6 +73,8 @@ export default defineComponent({
     },
     updateSearch: {
       type: Function,
+      default() {
+      },
     },
     hideSelection: {
       type: Boolean,
@@ -114,8 +116,16 @@ export default defineComponent({
         (col) => ((`${cellValue(col, row)}`).toLowerCase().indexOf(lowerTerms) !== -1),
       ));
     }
+    function resetSelect() {
+      selected.value.length = 0;
+    }
+    function getSelect() {
+      return selected.value;
+    }
     return {
       selectRow,
+      resetSelect,
+      getSelect,
       action,
       validationName,
       createInputName,

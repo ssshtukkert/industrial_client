@@ -1,6 +1,5 @@
 <template>
   <q-page class="justify-center full-width text-white" style="background-color: rgb(60, 60, 60);">
-    <q-card class="" style="background-color: rgb(60, 60, 60);">
       <q-card-section style="background-color: rgb(80, 80, 80);">
         <div class="text-h6">Конфигурации</div>
       </q-card-section>
@@ -16,22 +15,24 @@
         <q-card class="text-white q-pt-none" style="width: 900px; max-width: 95vw; background-color: rgb(60, 60, 60);">
           <q-bar style="background-color: rgb(80, 80, 80);">
             <div class="text-h6">{{ dialogName }}</div>
+            <q-space />
+            <q-btn dense flat icon="close" v-close-popup>
+              <q-tooltip class="bg-grey text-white">Закрыть</q-tooltip>
+            </q-btn>
           </q-bar>
           <q-card-section>
             <q-card-section class="row">
-              <q-input dark class="fit text-h6" v-model="createInputName" clearable outlined label="Наименование" lazy-rules
-                :rules="validationName" />
+              <q-input dark class="fit text-h6" v-model="createInputName" clearable outlined label="Наименование"
+                lazy-rules :rules="validationName" />
             </q-card-section>
             <slot name="content" />
           </q-card-section>
           <q-card-actions align="center" class="text-black" style="background-color: rgb(60, 60, 60);">
             <q-btn v-show="allowCopy()" color="dark-grey" label="Создать копию" @click="confirmCopy"
               :disabled="!createInputName" />
-            <q-btn color="dark-grey" label="Отмена" v-close-popup @click="cancelConfirm" />
           </q-card-actions>
         </q-card>
       </q-dialog>
-    </q-card>
   </q-page>
 </template>
 

@@ -1,19 +1,11 @@
 <template>
-  <q-page class="justify-center full-width"  style="background-color: rgb(60, 60, 60);">
-    <q-card class="text-white"  style="background-color: rgb(80, 80, 80);">
-      <q-card-section>
-        <div class="text-h6">Категории материалов</div>
-      </q-card-section>
-      <Table ref="table"
-      :columnsDef="columns"
-      createNewName="Новая категория"
-      :queryAll="getQueryAll()"
-      :queryUpdate="getQueryUpdate()"
-      :queryDelete="getQueryDelete()"
-      :queryCreate="getQueryCreate()">
-      </Table>
-    </q-card>
-
+  <q-page class="justify-center full-width text-white" style="background-color: rgb(60, 60, 60);">
+    <q-card-section  style="background-color: rgb(80, 80, 80);">
+      <div class="text-h6">Категории материалов</div>
+    </q-card-section>
+    <Table ref="table" :columnsDef="columns" createNewName="Новая категория" :queryAll="getQueryAll()"
+      :queryUpdate="getQueryUpdate()" :queryDelete="getQueryDelete()" :queryCreate="getQueryCreate()">
+    </Table>
   </q-page>
 </template>
 

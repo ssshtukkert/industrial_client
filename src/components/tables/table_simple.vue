@@ -1,19 +1,16 @@
 <template>
-  <!-- :selected-rows-label="getSelectedString" -->
-  <q-table class="window-height fit" :rows="rows" :columns="columns" row-key="name" :filter="filter"
-    :filter-method="find" virtual-scroll
-    :hide-selected-banner="true"
-    selection="multiple"
-    v-model:selected="selected" binary-state-sort v-model:pagination="pagination" :rows-per-page-options="[1]"
+  <q-table dark dense flat :rows="rows" class="m-table" :columns="columns" row-key="name" :filter="filter" :filter-method="find"
+    virtual-scroll :hide-selected-banner="true" selection="multiple" v-model:selected="selected" binary-state-sort
+    v-model:pagination="pagination" :rows-per-page-options="[1]"
     :no-results-label="`По запросу '${filter}' ничего не найдено`" grid-header wrap-cells :no-data-label="noDataText"
     @update:selected="updateSelected" @row-click="selectRow" :style="styleContent">
     <template v-slot:top>
       <q-card-actions class="fit">
         <slot name="actions" />
-        <q-space v-show="!hideShearch"/>
+        <q-space v-show="!hideShearch" />
         <div v-show="!hideShearch">
-          <q-input dark class="text-h6" outlined dense debounce="300" v-model="filter" clearable
-            placeholder="Поиск" style="margin: 10px;">
+          <q-input dark class="text-h6" outlined dense debounce="300" v-model="filter" clearable placeholder="Поиск"
+            style="margin: 10px;">
             <template v-slot:append>
               <q-icon name="search" />
             </template>
@@ -52,7 +49,7 @@
       </q-td>
     </template>
     <template v-slot:body-cell-meas="props">
-      <q-td key="cost" :props="props">
+      <q-td key="meas" :props="props">
         <div class="text-h6">{{ props.row.meas }}</div>
       </q-td>
     </template>
@@ -114,7 +111,7 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { validationName, validationNumberNoZero } = inject('store');
+    const { validationName, validationNumberNoZero, newObjectCalculation } = inject('store');
     const rows = ref(props.rowsDef);
     const selected = ref([]);
     const filter = ref('');
@@ -152,9 +149,9 @@ export default defineComponent({
       ));
     }
     function getQueryData() {
-      return {
-        name: createInputName.value,
-      };
+      const newObj = newObjectCalculation;
+      newObj.name = createInputName.value;
+      return newObj;
     }
     return {
       selectRow,

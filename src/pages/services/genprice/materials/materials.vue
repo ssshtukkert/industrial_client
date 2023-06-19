@@ -1,18 +1,17 @@
 <template>
   <q-page class="justify-center" style="background-color: rgb(60, 60, 60);">
-    <q-card style="background-color: rgb(60, 60, 60);">
       <q-card-section class="text-white" style="background-color: rgb(80, 80, 80);">
         <div class="text-h6">Материалы</div>
       </q-card-section>
-      <q-table class="my-sticky-header-table" dark dense :rows="rows" :columns="columns" row-key="name" virtual-scroll
+      <q-table class="m-table" dark dense flat :rows="rows" :columns="columns" row-key="name" virtual-scroll
         :filter="filter" :filter-method="find" :hide-selected-banner="true" selection="multiple"
         v-model:selected="selected" binary-state-sort v-model:pagination="pagination" :rows-per-page-options="[1]"
         style="background-color: rgb(60, 60, 60);" :no-results-label="`По запросу '${filter}' ничего не найдено`"
         grid-header @row-click="selectRow">
         <template v-slot:top>
           <q-card-actions class="fit" style="background-color: rgb(60, 60, 60);">
-            <q-btn color='dark-grey' icon="add" label='Создать' @click="createAction" />
-            <q-btn color='dark-grey' icon='edit' label='Изменить' v-show="selected.length === 1"
+            <q-btn color='dark-grey' icon="add" @click="createAction" />
+            <q-btn color='dark-grey' icon='edit' label='Редактировать' v-show="selected.length === 1"
               @click="changeAction(selected)" />
             <q-btn color='dark-grey' icon="delete" label='Удалить' v-show="selected.length > 0"
               @click="deleteAction(selected)" disable />
@@ -76,12 +75,15 @@
           </q-td>
         </template>
       </q-table>
-    </q-card>
     <q-dialog v-model="dialog" persistent>
       <q-card class="text-white q-pt-none" style="width: 900px; max-width: 95vw; background-color: rgb(60, 60, 60);">
-        <q-card-section style="background-color: rgb(80, 80, 80);">
+        <q-bar style="background-color: rgb(80, 80, 80);">
           <div class="text-h6">{{ dialogName }}</div>
-        </q-card-section>
+          <q-space />
+          <q-btn dense flat icon="close" v-close-popup>
+            <q-tooltip class="bg-grey text-white">Закрыть</q-tooltip>
+          </q-btn>
+        </q-bar>
         <q-card-section class="text-white" style="background-color: rgb(60, 60, 60);">
           <q-card-section class="row">
             <q-input dark class="fit text-h6" v-model="inputName" clearable outlined label="Наименование" lazy-rules
@@ -122,11 +124,16 @@
                 popup-content-class="text-h6" outlined v-model="status" :options="statusOp" />
             </q-card-section>
           </q-card-section>
+          <div class="row">
+            <q-card-section class="col-6">
+              <q-input dark class="fit text-h6" v-model="inputUID" clearable outlined label="Код номенклатуры 1C" />
+            </q-card-section>
+          </div>
           <q-card-section class="row">
             <q-input dark class="text-h8 fit" v-model="inputDescript" outlined label="Описание" type="textarea" />
           </q-card-section>
         </q-card-section>
-        <q-card-actions align="right" class="text-black" style="background-color: rgb(60, 60, 60);">
+        <q-card-actions align="center" class="text-black" style="background-color: rgb(60, 60, 60);">
           <q-btn v-show="action === 0" color="dark-grey" class="text-white" label="Создать" @click="createConfirmAction"
             :disabled="isValidationConfirm()" />
           <q-btn v-show="action === 1" color="dark-grey" class="text-white" label="Изменить" @click="changeConfirmAction"
@@ -171,6 +178,7 @@ export default defineComponent({
     const nameDefault = 'Новый материал';
     const inputName = ref(nameDefault);
     const inputArticle = ref('');
+    const inputUID = ref('');
     const inputDescript = ref('');
     const inputCost = ref(0);
     const inputWeight = ref(0);
@@ -301,6 +309,7 @@ export default defineComponent({
       inputWidth.value = object.width;
       inputHeight.value = object.height;
       inputArticle.value = object.article;
+      inputUID.value = object.uid_1C;
       status.value = getProp(statusOp.value, object.status, 'label');
       categoryOptions.value = getProp(categoryOptions, object.category, 'name');
       measureOptions.value = getProp(measureOptions, object.measure, 'name');
@@ -345,6 +354,7 @@ export default defineComponent({
                       height: m.height,
                       descript: m.descript,
                       article: m.article,
+                      uid_1C: m.uid_1C,
                     });
                   }
                   resetSelect();
@@ -370,7 +380,7 @@ export default defineComponent({
       query.current_nom_inductive = 0;
       query.current_nom_resistive = 0;
       query.voltage = 0;
-      query.article_server = 0;
+      query.uid_1C = inputUID.value;
       query.time_mount = 0;
       query.time_metalwork = 0;
       query.time_commutation = 0;
@@ -406,7 +416,7 @@ export default defineComponent({
       query.current_nom_inductive = 0;
       query.current_nom_resistive = 0;
       query.voltage = 0;
-      query.article_server = 0;
+      query.uid_1C = inputUID.value;
       query.time_mount = 0;
       query.time_metalwork = 0;
       query.time_commutation = 0;
@@ -484,6 +494,7 @@ export default defineComponent({
       deleteAction,
       inputName,
       inputArticle,
+      inputUID,
       validationName,
       createInputRealValueRules: [
         (val) => (val >= 0) || 'Введите корректное значение',
@@ -520,49 +531,3 @@ export default defineComponent({
   },
 });
 </script>
-<style>
-.my-sticky-header-table {
-  /* height or max-height is important */
-  height: 87vh;
-  /* this is when the loading indicator appears */
-}
-
-.my-sticky-header-table .q-table__top,
-.my-sticky-header-table .q-table__bottom,
-.my-sticky-header-table thead tr:first-child th {
-  /* bg color is important for th; just specify one */
-  background-color: rgb(60, 60, 60);
-}
-
-.my-sticky-header-table thead tr th {
-  position: sticky;
-  z-index: 1;
-}
-
-.my-sticky-header-table thead tr:first-child th {
-  top: 0;
-}
-
-.my-sticky-header-table.q-table--loading thead tr:last-child th {
-  /* height of all previous header rows */
-  top: 48px;
-}
-
-.scroll::-webkit-scrollbar {
-  width: 15px;
-  background: rgb(60, 60, 60);
-  opacity: 0 !important;
-}
-
-.scroll::-webkit-scrollbar-thumb {
-  background: grey
-}
-
-.scroll:hover::-webkit-scrollbar-thumb {
-  background: grey
-}
-
-.scroll::-webkit-scrollbar-thumb:hover {
-  background: grey
-}
-</style>

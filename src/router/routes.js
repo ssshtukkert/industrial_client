@@ -35,7 +35,16 @@ const routes = [
       { path: '/services/productoptions/configurations', component: () => import('src/pages/services/productoptions/configurations.vue') },
       { path: '/services/productoptions/configurations/:id', component: () => import('src/pages/services/productoptions/configuration.vue') },
       { path: '/services/chatOA', component: () => import('src/pages/services/chatOA/chatOA.vue') },
-      { path: '/farm/execute', component: () => import('src/pages/farm/index.vue') },
+      { path: '/services/files', component: () => import('src/pages/services/files.vue') },
+      { path: '/services/projects', component: () => import('src/pages/services/projects.vue') },
+      { path: '/services/project/:id', component: () => import('src/pages/services/project.vue') },
+      {
+        path: '/farm/execute',
+        meta: {
+          requiresAuth: true, allowedRoles: ['user', 'admin'],
+        },
+        component: () => import('src/pages/farm/index.vue'),
+      },
     ],
   },
 

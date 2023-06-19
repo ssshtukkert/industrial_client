@@ -1,14 +1,14 @@
 <template>
     <q-dialog v-model="visible" persistent transition-show="scale" transition-hide="scale">
-      <q-card>
-        <q-card-section class="bg-red text-white">
+      <q-card style="width: 900px; max-width: 95vw; background-color: rgb(60, 60, 60);">
+        <q-bar class="bg-red text-white">
           <div class="text-h6">{{ name }}</div>
-        </q-card-section>
-        <q-card-section class="bg-white text-h6 q-pt-none">
+        </q-bar>
+        <q-card-section class="text-h6 text-white">
           {{ text }}
         </q-card-section>
-        <q-card-actions align="right" class="bg-grey-4">
-          <q-btn flat label="OK" v-close-popup />
+        <q-card-actions align="center">
+          <q-btn color="dark-grey" label="OK" v-close-popup />
         </q-card-actions>
       </q-card>
     </q-dialog>

@@ -1,66 +1,64 @@
 <template>
   <q-page class="justify-center" style="background-color: rgb(60, 60, 60);">
-    <q-card style="background-color: rgb(60, 60, 60);">
-      <q-card-section class="text-white" style="background-color: rgb(80, 80, 80);">
-        <div class="text-h6">Вентиляторы</div>
-      </q-card-section>
-      <q-table class="my-sticky-header-table" dark dense :rows="rows" :columns="columns" row-key="id" virtual-scroll
-        :filter="filter" :filter-method="find" :hide-selected-banner="true" selection="multiple"
-        v-model:selected="selected" binary-state-sort v-model:pagination="pagination" :rows-per-page-options="[1]"
-        style="background-color: rgb(60, 60, 60);" :no-results-label="`По запросу '${filter}' ничего не найдено`"
-        grid-header @row-click="selectRow">
-        <template v-slot:top>
-          <q-card-actions class="fit" style="background-color: rgb(60, 60, 60);">
-            <!-- <q-btn color='dark-grey' icon="add" label='Создать' @click="createAction" /> -->
-            <!-- <q-btn color='dark-grey' icon='edit' label='Изменить' v-show="selected.length === 1"
+    <q-card-section class="text-white" style="background-color: rgb(80, 80, 80);">
+      <div class="text-h6">Вентиляторы</div>
+    </q-card-section>
+    <q-table class="m-table" dark dense flat :rows="rows" :columns="columns" row-key="id" virtual-scroll :filter="filter"
+      :filter-method="find" :hide-selected-banner="true" selection="multiple" v-model:selected="selected"
+      binary-state-sort v-model:pagination="pagination" :rows-per-page-options="[1]"
+      style="background-color: rgb(60, 60, 60);" :no-results-label="`По запросу '${filter}' ничего не найдено`"
+      grid-header @row-click="selectRow">
+      <template v-slot:top>
+        <q-card-actions class="fit" style="background-color: rgb(60, 60, 60);">
+          <!-- <q-btn color='dark-grey' icon="add" label='Создать' @click="createAction" /> -->
+          <!-- <q-btn color='dark-grey' icon='edit' label='Изменить' v-show="selected.length === 1"
               @click="changeAction(selected)" /> -->
-            <!-- <q-btn color='dark-grey' icon="delete" label='Удалить' v-show="selected.length > 0"
+          <!-- <q-btn color='dark-grey' icon="delete" label='Удалить' v-show="selected.length > 0"
               @click="deleteAction(selected)" disable /> -->
-            <q-space />
-            <q-select dark outlined dense v-model="filterOptions" :options="op" class="text-h6"
-              options-selected-class="text-h6 text-grey" popup-content-class="text-h6"
-              style="width: 220px; margin-right: 10px" />
-            <q-input dark class="text-h6" outlined dense debounce="300" color="primary" v-model="filter" clearable
-              placeholder="Поиск">
-              <template v-slot:append>
-                <q-icon name="search" />
-              </template>
-            </q-input>
-          </q-card-actions>
-        </template>
-        <template v-slot:pagination>
-          <div class="text-h6" style="background-color: rgb(60, 60, 60);">
-            {{ getSelectedString() }}
+          <q-space />
+          <q-select dark outlined dense v-model="filterOptions" :options="op" class="text-h6"
+            options-selected-class="text-h6 text-grey" popup-content-class="text-h6"
+            style="width: 220px; margin-right: 10px" />
+          <q-input dark class="text-h6" outlined dense debounce="300" color="primary" v-model="filter" clearable
+            placeholder="Поиск">
+            <template v-slot:append>
+              <q-icon name="search" />
+            </template>
+          </q-input>
+        </q-card-actions>
+      </template>
+      <template v-slot:pagination>
+        <div class="text-h6" style="background-color: rgb(60, 60, 60);">
+          {{ getSelectedString() }}
+        </div>
+      </template>
+      <template v-slot:header-cell="props">
+        <q-th :props="props" style="background-color: rgb(60, 60, 60);">
+          <div class="text-h6">{{ props.col.label }}</div>
+        </q-th>
+      </template>
+      <template v-slot:body-cell="props">
+        <q-td :props="props">
+          <div class="text-h6">
+            {{ props.value }}
           </div>
-        </template>
-        <template v-slot:header-cell="props">
-          <q-th :props="props" style="background-color: rgb(60, 60, 60);">
-            <div class="text-h6">{{ props.col.label }}</div>
-          </q-th>
-        </template>
-        <template v-slot:body-cell="props">
-          <q-td :props="props">
-            <div class="text-h6">
-              {{ props.value }}
-            </div>
-          </q-td>
-        </template>
-        <template v-slot:body-cell-type="props">
-          <q-td :props="props">
-            <q-badge color="grey-8">
-              <div class="text-h6">{{ props.row.type }}</div>
-            </q-badge>
-          </q-td>
-        </template>
-        <template v-slot:body-cell-voltage="props">
-          <q-td :props="props">
-            <q-badge color="grey-8">
-              <div class="text-h6">{{ props.row.voltage }}</div>
-            </q-badge>
-          </q-td>
-        </template>
-      </q-table>
-    </q-card>
+        </q-td>
+      </template>
+      <template v-slot:body-cell-type="props">
+        <q-td :props="props">
+          <q-badge color="grey-8">
+            <div class="text-h6">{{ props.row.type }}</div>
+          </q-badge>
+        </q-td>
+      </template>
+      <template v-slot:body-cell-voltage="props">
+        <q-td :props="props">
+          <q-badge color="grey-8">
+            <div class="text-h6">{{ props.row.voltage }}</div>
+          </q-badge>
+        </q-td>
+      </template>
+    </q-table>
     <q-dialog v-model="dialog" persistent>
       <q-card class="text-white q-pt-none" style="width: 900px; max-width: 95vw; background-color: rgb(60, 60, 60);">
         <q-card-section style="background-color: rgb(80, 80, 80);">
@@ -461,49 +459,3 @@ export default defineComponent({
   },
 });
 </script>
-<style>
-.my-sticky-header-table {
-  /* height or max-height is important */
-  height: 87vh;
-  /* this is when the loading indicator appears */
-}
-
-.my-sticky-header-table .q-table__top,
-.my-sticky-header-table .q-table__bottom,
-.my-sticky-header-table thead tr:first-child th {
-  /* bg color is important for th; just specify one */
-  background-color: rgb(60, 60, 60);
-}
-
-.my-sticky-header-table thead tr th {
-  position: sticky;
-  z-index: 1;
-}
-
-.my-sticky-header-table thead tr:first-child th {
-  top: 0;
-}
-
-.my-sticky-header-table.q-table--loading thead tr:last-child th {
-  /* height of all previous header rows */
-  top: 48px;
-}
-
-.scroll::-webkit-scrollbar {
-  width: 15px;
-  background: rgb(60, 60, 60);
-  opacity: 0 !important;
-}
-
-.scroll::-webkit-scrollbar-thumb {
-  background: grey
-}
-
-.scroll:hover::-webkit-scrollbar-thumb {
-  background: grey
-}
-
-.scroll::-webkit-scrollbar-thumb:hover {
-  background: grey
-}
-</style>

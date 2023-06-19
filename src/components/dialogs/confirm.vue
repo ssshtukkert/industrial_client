@@ -1,17 +1,17 @@
 <template>
-    <q-dialog v-model="visible" persistent transition-show="scale" transition-hide="scale">
-      <q-card style="min-width: 50vw;">
-        <q-card-section class="bg-teal text-white">
-          <div class="text-h6">{{ name }}</div>
-        </q-card-section>
-        <q-card-section class="bg-white text-h6 q-pt-none">
-          {{ text }}
-        </q-card-section>
-        <q-card-actions align="right" class="bg-grey-4">
-          <slot name="buttons"/>
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
+  <q-dialog v-model="visible" class="text-h6" persistent transition-show="scale" transition-hide="scale">
+    <q-card style="width: 900px; max-width: 95vw; background-color: rgb(60, 60, 60);">
+      <q-bar class="text-white" style="background-color: rgb(80, 80, 80);">
+        <div>{{ name }}</div>
+      </q-bar>
+      <q-card-section class="text-white" style="background-color: rgb(60, 60, 60);">
+        {{ text }}
+      </q-card-section>
+      <q-card-actions align="center" class="text-black" style="background-color: rgb(60, 60, 60);">
+        <slot name="buttons" />
+      </q-card-actions>
+    </q-card>
+  </q-dialog>
 </template>
 <script>
 import { defineComponent, ref } from 'vue';

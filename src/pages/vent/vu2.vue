@@ -328,7 +328,6 @@ export default {
     let changeParameter = -1;
     const tKanPrev = [null, null];
     const dateStart = ref('2022-09-08 21:56:00');
-    const host = 'http://10.154.152.88:3001';
 
     const visibleAlarmsVU = ref(false);
 
@@ -345,9 +344,8 @@ export default {
         name: 'datetime', align: 'left', label: 'Дата и время', field: 'datetime', sortOrder: 'ad',
       },
     ]);
-    // const dataValuesVU = [];
     const {
-      WebSocket_Create, WebSocket_Listen, WebSocket_Close, WebSocket_Send, getCurrentDate, getDataAlarms, getDataAlarm, getCurrentTime,
+      host, WebSocket_Create, WebSocket_Listen, WebSocket_Close, WebSocket_Send, getCurrentDate, getDataAlarms, getDataAlarm, getCurrentTime,
     } = inject('store');
     const dateEnd = ref(getCurrentDate());
     const alarms = getDataAlarms();

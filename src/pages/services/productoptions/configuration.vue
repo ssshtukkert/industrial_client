@@ -1,561 +1,560 @@
 <template>
   <q-page class="text-white" padding style="background-color: rgb(60, 60, 60);">
-    <q-card class="" style="background-color: rgb(60, 60, 60);">
-      <q-card-section style="background-color: rgb(80, 80, 80);">
-        <div class="text-h6 text-weight-bolder text-white">
-          Конфигурация {{ name }} от {{ updatedAt }}
-          <a v-show="change"> *
-            <q-tooltip :delay="800">
-              * - означает что внесены изменения, для сохранения изменений необходимо "Записать" конфигурацию в базу
-              данных
-            </q-tooltip>
-          </a>
-        </div>
-        Номер конфигурации: {{ id }}
-        <div v-if="defaultStructure.version == version" class="text-green">
-          Версия конфигуратора: {{ version }}
-        </div>
-        <div v-if="defaultStructure.version != version" class="text-red">
-          Несоответствие версий структуры: {{ defaultStructure.version }} и {{ version }} !
-        </div>
-      </q-card-section>
-      <q-card-actions class="text-black">
-        <q-btn color='dark-grey' label="Назад" icon="arrow_back" @click="exit">
+    <q-card-section style="background-color: rgb(80, 80, 80);">
+      <div class="text-h6 text-weight-bolder text-white">
+        Конфигурация {{ name }} от {{ updatedAt }}
+        <a v-show="change"> *
           <q-tooltip :delay="800">
-            Вернуться к списку конфигураций
+            * - означает что внесены изменения, для сохранения изменений необходимо "Записать" конфигурацию в базу
+            данных
           </q-tooltip>
-        </q-btn>
-        <DialogConfirm ref="dex">
-          <template v-slot:buttons>
-            <q-btn color='red' label="Не сохранять и выйти" @click="confirmExit" />
-            <q-btn color='green' label="Сохранить и выйти" @click="confirmExitAndSave" />
-            <q-btn color='primary' label="Отмена" v-close-popup />
-          </template>
-        </DialogConfirm>
-        <q-btn color='dark-grey' label="Сохранить" :disable="!change" icon="save" @click="writeDatabase">
-        </q-btn>
-        <q-btn color='dark-grey' v-show="change" label='Отменить изменения' @click="resetChange">
-        </q-btn>
-        <q-btn color='dark-grey' label="Скачать отчёт в PDF" :disable="change || (errors.length > 0 || !boxControl.mark)"
-          icon="picture_as_pdf" :href="downloadPDF" target="_self" style="margin-right: 15px;">
-        </q-btn>
-      </q-card-actions>
-      <div class="bg-white text-h6">
-        <q-tabs dense v-model="tab" class="text-grey" no-caps align="justify" active-color="white" indicator-color="white"
-          style="background-color: rgb(60, 60, 60);">
-          <q-tab name="elements">
-            <div class="text-h6">Конфигуратор</div>
-          </q-tab>
-          <q-tab name="blockmanual">
-            <div class="text-h6">Подбор автоматики</div>
-          </q-tab>
-          <q-tab name="card">
-            <div class="text-h6">Описание</div>
-          </q-tab>
-        </q-tabs>
-        <q-tab-panels v-model="tab" keep-alive style="background-color: rgb(60, 60, 60);">
-          <q-tab-panel name="card">
-            <div class="row">
-              <q-input v-model="inputDescript" dark class="fit" clearable outlined label="Описание" type="textarea"
-                @update:model-value="sync" :input-style="{ resize: 'none', height: '55vh' }" />
-            </div>
-          </q-tab-panel>
-          <q-tab-panel class="q-pa-sm" name="elements" style="background-color: rgb(60, 60, 60);">
-            <q-card-actions>
-              <q-btn class="full-height" color='dark-grey' label="Изменить состав системы" icon="edit"
-                @click="openDialog('Изменить конфигурацию')">
-              </q-btn>
-              <q-btn class="full-height" color='dark-grey' label="Подобрать управление" icon="published_with_changes"
-                @click="writeDatabase(); tab = 'blockmanual'; updateAutomatics()">
-              </q-btn>
-              <q-space />
-              <q-btn class="full-height" color='dark-grey' label="Сбросить конфигурацию" icon="delete" @click="resetConf">
-              </q-btn>
-            </q-card-actions>
-            <q-splitter dark vertical v-model="splitterModelMain" separator-class="bg-white"
-              style="height: 70vh; background-color: rgb(60, 60, 60);">
-              <template v-slot:before style="overflow: hidden;">
-                <q-splitter dark horizontal v-model="splitterModelMainSettings" separator-class="bg-white"
-                  style="background-color: rgb(60, 60, 60);">
-                  <template v-slot:before>
-                    <q-scroll-area visible :delay="0" style=" max-width: 100%; height: 100%;"
-                      :vertical-thumb-style="{ right: '2px', borderRadius: '0px', background: 'grey', width: '15px', opacity: 1 }"
-                      :horizontal-thumb-style="{ bottom: '2px', borderRadius: '0px', background: 'grey', height: '15px', opacity: 1 }"
-                      :vertical-bar-style="{ right: '2px', borderRadius: '0px', background: 'grey', opacity: 0.3, width: '15px' }"
-                      :horizontal-bar-style="{ bottom: '2px', borderRadius: '0px', background: 'grey', opacity: 0.3, height: '15px' }">
-                      1.Структура
-                      <div class="grid-container" @click="clickEmpty" style="min-width: 960px;">
-                        <ImageElement v-for="element in initElements" :key="element" :id="element.id"
-                          :class="`grid-item white ${element.class || ''}`" :name="element.name || ''"
-                          :descript="element.description || ''" :size="element.size || 'small'"
-                          :imageTop="loadImage(element.imageTop)" :imageBottom="loadImage(element.imageBottom)"
-                          :text="element.text" :clickSelect="openDialog" :idname="element.id" />
+        </a>
+      </div>
+      Номер конфигурации: {{ id }}
+      <div v-if="defaultStructure.version == version" class="text-green">
+        Версия конфигуратора: {{ version }}
+      </div>
+      <div v-if="defaultStructure.version != version" class="text-red">
+        Несоответствие версий структуры: {{ defaultStructure.version }} и {{ version }} !
+      </div>
+    </q-card-section>
+    <q-card-actions class="text-black">
+      <q-btn color='dark-grey' label="Назад" icon="arrow_back" @click="exit">
+        <q-tooltip :delay="800">
+          Вернуться к списку конфигураций
+        </q-tooltip>
+      </q-btn>
+      <DialogConfirm ref="dex">
+        <template v-slot:buttons>
+          <q-btn color='red' label="Не сохранять и выйти" @click="confirmExit" />
+          <q-btn color='green' label="Сохранить и выйти" @click="confirmExitAndSave" />
+          <q-btn color='primary' label="Отмена" v-close-popup />
+        </template>
+      </DialogConfirm>
+      <q-btn color='dark-grey' label="Сохранить" :disable="!change" icon="save" @click="writeDatabase">
+      </q-btn>
+      <q-btn color='dark-grey' v-show="change" label='Отменить изменения' @click="resetChange">
+      </q-btn>
+      <q-btn color='dark-grey' label="Скачать отчёт в PDF" :disable="change || (errors.length > 0 || !boxControl.mark)"
+        icon="picture_as_pdf" :href="downloadPDF" target="_self" style="margin-right: 15px;">
+      </q-btn>
+    </q-card-actions>
+    <div class="bg-white text-h6">
+      <q-tabs dense v-model="tab" class="text-grey" no-caps align="justify" active-color="white" indicator-color="white"
+        style="background-color: rgb(60, 60, 60);">
+        <q-tab name="elements">
+          <div class="text-h6">Конфигуратор</div>
+        </q-tab>
+        <q-tab name="blockmanual">
+          <div class="text-h6">Подбор автоматики</div>
+        </q-tab>
+        <q-tab name="card">
+          <div class="text-h6">Описание</div>
+        </q-tab>
+      </q-tabs>
+      <q-tab-panels v-model="tab" keep-alive style="background-color: rgb(60, 60, 60);">
+        <q-tab-panel name="card">
+          <div class="row">
+            <q-input v-model="inputDescript" dark class="fit" clearable outlined label="Описание" type="textarea"
+              @update:model-value="sync" :input-style="{ resize: 'none', height: '55vh' }" />
+          </div>
+        </q-tab-panel>
+        <q-tab-panel class="q-pa-sm" name="elements" style="background-color: rgb(60, 60, 60);">
+          <q-card-actions>
+            <q-btn class="full-height" color='dark-grey' label="Изменить состав системы" icon="edit"
+              @click="openDialog('Изменить конфигурацию')">
+            </q-btn>
+            <q-btn class="full-height" color='dark-grey' label="Подобрать управление" icon="published_with_changes"
+              @click="writeDatabase(); tab = 'blockmanual'; updateAutomatics()">
+            </q-btn>
+            <q-space />
+            <q-btn class="full-height" color='dark-grey' label="Сбросить конфигурацию" icon="delete" @click="resetConf">
+            </q-btn>
+          </q-card-actions>
+          <q-splitter dark vertical v-model="splitterModelMain" separator-class="bg-white"
+            style="height: 70vh; background-color: rgb(60, 60, 60);">
+            <template v-slot:before style="overflow: hidden;">
+              <q-splitter dark horizontal v-model="splitterModelMainSettings" separator-class="bg-white"
+                style="background-color: rgb(60, 60, 60);">
+                <template v-slot:before>
+                  <q-scroll-area visible :delay="0" style=" max-width: 100%; height: 100%;"
+                    :vertical-thumb-style="{ right: '2px', borderRadius: '0px', background: 'grey', width: '15px', opacity: 1 }"
+                    :horizontal-thumb-style="{ bottom: '2px', borderRadius: '0px', background: 'grey', height: '15px', opacity: 1 }"
+                    :vertical-bar-style="{ right: '2px', borderRadius: '0px', background: 'grey', opacity: 0.3, width: '15px' }"
+                    :horizontal-bar-style="{ bottom: '2px', borderRadius: '0px', background: 'grey', opacity: 0.3, height: '15px' }">
+                    1.Структура
+                    <div class="grid-container" @click="clickEmpty" style="min-width: 960px;">
+                      <ImageElement v-for="element in initElements" :key="element" :id="element.id"
+                        :class="`grid-item white ${element.class || ''}`" :name="element.name || ''"
+                        :descript="element.description || ''" :size="element.size || 'small'"
+                        :imageTop="loadImage(element.imageTop)" :imageBottom="loadImage(element.imageBottom)"
+                        :text="element.text" :clickSelect="openDialog" :idname="element.id" />
+                    </div>
+                  </q-scroll-area>
+                </template>
+                <template v-slot:after style="overflow: hidden;">
+                  <q-scroll-area visible :delay="0" style=" max-width: 100%; height: 100%;"
+                    :vertical-thumb-style="{ right: '2px', borderRadius: '0px', background: 'grey', width: '15px', opacity: 1 }"
+                    :horizontal-thumb-style="{ bottom: '2px', borderRadius: '0px', background: 'grey', height: '15px', opacity: 1 }"
+                    :vertical-bar-style="{ right: '2px', borderRadius: '0px', background: 'grey', opacity: 0.3, width: '15px' }"
+                    :horizontal-bar-style="{ bottom: '2px', borderRadius: '0px', background: 'grey', opacity: 0.3, height: '15px' }">
+                    2.Дополнительные настройки
+                    <q-card-section class="row">
+                      <div class="col-3">
+                        <q-select dark class="text-h8" label="Материал корпуса ЩУ:"
+                          options-selected-class="text-h8 text-grey" label-active-class="text-red"
+                          popup-content-class="text-h8" outlined :options="confBoxMaterialOptions" option-value="id"
+                          v-model="confBoxMaterial" @update:model-value="updateSettings('box_material', confBoxMaterial)"
+                          popup-content-style="background-color: rgb(60, 60, 60); color:  white;"
+                          style="padding-right: 5px;">
+                          <template v-slot:selected>
+                            <div class="text-white">
+                              {{ confBoxMaterial.label }}
+                            </div>
+                          </template>
+                        </q-select>
                       </div>
-                    </q-scroll-area>
-                  </template>
-                  <template v-slot:after style="overflow: hidden;">
-                    <q-scroll-area visible :delay="0" style=" max-width: 100%; height: 100%;"
-                      :vertical-thumb-style="{ right: '2px', borderRadius: '0px', background: 'grey', width: '15px', opacity: 1 }"
-                      :horizontal-thumb-style="{ bottom: '2px', borderRadius: '0px', background: 'grey', height: '15px', opacity: 1 }"
-                      :vertical-bar-style="{ right: '2px', borderRadius: '0px', background: 'grey', opacity: 0.3, width: '15px' }"
-                      :horizontal-bar-style="{ bottom: '2px', borderRadius: '0px', background: 'grey', opacity: 0.3, height: '15px' }">
-                      2.Дополнительные настройки
-                      <q-card-section class="row">
-                        <div class="col-3">
-                          <q-select dark class="text-h8" label="Материал корпуса ЩУ:"
-                            options-selected-class="text-h8 text-grey" label-active-class="text-red"
-                            popup-content-class="text-h8" outlined :options="confBoxMaterialOptions" option-value="id"
-                            v-model="confBoxMaterial"
-                            @update:model-value="updateSettings('box_material', confBoxMaterial)"
-                            popup-content-style="background-color: rgb(60, 60, 60); color:  white;"
-                            style="padding-right: 5px;">
-                            <template v-slot:selected>
-                              <div class="text-white">
-                                {{ confBoxMaterial.label }}
-                              </div>
-                            </template>
-                          </q-select>
-                        </div>
-                        <div class="col-3">
-                          <q-select dark class="text-h8" label="Тип управления:"
-                            options-selected-class="text-h8 text-grey" label-active-class="text-red"
-                            popup-content-class="text-h8" outlined :options="confManualOptions" option-value="id"
-                            @update:model-value="sync" v-model="confManual"
-                            popup-content-style="background-color: rgb(60, 60, 60); color:  white;"
-                            style="padding-right: 5px;">
-                            <template v-slot:selected>
-                              <div class="text-white">
-                                {{ confManual.label }}
-                              </div>
-                            </template>
-                          </q-select>
-                        </div>
-                        <div class="col-3">
-                          <q-select dark class="text-h8" label="Пульт управления:"
-                            options-selected-class="text-h8 text-grey" label-active-class="text-red"
-                            popup-content-class="text-h8" outlined :options="confPUOptions" option-value="id"
-                            @update:model-value="sync" v-model="confPU"
-                            popup-content-style="background-color: rgb(60, 60, 60); color:  white;"
-                            style="padding-right: 5px;">
-                            <template v-slot:selected>
-                              <div class="text-white">
-                                {{ confPU.label }}
-                              </div>
-                            </template>
-                          </q-select>
-                        </div>
-                      </q-card-section>
-                      <q-item>
-                        <q-item-section class="text-h6">
-                          <div class="text-white">Освещение внутри секций</div>
-                        </q-item-section>
-                        <q-item-section avatar>
-                          <q-toggle v-model="lum" dark color="green" @update:model-value="updateSettings" />
-                        </q-item-section>
-                      </q-item>
-                      <q-item>
-                        <q-item-section class="text-h6">
-                          <div class="text-white">Поддержание комнатной температуры</div>
-                        </q-item-section>
-                        <q-item-section avatar>
-                          <q-toggle v-model="troom" dark color="green" @update:model-value="updateSettings('troom')" />
-                        </q-item-section>
-                      </q-item>
-                      <q-item>
-                        <q-item-section class="text-h6">
-                          <div class="text-white">Уличное исполнение ЩУ</div>
-                        </q-item-section>
-                        <q-item-section avatar>
-                          <q-toggle disable v-model="clima" dark color="green" @update:model-value="updateSettings" />
-                        </q-item-section>
-                      </q-item>
-                      <q-item>
-                        <q-item-section class="text-h6">
-                          <div class="text-white">Диспетчеризация Modbus</div>
-                        </q-item-section>
-                        <q-item-section avatar>
-                          <q-toggle v-model="modbus" dark color="green" @update:model-value="updateSettings" />
-                        </q-item-section>
-                      </q-item>
-                      <q-item>
-                        <q-item-section class="text-h6">
-                          <div :class="`${!(!isCO2() || cav || vav) ? 'text-white' : 'text-grey'}`">Запуск по дискретному
-                            сигналу с газоанализатора (угарный газ)</div>
-                        </q-item-section>
-                        <q-item-section avatar>
-                          <q-toggle :disable="!isCO2() || cav || vav" v-model="co" dark color="green"
-                            @update:model-value="updateSettings('co')" />
-                        </q-item-section>
-                      </q-item>
+                      <div class="col-3">
+                        <q-select dark class="text-h8" label="Тип управления:" options-selected-class="text-h8 text-grey"
+                          label-active-class="text-red" popup-content-class="text-h8" outlined
+                          :options="confManualOptions" option-value="id" @update:model-value="sync" v-model="confManual"
+                          popup-content-style="background-color: rgb(60, 60, 60); color:  white;"
+                          style="padding-right: 5px;">
+                          <template v-slot:selected>
+                            <div class="text-white">
+                              {{ confManual.label }}
+                            </div>
+                          </template>
+                        </q-select>
+                      </div>
+                      <div class="col-3">
+                        <q-select dark class="text-h8" label="Пульт управления:"
+                          options-selected-class="text-h8 text-grey" label-active-class="text-red"
+                          popup-content-class="text-h8" outlined :options="confPUOptions" option-value="id"
+                          @update:model-value="sync" v-model="confPU"
+                          popup-content-style="background-color: rgb(60, 60, 60); color:  white;"
+                          style="padding-right: 5px;">
+                          <template v-slot:selected>
+                            <div class="text-white">
+                              {{ confPU.label }}
+                            </div>
+                          </template>
+                        </q-select>
+                      </div>
+                    </q-card-section>
+                    <q-item>
+                      <q-item-section class="text-h6">
+                        <div class="text-white">Освещение внутри секций</div>
+                      </q-item-section>
+                      <q-item-section avatar>
+                        <q-toggle v-model="lum" dark color="green" @update:model-value="updateSettings" />
+                      </q-item-section>
+                    </q-item>
+                    <q-item>
+                      <q-item-section class="text-h6">
+                        <div class="text-white">Поддержание комнатной температуры</div>
+                      </q-item-section>
+                      <q-item-section avatar>
+                        <q-toggle v-model="troom" dark color="green" @update:model-value="updateSettings('troom')" />
+                      </q-item-section>
+                    </q-item>
+                    <q-item>
+                      <q-item-section class="text-h6">
+                        <div class="text-white">Уличное исполнение ЩУ</div>
+                      </q-item-section>
+                      <q-item-section avatar>
+                        <q-toggle disable v-model="clima" dark color="green" @update:model-value="updateSettings" />
+                      </q-item-section>
+                    </q-item>
+                    <q-item>
+                      <q-item-section class="text-h6">
+                        <div class="text-white">Диспетчеризация Modbus</div>
+                      </q-item-section>
+                      <q-item-section avatar>
+                        <q-toggle v-model="modbus" dark color="green" @update:model-value="updateSettings" />
+                      </q-item-section>
+                    </q-item>
+                    <q-item>
+                      <q-item-section class="text-h6">
+                        <div :class="`${!(!isCO2() || cav || vav) ? 'text-white' : 'text-grey'}`">Запуск по дискретному
+                          сигналу с газоанализатора (угарный газ)</div>
+                      </q-item-section>
+                      <q-item-section avatar>
+                        <q-toggle :disable="!isCO2() || cav || vav" v-model="co" dark color="green"
+                          @update:model-value="updateSettings('co')" />
+                      </q-item-section>
+                    </q-item>
 
-                      <q-item>
-                        <q-item-section class="text-h6">
-                          <div :class="`${!(!isCO2() || cav || co) ? 'text-white' : 'text-grey'}`">Функция поддержания
-                            переменного расхода воздуха (VAV)</div>
-                        </q-item-section>
-                        <q-item-section avatar>
-                          <q-toggle :disable="!isCO2() || cav || co" v-model="vav" dark color="green"
-                            @update:model-value="updateSettings('vav')" />
-                        </q-item-section>
-                      </q-item>
-                      <q-item>
-                        <q-item-section class="text-h6">
-                          <div :class="`${!(!isCO2() || vav || co) ? 'text-white' : 'text-grey'}`"> Функция поддержания
-                            постоянного расхода воздуха (CAV)</div>
-                        </q-item-section>
-                        <q-item-section avatar>
-                          <q-toggle :disable="!isCO2() || vav || co" v-model="cav" dark color="green"
-                            @update:model-value="updateSettings('cav')" />
-                        </q-item-section>
-                      </q-item>
+                    <q-item>
+                      <q-item-section class="text-h6">
+                        <div :class="`${!(!isCO2() || cav || co) ? 'text-white' : 'text-grey'}`">Функция поддержания
+                          переменного расхода воздуха (VAV)</div>
+                      </q-item-section>
+                      <q-item-section avatar>
+                        <q-toggle :disable="!isCO2() || cav || co" v-model="vav" dark color="green"
+                          @update:model-value="updateSettings('vav')" />
+                      </q-item-section>
+                    </q-item>
+                    <q-item>
+                      <q-item-section class="text-h6">
+                        <div :class="`${!(!isCO2() || vav || co) ? 'text-white' : 'text-grey'}`"> Функция поддержания
+                          постоянного расхода воздуха (CAV)</div>
+                      </q-item-section>
+                      <q-item-section avatar>
+                        <q-toggle :disable="!isCO2() || vav || co" v-model="cav" dark color="green"
+                          @update:model-value="updateSettings('cav')" />
+                      </q-item-section>
+                    </q-item>
 
-                    </q-scroll-area>
-                  </template>
-                </q-splitter>
-              </template>
-              <template v-slot:after>
-                <q-scroll-area v-if="elementSelected" visible :delay="0" style=" max-width: 100%; height: 100%;"
-                  :vertical-thumb-style="{ right: '2px', borderRadius: '0px', background: 'grey', width: '15px', opacity: 1 }"
-                  :horizontal-thumb-style="{ bottom: '2px', borderRadius: '0px', background: 'grey', height: '15px', opacity: 1 }"
-                  :vertical-bar-style="{ right: '2px', borderRadius: '0px', background: 'grey', opacity: 0.3, width: '15px' }"
-                  :horizontal-bar-style="{ bottom: '2px', borderRadius: '0px', background: 'grey', opacity: 0.3, height: '15px' }">
-                  <q-card-actions align="left" v-if="showButtonDelete">
-                    <q-space />
-                    <q-btn color='dark-grey' icon="delete" label="Исключить" @click="enableElement">
-                    </q-btn>
-                  </q-card-actions>
-                  <q-card-section>
-                    <q-input dark class="q-ma-sm" v-model="inputsOptionsElements['elementSelectedName']" color="grey"
-                      input-class="text-h6 text-white" outlined label-color="grey" type="text"
-                      label="Наименование элемента" @update:model-value="updateElementSelectedName" />
-                    <template v-for="order in getElement(elementSelected.id).orders" :key="order">
-                      <template v-if="getElement(elementSelected.id).references">
-                        <template v-for="index in getElement(elementSelected.id).references" :key="index">
-                          <template v-if="index.enable && index.name === order">
-                            <q-select :disable="index.values.length == 1 || index.disable" dark class="q-ma-sm text-h6"
-                              :label="index.label" options-selected-class="text-h6 text-grey"
-                              popup-content-class="text-h6" outlined v-model="selectorsOptionsElements[index.name]"
-                              :options="getOptions(index)" @update:model-value="updateUnitsElementSelector"
-                              option-value="id" popup-content-style="background-color: rgb(60, 60, 60); color:  white;">
-                            </q-select>
-                            <template v-if="index.referencesValueId">
-                              <div v-for="indexRef in index.referencesValueId" :key="indexRef">
-                                <div v-if="indexRef.valueId == index.valueId">
-                                  <div v-if="indexRef.references">
-                                    <div v-for="indexRefReferences in indexRef.references" :key="indexRefReferences">
-                                      <q-select v-if="indexRefReferences.enable"
-                                        :disable="indexRefReferences.values.length == 1 || indexRefReferences.disable"
-                                        dark class="q-ma-sm text-h6" :label="indexRefReferences.label"
-                                        options-selected-class="text-h6 text-grey" popup-content-class="text-h6" outlined
-                                        v-model="selectorsOptionsElements[indexRefReferences.name]"
-                                        :options="getOptions(indexRefReferences)"
-                                        @update:model-value="updateUnitsElementSelectorEntry(index.name, indexRefReferences, selectorsOptionsElements[indexRefReferences.name])"
-                                        option-value="id"
-                                        popup-content-style="background-color: rgb(60, 60, 60); color:  white;">
-                                      </q-select>
-                                      <div v-if="indexRefReferences.referencesValueId">
-                                        <div v-for="indexRefRef in indexRefReferences.referencesValueId"
-                                          :key="indexRefRef">
-                                          <div v-if="indexRefRef.valueId == indexRefReferences.valueId">
-                                            <div v-if="indexRefRef.inputs">
-                                              <div v-for="indexRefRefInputs in indexRefRef.inputs"
-                                                :key="indexRefRefInputs">
-                                                <q-input v-if="indexRefRefInputs.enable" dark class="q-ma-sm"
-                                                  v-model="inputsOptionsElements[indexRefRefInputs.name]" color="grey"
-                                                  input-class="text-h6 text-white" outlined label-color="grey"
-                                                  :type="indexRefRefInputs.type" :label="indexRefRefInputs.label"
-                                                  @update:model-value="updateUnitsElementSelectorEntryEntry(index.name, indexRefRefInputs, inputsOptionsElements[indexRefRefInputs.name])"
-                                                  :rules="[(val) => {
-                                                    if (indexRefRefInputs.type == 'number' && indexRefRefInputs.rules) {
-                                                      return val >= indexRefRefInputs.rules.min && +val <= indexRefRefInputs.rules.max || indexRefRefInputs.rules.errorMessage
-                                                    }
-                                                  }]" />
-                                              </div>
+                  </q-scroll-area>
+                </template>
+              </q-splitter>
+            </template>
+            <template v-slot:after>
+              <q-scroll-area v-if="elementSelected" visible :delay="0" style=" max-width: 100%; height: 100%;"
+                :vertical-thumb-style="{ right: '2px', borderRadius: '0px', background: 'grey', width: '15px', opacity: 1 }"
+                :horizontal-thumb-style="{ bottom: '2px', borderRadius: '0px', background: 'grey', height: '15px', opacity: 1 }"
+                :vertical-bar-style="{ right: '2px', borderRadius: '0px', background: 'grey', opacity: 0.3, width: '15px' }"
+                :horizontal-bar-style="{ bottom: '2px', borderRadius: '0px', background: 'grey', opacity: 0.3, height: '15px' }">
+                <q-card-actions align="left" v-if="showButtonDelete">
+                  <q-space />
+                  <q-btn color='dark-grey' icon="delete" label="Исключить" @click="enableElement">
+                  </q-btn>
+                </q-card-actions>
+                <q-card-section>
+                  <q-input dark class="q-ma-sm" v-model="inputsOptionsElements['elementSelectedName']" color="grey"
+                    input-class="text-h6 text-white" outlined label-color="grey" type="text" label="Наименование элемента"
+                    @update:model-value="updateElementSelectedName" />
+                  <template v-for="order in getElement(elementSelected.id).orders" :key="order">
+                    <template v-if="getElement(elementSelected.id).references">
+                      <template v-for="index in getElement(elementSelected.id).references" :key="index">
+                        <template v-if="index.enable && index.name === order">
+                          <q-select :disable="index.values.length == 1 || index.disable" dark class="q-ma-sm text-h6"
+                            :label="index.label" options-selected-class="text-h6 text-grey" popup-content-class="text-h6"
+                            outlined v-model="selectorsOptionsElements[index.name]" :options="getOptions(index)"
+                            @update:model-value="updateUnitsElementSelector" option-value="id"
+                            popup-content-style="background-color: rgb(60, 60, 60); color:  white;">
+                          </q-select>
+                          <template v-if="index.referencesValueId">
+                            <div v-for="indexRef in index.referencesValueId" :key="indexRef">
+                              <div v-if="indexRef.valueId == index.valueId">
+                                <div v-if="indexRef.references">
+                                  <div v-for="indexRefReferences in indexRef.references" :key="indexRefReferences">
+                                    <q-select v-if="indexRefReferences.enable"
+                                      :disable="indexRefReferences.values.length == 1 || indexRefReferences.disable" dark
+                                      class="q-ma-sm text-h6" :label="indexRefReferences.label"
+                                      options-selected-class="text-h6 text-grey" popup-content-class="text-h6" outlined
+                                      v-model="selectorsOptionsElements[indexRefReferences.name]"
+                                      :options="getOptions(indexRefReferences)"
+                                      @update:model-value="updateUnitsElementSelectorEntry(index.name, indexRefReferences, selectorsOptionsElements[indexRefReferences.name])"
+                                      option-value="id"
+                                      popup-content-style="background-color: rgb(60, 60, 60); color:  white;">
+                                    </q-select>
+                                    <div v-if="indexRefReferences.referencesValueId">
+                                      <div v-for="indexRefRef in indexRefReferences.referencesValueId" :key="indexRefRef">
+                                        <div v-if="indexRefRef.valueId == indexRefReferences.valueId">
+                                          <div v-if="indexRefRef.inputs">
+                                            <div v-for="indexRefRefInputs in indexRefRef.inputs" :key="indexRefRefInputs">
+                                              <q-input v-if="indexRefRefInputs.enable" dark class="q-ma-sm"
+                                                v-model="inputsOptionsElements[indexRefRefInputs.name]" color="grey"
+                                                input-class="text-h6 text-white" outlined label-color="grey"
+                                                :type="indexRefRefInputs.type" :label="indexRefRefInputs.label"
+                                                @update:model-value="updateUnitsElementSelectorEntryEntry(index.name, indexRefRefInputs, inputsOptionsElements[indexRefRefInputs.name])"
+                                                :rules="[(val) => {
+                                                  if (indexRefRefInputs.type == 'number' && indexRefRefInputs.rules) {
+                                                    return val >= indexRefRefInputs.rules.min && +val <= indexRefRefInputs.rules.max || indexRefRefInputs.rules.errorMessage
+                                                  }
+                                                }]" />
                                             </div>
                                           </div>
                                         </div>
                                       </div>
                                     </div>
                                   </div>
-                                  <div v-if="indexRef.inputs">
-                                    <div v-for="indexRefInputs in indexRef.inputs" :key="indexRefInputs">
-                                      <q-input v-if="indexRefInputs.enable" dark class="q-ma-sm"
-                                        :disable="indexRefInputs.disable"
-                                        v-model="inputsOptionsElements[indexRefInputs.name]" color="grey"
-                                        @update:model-value="updateUnitsElementSelectorEntry(index.name, indexRefInputs, inputsOptionsElements[indexRefInputs.name])"
-                                        input-class="text-h6 text-white" outlined label-color="grey"
-                                        :type="indexRefInputs.type" :label="indexRefInputs.label" :rules="[(val) => {
-                                          if (indexRefInputs.type == 'number' && indexRefInputs.rules) {
-                                            return val >= indexRefInputs.rules.min && +val <= indexRefInputs.rules.max || indexRefInputs.rules.errorMessage
-                                          }
-                                        }]" />
-                                    </div>
+                                </div>
+                                <div v-if="indexRef.inputs">
+                                  <div v-for="indexRefInputs in indexRef.inputs" :key="indexRefInputs">
+                                    <q-input v-if="indexRefInputs.enable" dark class="q-ma-sm"
+                                      :disable="indexRefInputs.disable"
+                                      v-model="inputsOptionsElements[indexRefInputs.name]" color="grey"
+                                      @update:model-value="updateUnitsElementSelectorEntry(index.name, indexRefInputs, inputsOptionsElements[indexRefInputs.name])"
+                                      input-class="text-h6 text-white" outlined label-color="grey"
+                                      :type="indexRefInputs.type" :label="indexRefInputs.label" :rules="[(val) => {
+                                        if (indexRefInputs.type == 'number' && indexRefInputs.rules) {
+                                          return val >= indexRefInputs.rules.min && +val <= indexRefInputs.rules.max || indexRefInputs.rules.errorMessage
+                                        }
+                                      }]" />
                                   </div>
-                                  <div v-if="indexRef.switches">
-                                    <q-item v-for="indexRefSwitches in indexRef.switches" :key="indexRefSwitches">
-                                      <q-item-section v-if="indexRefSwitches.enable" class="text-h6">
-                                        <div class="text-white">{{ indexRefSwitches.label }}</div>
-                                      </q-item-section>
-                                      <q-item-section v-if="indexRefSwitches.enable" avatar>
-                                        <q-toggle :id="indexRefSwitches.name" dark color="green"
-                                          v-model="switchesOptionsElements[indexRefSwitches.name]"
-                                          @click="updateUnitsElementSelectorEntry(index.name, indexRefSwitches)" />
-                                      </q-item-section>
-                                    </q-item>
-                                  </div>
+                                </div>
+                                <div v-if="indexRef.switches">
+                                  <q-item v-for="indexRefSwitches in indexRef.switches" :key="indexRefSwitches">
+                                    <q-item-section v-if="indexRefSwitches.enable" class="text-h6">
+                                      <div class="text-white">{{ indexRefSwitches.label }}</div>
+                                    </q-item-section>
+                                    <q-item-section v-if="indexRefSwitches.enable" avatar>
+                                      <q-toggle :id="indexRefSwitches.name" dark color="green"
+                                        v-model="switchesOptionsElements[indexRefSwitches.name]"
+                                        @click="updateUnitsElementSelectorEntry(index.name, indexRefSwitches)" />
+                                    </q-item-section>
+                                  </q-item>
                                 </div>
                               </div>
-                            </template>
+                            </div>
                           </template>
-                        </template>
-                      </template>
-                      <template v-if="getElement(elementSelected.id).inputs">
-                        <template v-for="index in getElement(elementSelected.id).inputs" :key="index">
-                          <q-input v-if="index.enable && index.name === order" dark class="q-ma-sm"
-                            v-model="inputsOptionsElements[index.name]" color="grey" input-class="text-h6 text-white"
-                            outlined label-color="grey" :type="index.type" :label="index.label"
-                            @update:model-value="updateUnitsElementInput(inputsOptionsElements[index.name], index)"
-                            :rules="[(val) => {
-                              if (index.type == 'number' && index.rules) {
-                                return val >= index.rules.min && +val <= index.rules.max || index.rules.errorMessage
-                              }
-                            }]" />
-                        </template>
-                      </template>
-                      <template v-if="getElement(elementSelected.id).switches">
-                        <template v-for="index in getElement(elementSelected.id).switches" :key="index">
-                          <q-item v-if="index.enable && index.name === order">
-                            <q-item-section class="text-h6">
-                              <div class="text-white">{{ index.label }}</div>
-                            </q-item-section>
-                            <q-item-section avatar>
-                              <q-toggle :id="index.name" dark color="green" v-model="switchesOptionsElements[index.name]"
-                                @click="updateUnitsElementSwitch(index)" />
-                            </q-item-section>
-                          </q-item>
-
                         </template>
                       </template>
                     </template>
-                  </q-card-section>
-                </q-scroll-area>
-                <q-card-section v-else>
-                  Выберите элемент для настройки
+                    <template v-if="getElement(elementSelected.id).inputs">
+                      <template v-for="index in getElement(elementSelected.id).inputs" :key="index">
+                        <q-input v-if="index.enable && index.name === order" dark class="q-ma-sm"
+                          v-model="inputsOptionsElements[index.name]" color="grey" input-class="text-h6 text-white"
+                          outlined label-color="grey" :type="index.type" :label="index.label"
+                          @update:model-value="updateUnitsElementInput(inputsOptionsElements[index.name], index)" :rules="[(val) => {
+                            if (index.type == 'number' && index.rules) {
+                              return val >= index.rules.min && +val <= index.rules.max || index.rules.errorMessage
+                            }
+                          }]" />
+                      </template>
+                    </template>
+                    <template v-if="getElement(elementSelected.id).switches">
+                      <template v-for="index in getElement(elementSelected.id).switches" :key="index">
+                        <q-item v-if="index.enable && index.name === order">
+                          <q-item-section class="text-h6">
+                            <div class="text-white">{{ index.label }}</div>
+                          </q-item-section>
+                          <q-item-section avatar>
+                            <q-toggle :id="index.name" dark color="green" v-model="switchesOptionsElements[index.name]"
+                              @click="updateUnitsElementSwitch(index)" />
+                          </q-item-section>
+                        </q-item>
+
+                      </template>
+                    </template>
+                  </template>
                 </q-card-section>
-              </template>
-            </q-splitter>
-            <Dialog v-model="elementDialog" :elementName="dialogName" styleContent="width: 70vw; max-width: 70vw;">
-              <template v-slot:buttonsWindow>
-                <q-btn dense flat icon="close" @click="closeAndConfirm" v-close-popup>
-                  <q-tooltip class="bg-grey text-white">Закрыть</q-tooltip>
-                </q-btn>
-              </template>
-              <template v-slot:content>
-                <div v-if="dialogName == 'Выбор основных параметров'">
-                  <q-card-section class="row">
-                    <q-card-section class="col-4">
-                    </q-card-section>
-                    <q-card-section class="col-3">
-                    </q-card-section>
+              </q-scroll-area>
+              <q-card-section v-else>
+                Выберите элемент для настройки
+              </q-card-section>
+            </template>
+          </q-splitter>
+          <Dialog v-model="elementDialog" :elementName="dialogName" styleContent="width: 70vw; max-width: 70vw;">
+            <template v-slot:buttonsWindow>
+              <q-btn dense flat icon="close" @click="closeAndConfirm" v-close-popup>
+                <q-tooltip class="bg-grey text-white">Закрыть</q-tooltip>
+              </q-btn>
+            </template>
+            <template v-slot:content>
+              <div v-if="dialogName == 'Выбор основных параметров'">
+                <q-card-section class="row">
+                  <q-card-section class="col-4">
                   </q-card-section>
-                </div>
-                <div v-else-if="dialogName == 'Изменить конфигурацию'">
-                  <q-splitter dark v-model="splitterModelChangeConfigure"
-                    style="height: 70vh; background-color: rgb(60, 60, 60);">
-                    <template v-slot:before>
-                      <q-scroll-area dark visible class="fit bg-dark text-white"
-                        :vertical-thumb-style="{ right: '2px', borderRadius: '0px', background: 'grey', width: '15px', opacity: 1 }"
-                        :horizontal-thumb-style="{ bottom: '2px', borderRadius: '0px', background: 'grey', height: '15px', opacity: 1 }"
-                        :vertical-bar-style="{ right: '2px', borderRadius: '0px', background: 'grey', opacity: 0.3, width: '15px' }"
-                        :horizontal-bar-style="{ bottom: '2px', borderRadius: '0px', background: 'grey', opacity: 0.3, height: '15px' }">
-                        <q-table dark :rows="rowsElements" :columns="columnsElements" row-key="name" :filter="filter"
-                          :filter-method="find" virtual-scroll selection="multiply" v-model:selected="selectedElements"
-                          @update:selected="updateRowElements" v-model:pagination="pagination"
-                          :rows-per-page-options="[1]" grid-header wrap-cells :hide-bottom="true" :hide-header="true"
-                          @row-click="selectRowElements" separator="none" style="background-color: rgb(60, 60, 60);">
-                          <template v-slot:body-selection="props">
-                            <q-toggle class="fit" size="4em" v-model="props.selected"
-                              @mouseover="overElement(props.row.id)" @mouseleave="leaveElement"
-                              @update:model-value="selectFlags" />
-                          </template>
-                          <template v-slot:body-cell="props">
-                            <q-td key="name" :props="props" @mouseover="overElement(props.row.id)"
-                              @mouseleave="leaveElement">
-                              <q-item class="row">
-                                <img class="white" :src="loadImage(props.row.icon)"
-                                  style="min-height: 50px; max-height: 50px;" />
-                                <div style="padding-left: 10px;">
-                                  <div class="text-h6">
-                                    {{ props.row.name }}
-                                  </div>
-                                  <!-- <div class="text-h8 text-grey">
+                  <q-card-section class="col-3">
+                  </q-card-section>
+                </q-card-section>
+              </div>
+              <div v-else-if="dialogName == 'Изменить конфигурацию'">
+                <q-splitter dark v-model="splitterModelChangeConfigure"
+                  style="height: 70vh; background-color: rgb(60, 60, 60);">
+                  <template v-slot:before>
+                    <q-scroll-area dark visible class="fit bg-dark text-white"
+                      :vertical-thumb-style="{ right: '2px', borderRadius: '0px', background: 'grey', width: '15px', opacity: 1 }"
+                      :horizontal-thumb-style="{ bottom: '2px', borderRadius: '0px', background: 'grey', height: '15px', opacity: 1 }"
+                      :vertical-bar-style="{ right: '2px', borderRadius: '0px', background: 'grey', opacity: 0.3, width: '15px' }"
+                      :horizontal-bar-style="{ bottom: '2px', borderRadius: '0px', background: 'grey', opacity: 0.3, height: '15px' }">
+                      <q-table dark :rows="rowsElements" :columns="columnsElements" row-key="name" :filter="filter"
+                        :filter-method="find" virtual-scroll selection="multiply" v-model:selected="selectedElements"
+                        @update:selected="updateRowElements" v-model:pagination="pagination" :rows-per-page-options="[1]"
+                        grid-header wrap-cells :hide-bottom="true" :hide-header="true" @row-click="selectRowElements"
+                        separator="none" style="background-color: rgb(60, 60, 60);">
+                        <template v-slot:body-selection="props">
+                          <q-toggle class="fit" size="4em" v-model="props.selected" @mouseover="overElement(props.row.id)"
+                            @mouseleave="leaveElement" @update:model-value="selectFlags" />
+                        </template>
+                        <template v-slot:body-cell="props">
+                          <q-td key="name" :props="props" @mouseover="overElement(props.row.id)"
+                            @mouseleave="leaveElement">
+                            <q-item class="row">
+                              <img class="white" :src="loadImage(props.row.icon)"
+                                style="min-height: 50px; max-height: 50px;" />
+                              <div style="padding-left: 10px;">
+                                <div class="text-h6">
+                                  {{ props.row.name }}
+                                </div>
+                                <!-- <div class="text-h8 text-grey">
                                     {{ props.row.name }}
                                   </div> -->
-                                </div>
-                              </q-item>
-                            </q-td>
-                          </template>
-                        </q-table>
-                      </q-scroll-area>
-                    </template>
-                    <template v-slot:after>
-                      <q-card-section class="text-h6 text-white">
-                        {{ nameElement }}
-                      </q-card-section>
-                      <img v-if="idElement == 'mix_inflow'" src="./recircle.png" style="width: 260px;" />
-                      <q-card-section class="text-h8 text-grey" align="center">
-                        {{ descriptElement }}
-                      </q-card-section>
-                    </template>
-                  </q-splitter>
-                </div>
-                <div v-else>
-                </div>
-              </template>
-              <template v-slot:actions>
-                <div>
-                  <q-btn color='dark-grey' label="Ок" @click="closeAndConfirm" v-close-popup></q-btn>
-                </div>
-              </template>
-            </Dialog>
-          </q-tab-panel>
-          <q-tab-panel name="blockmanual">
-            <q-card-action>
-              <q-btn class="full-height" :disable="change" color='dark-grey' label="Обновить" icon="update"
-                @click="updateAutomatics">
-              </q-btn>
-            </q-card-action>
-            <q-card-section style="height: 67vh;">
-              <div v-if="boxControl.mark">
-                <div v-if="!errors[0]">
-                  <q-tabs v-model="tabAutomatics" class="text-white" no-caps>
-                    <q-tab name="data" label="Данные" />
-                    <q-tab name="spec" label="Спецификация" />
-                    <q-tab name="kip" label="КИПиА" />
-                    <q-tab name="operations" label="Трудоёмкость" />
-                    <q-tab name="logs" label="Лог подбора" />
-                  </q-tabs>
-                  <q-tab-panels v-model="tabAutomatics" style="background-color: rgb(60, 60, 60);">
-                    <q-tab-panel name="data" style="height: 57vh;">
-                      <q-card-section class="col text-h6 col-6">
-                        <q-badge v-if="boxControl.mark != ''" class="text-h6" style="background-color: rgb(80, 80, 80);">
-                          Номенклатура: {{ boxControl.mark }}
-                        </q-badge>
-                        <div v-if="boxControl.DO > 0">
-                          Дискретных выходов: {{ boxControl.DO }}
-                        </div>
-                        <div v-if="boxControl.DI > 0">
-                          Дискретных входов: {{ boxControl.DI }}
-                        </div>
-                        <div v-if="boxControl.AO > 0">
-                          Аналоговых выходов: {{ boxControl.AO }}
-                        </div>
-                        <div v-if="boxControl.AI > 0">
-                          Аналоговых входов: {{ boxControl.AI }}
-                        </div>
-                        <div v-if="boxControl.countPE > 0">
-                          Подключений к заземляющей шине: {{ boxControl.countPE }}
-                        </div>
-                        <div>
-                          Номинальное напряжение: {{ boxControl.voltage }} В
-                        </div>
-                        <div>
-                          Расчётная мощность: {{ boxControl.powerA }} кВт
-                        </div>
-                        <div>
-                          Расчётный ток: {{ Number(boxControl.currentA).toFixed(2) }} А
-                        </div>
-                      </q-card-section>
-                      <q-card-section class="col text-h6 col-6">
-                        <q-badge class="text-h6" style="background-color: rgb(80, 80, 80);">
-                          Себестоимость: {{ Number(boxControl.costNet).toFixed(2) }} руб
-                        </q-badge>
-                        <div>
-                          Стоимость материалов по спецификации: {{ Number(boxControl.costAllMaterials).toFixed(2) }} руб.
-                        </div>
-                        <div>
-                          Стоимость c учётом расходников: {{ Number(boxControl.costWithСonsumable).toFixed(2) }} руб.
-                        </div>
-                        <div>
-                          Трудозатраты: {{ Number(boxControl.laboriousness).toFixed(2) }} ч.
-                        </div>
-                        <div>
-                          Стоимость работ: {{ Number(boxControl.costLaboriousness).toFixed(2) }} руб.
-                        </div>
-                      </q-card-section>
-                    </q-tab-panel>
-                    <q-tab-panel name="spec">
-                      <q-table class="my-sticky-header-table" dark dense :rows="boxControlMaterials"
-                        :columns="boxControlColumns" row-key="name" virtual-scroll selection="none"
-                        :hide-selected-banner="true" binary-state-sort no-data-label="Материалы отсутствуют"
-                        :rows-per-page-options="[0]" separator="cell"
-                        style="background-color: rgb(60, 60, 60); height: 57vh;">
-                        <template v-slot:pagination>
-                        </template>
-                        <template v-slot:body-cell="props">
-                          <q-td :props="props">
-                            <div class="text-h6">
-                              {{ props.value }}
-                            </div>
+                              </div>
+                            </q-item>
                           </q-td>
                         </template>
-                        <template v-slot:header-cell="props">
-                          <q-th :props="props">
-                            <div class="text-h6">
-                              {{ props.col.label }}
-                            </div>
-                          </q-th>
-                        </template>
                       </q-table>
-                    </q-tab-panel>
-                    <q-tab-panel name="kip">
-                      <q-table class="my-sticky-header-table" dark dense :rows="boxControlMaterialsKip"
-                        :columns="boxControlColumnsKip" row-key="number" virtual-scroll selection="none"
-                        :hide-selected-banner="true" binary-state-sort no-data-label="Материалы отсутствуют"
-                        :rows-per-page-options="[0]" separator="cell"
-                        style="background-color: rgb(60, 60, 60); height: 57vh;">
-                        <template v-slot:pagination>
-                        </template>
-                        <template v-slot:body-cell="props">
-                          <q-td :props="props">
-                            <div class="text-h6">
-                              {{ props.value }}
-                            </div>
-                          </q-td>
-                        </template>
-                        <template v-slot:header-cell="props">
-                          <q-th :props="props">
-                            <div class="text-h6">
-                              {{ props.col.label }}
-                            </div>
-                          </q-th>
-                        </template>
-                      </q-table>
-                    </q-tab-panel>
-                    <q-tab-panel name="operations">
-                      <q-table class="my-sticky-header-table" dark dense :rows="boxControlMaterialsOperations"
-                        :columns="boxControlColumnsOperations" row-key="number" virtual-scroll selection="none"
-                        :hide-selected-banner="true" binary-state-sort no-data-label="Нет операций"
-                        :rows-per-page-options="[0]" separator="cell"
-                        style="background-color: rgb(60, 60, 60); height: 57vh;">
-                        <template v-slot:pagination>
-                        </template>
-                        <template v-slot:body-cell="props">
-                          <q-td :props="props">
-                            <div class="text-h6">
-                              {{ props.value }}
-                            </div>
-                          </q-td>
-                        </template>
-                        <template v-slot:header-cell="props">
-                          <q-th :props="props">
-                            <div class="text-h6">
-                              {{ props.col.label }}
-                            </div>
-                          </q-th>
-                        </template>
-                      </q-table>
-                      <!-- <q-table class="my-sticky-header-table" dark dense :rows="boxControlMaterialsOperations"
+                    </q-scroll-area>
+                  </template>
+                  <template v-slot:after>
+                    <q-card-section class="text-h6 text-white">
+                      {{ nameElement }}
+                    </q-card-section>
+                    <img v-if="idElement == 'mix_inflow'" src="./recircle.png" style="width: 260px;" />
+                    <q-card-section class="text-h8 text-grey" align="center">
+                      {{ descriptElement }}
+                    </q-card-section>
+                  </template>
+                </q-splitter>
+              </div>
+              <div v-else>
+              </div>
+            </template>
+            <template v-slot:actions>
+              <div>
+                <q-btn color='dark-grey' label="Ок" @click="closeAndConfirm" v-close-popup></q-btn>
+              </div>
+            </template>
+          </Dialog>
+        </q-tab-panel>
+        <q-tab-panel name="blockmanual">
+          <q-card-action>
+            <q-btn class="full-height" :disable="change" color='dark-grey' label="Обновить" icon="update"
+              @click="updateAutomatics">
+            </q-btn>
+          </q-card-action>
+          <q-card-section style="height: 67vh;">
+            <div v-if="boxControl.mark">
+              <div v-if="!errors[0]">
+                <q-tabs v-model="tabAutomatics" class="text-white" no-caps>
+                  <q-tab name="data" label="Данные" />
+                  <q-tab name="spec" label="Спецификация" />
+                  <q-tab name="kip" label="КИПиА" />
+                  <q-tab name="operations" label="Трудоёмкость" />
+                  <q-tab name="logs" label="Лог подбора" />
+                </q-tabs>
+                <q-tab-panels v-model="tabAutomatics" style="background-color: rgb(60, 60, 60);">
+                  <q-tab-panel name="data" style="height: 57vh;">
+                    <q-card-section class="col text-h6 col-6">
+                      <q-badge v-if="boxControl.mark != ''" class="text-h6" style="background-color: rgb(80, 80, 80);">
+                        Номенклатура: {{ boxControl.mark }}
+                      </q-badge>
+                      <div v-if="boxControl.DO > 0">
+                        Дискретных выходов: {{ boxControl.DO }}
+                      </div>
+                      <div v-if="boxControl.DI > 0">
+                        Дискретных входов: {{ boxControl.DI }}
+                      </div>
+                      <div v-if="boxControl.AO > 0">
+                        Аналоговых выходов: {{ boxControl.AO }}
+                      </div>
+                      <div v-if="boxControl.AI > 0">
+                        Аналоговых входов: {{ boxControl.AI }}
+                      </div>
+                      <div v-if="boxControl.countPE > 0">
+                        Подключений к заземляющей шине: {{ boxControl.countPE }}
+                      </div>
+                      <div v-if="boxControl.countN1 > 0">
+                        Подключений к основной нулевой шине: {{ boxControl.countN1 }}
+                      </div>
+                      <div v-if="boxControl.countN2 > 0">
+                        Подключений к отдельной нулевой шине: {{ boxControl.countN2 }}
+                      </div>
+                      <div>
+                        Номинальное напряжение: {{ boxControl.voltage }} В
+                      </div>
+                      <div>
+                        Расчётная мощность: {{ boxControl.powerA }} кВт
+                      </div>
+                      <div>
+                        Расчётный ток: {{ Number(boxControl.currentA).toFixed(2) }} А
+                      </div>
+                    </q-card-section>
+                    <q-card-section class="col text-h6 col-6">
+                      <q-badge class="text-h6" style="background-color: rgb(80, 80, 80);">
+                        Себестоимость: {{ Number(boxControl.costNet).toFixed(2) }} руб
+                      </q-badge>
+                      <div>
+                        Стоимость материалов по спецификации: {{ Number(boxControl.costAllMaterials).toFixed(2) }} руб.
+                      </div>
+                      <div>
+                        Стоимость c учётом расходников: {{ Number(boxControl.costWithСonsumable).toFixed(2) }} руб.
+                      </div>
+                      <div>
+                        Трудозатраты: {{ Number(boxControl.laboriousness).toFixed(2) }} ч.
+                      </div>
+                      <div>
+                        Стоимость работ: {{ Number(boxControl.costLaboriousness).toFixed(2) }} руб.
+                      </div>
+                    </q-card-section>
+                  </q-tab-panel>
+                  <q-tab-panel name="spec">
+                    <q-table class="my-sticky-header-table" dark dense :rows="boxControlMaterials"
+                      :columns="boxControlColumns" row-key="name" virtual-scroll selection="none"
+                      :hide-selected-banner="true" binary-state-sort no-data-label="Материалы отсутствуют"
+                      :rows-per-page-options="[0]" separator="cell"
+                      style="background-color: rgb(60, 60, 60); height: 57vh;">
+                      <template v-slot:pagination>
+                      </template>
+                      <template v-slot:body-cell="props">
+                        <q-td :props="props">
+                          <div class="text-h6">
+                            {{ props.value }}
+                          </div>
+                        </q-td>
+                      </template>
+                      <template v-slot:header-cell="props">
+                        <q-th :props="props">
+                          <div class="text-h6">
+                            {{ props.col.label }}
+                          </div>
+                        </q-th>
+                      </template>
+                    </q-table>
+                  </q-tab-panel>
+                  <q-tab-panel name="kip">
+                    <q-table class="my-sticky-header-table" dark dense :rows="boxControlMaterialsKip"
+                      :columns="boxControlColumnsKip" row-key="number" virtual-scroll selection="none"
+                      :hide-selected-banner="true" binary-state-sort no-data-label="Материалы отсутствуют"
+                      :rows-per-page-options="[0]" separator="cell"
+                      style="background-color: rgb(60, 60, 60); height: 57vh;">
+                      <template v-slot:pagination>
+                      </template>
+                      <template v-slot:body-cell="props">
+                        <q-td :props="props">
+                          <div class="text-h6">
+                            {{ props.value }}
+                          </div>
+                        </q-td>
+                      </template>
+                      <template v-slot:header-cell="props">
+                        <q-th :props="props">
+                          <div class="text-h6">
+                            {{ props.col.label }}
+                          </div>
+                        </q-th>
+                      </template>
+                    </q-table>
+                  </q-tab-panel>
+                  <q-tab-panel name="operations">
+                    <q-table class="my-sticky-header-table" dark dense :rows="boxControlMaterialsOperations"
+                      :columns="boxControlColumnsOperations" row-key="number" virtual-scroll selection="none"
+                      :hide-selected-banner="true" binary-state-sort no-data-label="Нет операций"
+                      :rows-per-page-options="[0]" separator="cell"
+                      style="background-color: rgb(60, 60, 60); height: 57vh;">
+                      <template v-slot:pagination>
+                      </template>
+                      <template v-slot:body-cell="props">
+                        <q-td :props="props">
+                          <div class="text-h6">
+                            {{ props.value }}
+                          </div>
+                        </q-td>
+                      </template>
+                      <template v-slot:header-cell="props">
+                        <q-th :props="props">
+                          <div class="text-h6">
+                            {{ props.col.label }}
+                          </div>
+                        </q-th>
+                      </template>
+                    </q-table>
+                    <!-- <q-table class="my-sticky-header-table" dark dense :rows="boxControlMaterialsOperations"
                         :columns="boxControlColumnsOperations" row-key="number" virtual-scroll selection="none"
                         :hide-selected-banner="true" binary-state-sort no-data-label="Нет операций"
                         :rows-per-page-options="[0]" separator="cell"
@@ -577,50 +576,49 @@
                           </q-th>
                         </template>
                       </q-table> -->
-                    </q-tab-panel>
-                    <q-tab-panel name="logs">
-                      <q-table class="my-sticky-header-table" dark dense :rows="boxControlMaterialsLog"
-                        :columns="boxControlColumnsLog" row-key="number" virtual-scroll selection="none"
-                        :hide-selected-banner="true" no-data-label="История отсутствует" :rows-per-page-options="[0]"
-                        separator="cell" style="background-color: rgb(60, 60, 60); height: 57vh;">
-                        <template v-slot:pagination>
-                        </template>
-                        <template v-slot:body-cell="props">
-                          <q-td :props="props">
-                            <div :class="`text-h6 ${(props.value.indexOf('Предупреждение') != -1
-                                || props.value.indexOf('Процедура') != -1)
-                                ? 'text-yellow' : 'text-white'}`">
-                              {{ props.value }}
-                            </div>
-                          </q-td>
-                        </template>
-                        <template v-slot:header-cell="props">
-                          <q-th :props="props">
-                            <div class="text-h6">
-                              {{ props.col.label }}
-                            </div>
-                          </q-th>
-                        </template>
-                      </q-table>
-                    </q-tab-panel>
-                  </q-tab-panels>
-                </div>
-                <div v-else>
-                  <template v-for="err in errors" :key="err">
-                    <div>
-                      {{ err }}
-                    </div>
-                  </template>
-                </div>
+                  </q-tab-panel>
+                  <q-tab-panel name="logs">
+                    <q-table class="my-sticky-header-table" dark dense :rows="boxControlMaterialsLog"
+                      :columns="boxControlColumnsLog" row-key="number" virtual-scroll selection="none"
+                      :hide-selected-banner="true" no-data-label="История отсутствует" :rows-per-page-options="[0]"
+                      separator="cell" style="background-color: rgb(60, 60, 60); height: 57vh;">
+                      <template v-slot:pagination>
+                      </template>
+                      <template v-slot:body-cell="props">
+                        <q-td :props="props">
+                          <div :class="`text-h6 ${(props.value.indexOf('Предупреждение') != -1
+                            || props.value.indexOf('Процедура') != -1)
+                            ? 'text-yellow' : 'text-white'}`">
+                            {{ props.value }}
+                          </div>
+                        </q-td>
+                      </template>
+                      <template v-slot:header-cell="props">
+                        <q-th :props="props">
+                          <div class="text-h6">
+                            {{ props.col.label }}
+                          </div>
+                        </q-th>
+                      </template>
+                    </q-table>
+                  </q-tab-panel>
+                </q-tab-panels>
               </div>
               <div v-else>
-                Обновите подбор для получения данных
+                <template v-for="err in errors" :key="err">
+                  <div>
+                    {{ err }}
+                  </div>
+                </template>
               </div>
-            </q-card-section>
-          </q-tab-panel>
-        </q-tab-panels>
-      </div>
-    </q-card>
+            </div>
+            <div v-else>
+              Обновите подбор для получения данных
+            </div>
+          </q-card-section>
+        </q-tab-panel>
+      </q-tab-panels>
+    </div>
   </q-page>
 </template>
 
@@ -965,20 +963,7 @@ export default defineComponent({
     const descriptDefault = 'Включите либо отключите необходимые узлы системы';
     const descriptElement = ref(descriptDefault);
     const dialogName = ref('');
-    const confBoxMaterialOptions = [
-      {
-        id: 0,
-        label: 'Пластик',
-      },
-      {
-        id: 1,
-        label: 'Металл',
-      },
-      {
-        id: 2,
-        label: 'Без корпуса (встроен в установку)',
-      },
-    ];
+    const confBoxMaterialOptions = options.valuesBoxMaterial;
     const confBoxMaterial = ref(confBoxMaterialOptions[0]);
     const confManualOptions = [
       {
@@ -1262,7 +1247,7 @@ export default defineComponent({
         return confirmationMessage;
       }
       return true;
-    }, false);
+    }, { passive: true });
     function loadImage(file) {
       if (file) {
         // eslint-disable-next-line import/no-dynamic-require, global-require
@@ -1902,7 +1887,9 @@ export default defineComponent({
             if (elementReference.valueId === tableObj.valueId) {
               if (elementReference.switches) {
                 const prevValue = getObject(elementReference.switches, 'name', ind.name);
-                getObject(elementReference.switches, 'name', ind.name).value = !prevValue.value;
+                if (prevValue) {
+                  getObject(elementReference.switches, 'name', ind.name).value = !prevValue.value;
+                }
               }
               if (elementReference.inputs) {
                 const objInput = getObject(elementReference.inputs, 'name', ind.name);
@@ -2389,4 +2376,5 @@ export default defineComponent({
 
 .scroll::-webkit-scrollbar-thumb:hover {
   background: grey
-}</style>
+}
+</style>

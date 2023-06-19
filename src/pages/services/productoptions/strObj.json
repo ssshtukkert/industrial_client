@@ -1,0 +1,168 @@
+{
+  "partInflow": {
+    "valve": {
+      "preheating": false,
+      "preheatingPower": 0,
+      "perimeterHeat": false,
+      "unitCount": 1,
+      "unitType": 0,
+      "unitHeat": false
+    },
+    "recircle": {
+      "enable": false
+    },
+    "filters": {
+      "count": 1
+    },
+    "liquidExchanger1": {
+      "enable": true,
+      "count": 1,
+      "type": 0,
+      "pump": {
+        "enable": true,
+        "pressureIndicator": true,
+        "voltage": 0,
+        "current": 0.2
+      }
+    },
+    "liquidExchanger2": {
+      "enable": true,
+      "count": 1,
+      "type": 0,
+      "pump": {
+        "enable": true,
+        "pressureIndicator": true,
+        "voltage": 0,
+        "current": 0.2
+      }
+    },
+    "liquidExchanger3": {
+      "enable": true,
+      "count": 1,
+      "type": 0,
+      "pump": {
+        "enable": true,
+        "pressureIndicator": true,
+        "voltage": 0,
+        "current": 0.2
+      }
+    },
+    "electricExchanger1": {
+      "enable": true,
+      "count": 1,
+      "voltage": 1,
+      "stage1": 12,
+      "stage2": 12,
+      "stage3": 0,
+      "stage4": 0,
+      "stage5": 0
+    },
+    "electricExchanger2": {
+      "enable": false,
+      "count": 1,
+      "voltage": 1,
+      "stage1": 0,
+      "stage2": 0,
+      "stage3": 0,
+      "stage4": 0,
+      "stage5": 0
+    },
+    "electricExchanger3": {
+      "enable": false,
+      "count": 1,
+      "voltage": 1,
+      "stage1": 0,
+      "stage2": 0,
+      "stage3": 0,
+      "stage4": 0,
+      "stage5": 0
+    },
+    "coolerFreon1": {
+      "enable": false,
+      "count": 1,
+      "contours": 0
+    },
+    "coolerFreon2": {
+      "enable": false,
+      "count": 1,
+      "contours": 0
+    },
+    "fan1": {
+      "enable": false,
+      "count": 1,
+      "type": 0,
+      "voltage": 0,
+      "power": 1.5,
+      "current": 4.4,
+      "pressureIndicator": true,
+      "reserve": false,
+      "thermoContact": false,
+      "speedControl": true
+    },
+    "fan2": {
+      "enable": false,
+      "count": 1,
+      "type": 0,
+      "voltage": 0,
+      "power": 1.5,
+      "current": 4.4,
+      "pressureIndicator": true,
+      "reserve": false,
+      "thermoContact": false,
+      "speedControl": true
+    }
+  },
+  "recuperator": {
+    "enable": false,
+    "type": 0,
+    "unitBypass": true,
+    "unitType": 0,
+    "heatPallet": true,
+    "freezingPressureIndicator": true,
+    "voltage": 1,
+    "current": 0.2
+  },
+  "partOutflow": {
+    "filters": {
+      "count": 1
+    },
+    "fan1": {
+      "enable": false,
+      "count": 1,
+      "type": 0,
+      "voltage": 0,
+      "power": 1.5,
+      "current": 4.4,
+      "pressureIndicator": true,
+      "reserve": false,
+      "thermoContact": false,
+      "speedControl": true
+    },
+    "fan2": {
+      "enable": false,
+      "count": 1,
+      "type": 0,
+      "voltage": 0,
+      "power": 1.5,
+      "current": 4.4,
+      "pressureIndicator": true,
+      "reserve": false,
+      "thermoContact": false,
+      "speedControl": true
+    }
+  },
+  "parameters": {
+    "remoteСontrol": 0
+  },
+  "kipList": [
+    0,
+    6
+  ],
+  "blockManual": {
+    "calculateID": 0,
+    "price": 23000.56,
+    "name": "ABU-W-1-ZM"
+  },
+  "error": -1,
+  "warn": []
+}
