@@ -21,13 +21,13 @@
           <q-btn color='primary' label="Отмена" v-close-popup />
         </template>
       </DialogConfirm>
-      <q-btn color='dark-grey' :disabled="!change" icon="save" label='' @click="writeDatabase">
+      <q-btn color='dark-grey' v-if="change" icon="save" label='' @click="writeDatabase">
       </q-btn>
       <q-btn color='dark-grey' v-show="change" icon="cancel" label='' @click="resetChange">
       </q-btn>
       <q-btn-dropdown color='dark-grey' icon="download" label="" :disable="change">
         <q-list>
-          <q-item class="dark-grey text-white" clickable v-close-popup :href="downloadPDF" target="_self"
+          <q-item class="dark-grey text-white" clickable v-close-popup :href="downloadPDF" target="_self" http-equiv="Content-Security-Policy"
             style="background-color: rgb(60, 60, 60);">
             <q-item-section avatar>
               <q-avatar icon="picture_as_pdf" text-color="white" />
@@ -36,7 +36,7 @@
               <q-item-label>Отчёт в PDF</q-item-label>
             </q-item-section>
           </q-item>
-          <q-item class="dark-grey text-white" clickable v-close-popup :href="downloadEXCEL"
+          <q-item v-if="!isPermissions('editMaterials')" class="dark-grey text-white" clickable v-close-popup :href="downloadEXCEL"
             style="background-color: rgb(60, 60, 60);">
             <q-item-section avatar>
               <q-avatar icon="download" text-color="white" />
@@ -129,18 +129,18 @@
       style="background-color: rgb(60, 60, 60);">
       <q-tab-panel name="card" style="min-height: 400px">
         <div class="row">
-          <q-input dark v-model="inputDescript" class=" fit" clearable outlined label="Описание" type="textarea"
+          <q-input :readonly="isPermissions('editMaterials')" dark v-model="inputDescript" class=" fit" clearable outlined label="Описание" type="textarea"
             @update:model-value="syncTableMaterials" :input-style="{ resize: 'none', height: '50vh' }" />
         </div>
       </q-tab-panel>
       <q-tab-panel name="materials" style="min-height: 400px">
-        <Table dense dark :setChange="changeCount" :keyEnter="keyEnter" ref="tableMaterials" :columnsDef="columns"
+        <Table dense dark :changed="!isPermissions('editMaterials')" :setChange="changeCount" :keyEnter="keyEnter" ref="tableMaterials" :columnsDef="columns"
           :rowsDef="rowsEntryMaterials" :updateSelected="updateSelectedTableMaterials"
           style="max-height: 55vh; background-color: rgb(60, 60, 60);">
           <template v-slot:actions>
-            <q-btn color='dark-grey' icon="add" label="Добавить" @click="actionAddMaterial" />
-            <q-btn v-show="removeMain" color='dark-grey' icon="delete" label="Исключить" @click="actionRemoveMaterial" />
-            <q-btn v-show="removeMain" color='dark-grey' icon="edit" label="Заменить" @click="actionReplaceMaterial" />
+            <q-btn color='dark-grey' v-if="!isPermissions('editMaterials')" icon="add" label="Добавить" @click="actionAddMaterial" />
+            <q-btn v-show="removeMain" v-if="!isPermissions('editMaterials')" color='dark-grey' icon="delete" label="Исключить" @click="actionRemoveMaterial" />
+            <q-btn v-show="removeMain" v-if="!isPermissions('editMaterials')" color='dark-grey' icon="edit" label="Заменить" @click="actionReplaceMaterial" />
             <q-dialog v-model="dialogAddMaterials" persistent transition-show="scale" transition-hide="scale">
               <q-card style="min-width: 95vw; background-color: rgb(60, 60, 60);">
                 <q-bar class="row text-white" style="background-color: rgb(80, 80, 80);">
@@ -227,7 +227,7 @@
         </DialogConfirm>
       </q-tab-panel>
       <q-tab-panel name="laboriousness" style="min-height: 600px">
-        <q-input dark v-model="inputLaboriousnes" @update:model-value="syncTableMaterials" class="text-h6" outlined
+        <q-input :readonly="isPermissions('editMaterials')" dark v-model="inputLaboriousnes" @update:model-value="syncTableMaterials" class="text-h6" outlined
           label="Трудозатраты" type="number" :rules="validationNumberNoZero" suffix="ч." style="width: 160px;"
           auto-save />
       </q-tab-panel>
@@ -254,7 +254,7 @@ export default defineComponent({
   },
   setup() {
     const {
-      host, getProp, getObject, validationNumberNoZero,
+      host, getProp, getObject, validationNumberNoZero, isPermissions,
     } = inject('store');
     const path = `${host}/services/genprice/calculation/pdf/`;
     const pathExcel = `${host}/services/genprice/calculation/excel/`;
@@ -761,6 +761,7 @@ export default defineComponent({
     }, { flush: 'sync' });
     return {
       id,
+      isPermissions,
       addMaterialsCategoryUpdate,
       addMaterialsCategorySelector,
       addMaterialsCategorySelectorOp,

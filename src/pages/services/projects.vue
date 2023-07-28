@@ -12,7 +12,7 @@
             :horizontal-thumb-style="{ bottom: '2px', borderRadius: '0px', background: 'grey', height: '15px', opacity: 1 }"
             :vertical-bar-style="{ right: '2px', borderRadius: '0px', background: 'grey', opacity: 0.3, width: '15px' }"
             :horizontal-bar-style="{ bottom: '2px', borderRadius: '0px', background: 'grey', opacity: 0.3, height: '15px' }"
-            @click="resetSelect">
+            @click="resetSelect" @mousedown.right="rightClick">
             <q-card-actions>
               <q-btn color='dark-grey' icon="refresh" @click="updateStructure(null, search)" />
               <q-btn color='dark-grey' icon="unfold_more" @click="projects.expandAll()" />
@@ -25,24 +25,31 @@
                 </template>
               </q-input>
             </q-card-actions>
-            <q-tree dense ref="projects" :nodes="data" node-key="id" no-transition dark v-model:selected="selectedObjects"
-              @update:selected="selectNode" no-selection-unset no-nodes-label="Объекты структуры отсутствуют">
-              <template v-slot:default-header="prop">
-                <div class="row fit items-center" @dblclick="open(prop.node, true)">
-                  <q-icon :name="getIcon(prop.node.type)" :color="prop.node.id === selectedObjects ? 'orange' : 'white'"
-                    size="28px" class="q-mr-sm" />
-                  <div :class="`text-${selectedObjects == prop.node.id ? 'orange' : 'grey-19'}`"
-                    style="user-select: none;">
-                    {{ getNodeObject(prop.node.type, prop.node.typeId).name }}
-                  </div>
-                  <q-menu v-if="getCurrentNode()" dark touch-position context-menu>
-                    <q-list dense style="min-width: 100px">
-                      <q-item @click="open(prop.node, false, true)" clickable v-close-popup>
-                        <q-item-section>Открыть</q-item-section>
-                      </q-item>
-
-                      <template v-if="prop.node.type == TYPE_DIRECTORY">
-                        <!-- <q-item clickable>
+            <div class="row">
+              <q-tree class="col" dense ref="projects" :nodes="data" node-key="id" no-transition dark
+                v-model:selected="selectedObjects" @update:selected="selectNode" no-selection-unset
+                no-nodes-label="Объекты структуры отсутствуют">
+                <template v-slot:default-header="prop">
+                  <q-item dense :id="`node_${prop.node.id}`" class="fit" @dblclick="open(prop.node, true)">
+                    <q-icon :name="getIcon(prop.node.type)" :color="prop.node.id === selectedObjects ? 'orange' : 'white'"
+                      size="28px" class="q-mr-sm" />
+                    <q-item-section :class="`text-${selectedObjects == prop.node.id ? 'orange' : 'grey-19'}`"
+                      style="user-select: none;">
+                      {{ getNodeObject(prop.node.type, prop.node.typeId).name }}
+                    </q-item-section>
+                    <q-item-section v-if="prop.node.type == TYPE_CALC_MANUAL"
+                      :class="`text-${selectedObjects == prop.node.id ? 'orange' : 'white'}`" style="margin-right: 50px;">
+                      {{ getDisplayCost(getNodeObject(prop.node.type, prop.node.typeId).cost) }}
+                    </q-item-section>
+                    <q-menu v-if="selectedObjects" dark touch-position context-menu>
+                      <q-list dense style="min-width: 100px">
+                        <template v-if="prop.node.type != TYPE_DIRECTORY">
+                          <q-item @click="open(prop.node, false, true)" clickable v-close-popup>
+                            <q-item-section>Открыть</q-item-section>
+                          </q-item>
+                        </template>
+                        <template v-if="prop.node.type == TYPE_DIRECTORY">
+                          <!-- <q-item clickable>
                             <q-item-section>Создать</q-item-section>
                             <q-item-section side>
                               <q-icon name="keyboard_arrow_right" />
@@ -66,55 +73,54 @@
                               </q-list>
                             </q-menu>
                           </q-item> -->
-                        <q-item clickable v-close-popup @click="() => {
-                          dialogInputName = true; refDialogInputName.trigger = 'create';
-                          inputNameDirectoryValue = '';
-                          refDialogInputName.name = 'Создание нового объекта';
-                        }">
-                          <q-item-section>Создать</q-item-section>
-                        </q-item>
-                        <q-item clickable v-close-popup :disable="!bufferObject"
-                          @click="pasteDirectoryFromBuffer(prop.node)">
-                          <q-item-section>Вставить</q-item-section>
-                        </q-item>
+                          <q-item @click="open(prop.node, false, true)" clickable v-close-popup>
+                            <q-item-section>Открыть в новой вкладке</q-item-section>
+                          </q-item>
+                          <q-item clickable v-close-popup @click="() => {
+                            dialogInputName = true; refDialogInputName.trigger = 'create';
+                            inputNameDirectoryValue = '';
+                            refDialogInputName.name = 'Создание нового объекта';
+                          }">
+                            <q-item-section>Создать</q-item-section>
+                          </q-item>
+                          <q-item clickable v-close-popup @click="pasteFrom(prop.node)">
+                            <q-item-section>Добавить из...</q-item-section>
+                          </q-item>
+                          <q-item clickable v-close-popup :disable="!bufferObject"
+                            @click="pasteDirectoryFromBuffer(prop.node)">
+                            <q-item-section>Вставить</q-item-section>
+                          </q-item>
+                        </template>
                         <q-item :disable="getCurrentNode().parentId == -1 || (search ? (search.length > 0) : false)"
                           clickable v-close-popup>
-                          <q-item-section @click="cutDirectory(prop.node)">Вырезать</q-item-section>
+                          <q-item-section @click="cutObject(prop.node)">Вырезать</q-item-section>
                         </q-item>
-                      </template>
-                      <q-item clickable v-close-popup @click="() => {
-                        dialogInputName = true; refDialogInputName.trigger = 'change';
-                        inputNameDirectoryValue = getNodeObject(getCurrentNode().type, getCurrentNode().typeId).name;
-                        refDialogInputName.name = 'Переименование объекта';
-                      }">
-                        <q-item-section>Переименовать</q-item-section>
-                      </q-item>
-                      <q-item :disable="getCurrentNode().parentId == -1 || (search ? (search.length > 0) : false)"
-                        clickable v-close-popup @click="() => {
-                          showConfirm(`Удалить '${getNodeObject(getCurrentNode().type, getCurrentNode().typeId).name}'?`);
+                        <q-item clickable v-close-popup @click="() => {
+                          dialogInputName = true; refDialogInputName.trigger = 'change';
+                          inputNameDirectoryValue = getNodeObject(getCurrentNode().type, getCurrentNode().typeId).name;
+                          refDialogInputName.name = 'Переименование объекта';
                         }">
-                        <q-item-section>Удалить</q-item-section>
-                      </q-item>
-                      <q-separator />
-                      <!-- <q-item clickable>
-                          <q-item-section>Preferences</q-item-section>
-                          <q-item-section side>
-                            <q-icon name="keyboard_arrow_right" />
-                          </q-item-section>
+                          <q-item-section>Переименовать</q-item-section>
+                        </q-item>
+                        <q-item :disable="getCurrentNode().parentId == -1 || (search ? (search.length > 0) : false)"
+                          clickable v-close-popup @click="() => {
+                            showConfirm(`Удалить '${getNodeObject(getCurrentNode().type, getCurrentNode().typeId).name}'?`);
+                          }">
+                          <q-item-section>Удалить</q-item-section>
+                        </q-item>
+                        <q-separator />
+                      </q-list>
+                    </q-menu>
+                  </q-item>
+                </template>
 
-                        </q-item> -->
-                    </q-list>
-                  </q-menu>
-
-                </div>
-              </template>
-              <template v-slot:default-body="prop">
-                <div v-if="prop.node.description">
-                  {{ prop.node.description }}
-                </div>
-              </template>
-
-            </q-tree>
+                <template v-slot:default-body="prop">
+                  <div v-if="prop.node.descript">
+                    {{ prop.node.description }}
+                  </div>
+                </template>
+              </q-tree>
+            </div>
           </q-scroll-area>
           <div v-else>Ошибка при построении дерева проектов</div>
         </template>
@@ -131,6 +137,12 @@
               Наименование:
               <div class="text-h6 text-white">
                 {{ getNodeObjectKey(selectedObjects).name }}
+              </div>
+            </q-card-section>
+            <q-card-section v-if="getCurrentNode().type == TYPE_CALC_MANUAL" class="text-grey">
+              Себестоимость:
+              <div class="text-h6 text-white">
+                {{ getDisplayCost(getNodeObjectKey(selectedObjects).cost) }}
               </div>
             </q-card-section>
             <q-card-section class="text-grey">
@@ -156,7 +168,7 @@
         <q-card-section>
           <q-card-section v-if="refDialogInputName.trigger == 'create'" class="row">
             <q-select dark class="fit text-h6" label="Тип объекта:" options-selected-class="text-h6 text-grey"
-              label-active-class="text-red" popup-content-class="text-h6" outlined :options="typesNewObjects"
+              label-active-class="text-red" popup-content-class="text-h6" outlined :options="getOptionsNewObjects()"
               option-value="id" v-model="typeNewObject"
               popup-content-style="background-color: rgb(60, 60, 60); color:  white;">
               <template v-slot:selected>
@@ -191,6 +203,8 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
+    <!-- Диалог добавление объекта из -->
+    <AddObjectFrom ref="refDialogAddObject" />
     <!-- Диалог ошибки -->
     <DialogError ref="de" />
     <DialogConfirm ref="dc">
@@ -210,12 +224,14 @@ import { useRouter, useRoute } from 'vue-router';
 import axios from 'axios';
 import DialogError from 'src/components/dialogs/error.vue';
 import DialogConfirm from 'src/components/dialogs/confirm.vue';
+import AddObjectFrom from 'src/components/dialogs/addObjectFrom.vue';
 
 export default defineComponent({
   name: 'Projects',
   components: {
     DialogError,
     DialogConfirm,
+    AddObjectFrom,
   },
   setup() {
     const router = useRouter();
@@ -232,6 +248,7 @@ export default defineComponent({
       validationName,
       newObjectCalculation,
     } = inject('store');
+
     const TYPE_DIRECTORY = 0;
     const TYPE_CALC_MANUAL = 1;
     const TYPE_FILE = 99;
@@ -251,6 +268,7 @@ export default defineComponent({
         id: TYPE_DIRECTORY,
         label: 'Папка',
         tableName: 'Folder',
+        icon: 'folder',
         newObject: {
           description: '',
         },
@@ -259,13 +277,21 @@ export default defineComponent({
         id: TYPE_CALC_MANUAL,
         label: 'Расчёт себестоимости',
         tableName: 'Calculation',
+        icon: 'list_alt',
         newObject: newObjectCalculation,
+      },
+      {
+        id: TYPE_FILE,
+        label: 'Файл',
+        tableName: 'File',
+        icon: 'text_snippet',
       },
     ]);
     const typeNewObject = ref(typesNewObjects.value[0]);
     const search = ref('');
     const de = ref(null);
     const dc = ref(null);
+    const refDialogAddObject = ref(null);
     function getNodeObject(type, typeId) {
       if (type === TYPE_DIRECTORY) {
         return getObject(folders, 'id', typeId);
@@ -284,16 +310,7 @@ export default defineComponent({
       console.log(nodeKey);
     }
     function getIcon(type) {
-      switch (type) {
-        case TYPE_DIRECTORY:
-          return 'folder';
-        case TYPE_CALC_MANUAL:
-          return 'list_alt';
-        case TYPE_FILE:
-          return 'text_snippet';
-        default:
-          return 'folder';
-      }
+      return getObject(typesNewObjects.value, 'id', type).icon;
     }
     function getCurrentNode() {
       return projects.value.getNodeByKey(selectedObjects.value);
@@ -329,16 +346,22 @@ export default defineComponent({
       axios.get(`${host}/services/genprice/Folder`).then((responseFolder) => {
         // console.log(responseFolder);
         for (let index = 0; index < responseFolder.data.length; index += 1) {
+          const dir = responseFolder.data[index];
+          dir.type = getObject(typesNewObjects.value, 'id', TYPE_DIRECTORY);
           folders.push(responseFolder.data[index]);
         }
         axios.get(`${host}/services/genprice/Calculation`).then((responseCalc) => {
           // console.log(responseCalc);
           for (let index = 0; index < responseCalc.data.length; index += 1) {
+            const calc = responseCalc.data[index];
+            calc.type = getObject(typesNewObjects.value, 'id', TYPE_CALC_MANUAL);
             calculations.push(responseCalc.data[index]);
           }
           axios.get(`${host}/services/files/all`).then((responseFile) => {
             // console.log(responseFile);
             for (let index = 0; index < responseFile.data.length; index += 1) {
+              const file = responseFile.data[index];
+              file.type = getObject(typesNewObjects.value, 'id', TYPE_FILE);
               files.push(responseFile.data[index]);
             }
             axios.get(`${host}/services/genprice/StructureProject`).then((responseStructure) => {
@@ -359,7 +382,6 @@ export default defineComponent({
                     parentId: root.parentId,
                   });
                 }
-                console.log(data.value);
                 const tempStructure = structure.slice();
                 while (tempStructure.length > 0) {
                   const element = tempStructure[0];
@@ -467,7 +489,72 @@ export default defineComponent({
         bufferObject.value = null;
       }
     }
-    function cutDirectory(node) {
+    function pasteFrom(node) {
+      refDialogAddObject.value.setName(`Добавить объект для ${getNodeObject(node.type, node.typeId).name}`);
+      const columns = [{
+        name: 'name',
+        required: true,
+        label: 'Наименование',
+        align: 'left',
+        field: (row) => row.name,
+        format: (val) => `${val}`,
+        sortable: true,
+      },
+      {
+        name: 'type',
+        required: true,
+        label: 'Тип',
+        align: 'left',
+        field: (row) => row.type.label,
+        format: (val) => `${val}`,
+        sortable: true,
+      }];
+      refDialogAddObject.value.setColumnAdd(columns);
+      refDialogAddObject.value.setColumnAddBuffer(columns);
+      refDialogAddObject.value.setSplitter(50);
+      refDialogAddObject.value.setBufferMaterials([]);
+      const allObjects = [].concat(folders, files, calculations);
+      let cid = 0;
+      allObjects.forEach((element) => {
+        element.idTable = cid;
+        cid += 1;
+      });
+      refDialogAddObject.value.setAllObjects(allObjects);
+      refDialogAddObject.value.show(true);
+      refDialogAddObject.value.exitAndSave = (objects) => {
+        let add = true;
+        objects.forEach((object) => {
+          if (object.id === node.typeId && node.type === object.type.id) {
+            add = false;
+          }
+        });
+        if (add) {
+          structure.forEach((element) => {
+            if (element.type === node.type && element.typeId === node.typeId) {
+              objects.forEach((object) => {
+                const structureObject = {
+                  type: object.type.id,
+                  typeId: object.id,
+                  parentId: element.id,
+                };
+                axios.post(`${host}/services/genprice/StructureProject/create`, structureObject).then((resStructure) => {
+                  if (resStructure.data.result === 'ok') {
+                    console.log('Вставлено', structureObject);
+                  }
+                });
+              });
+            }
+          });
+          updateStructure(() => {
+            projects.value.setExpanded(node.id, true);
+            selectedObjects.value = node.id;
+          });
+        } else {
+          showError('Ошибка рекурсии!');
+        }
+      };
+    }
+    function cutObject(node) {
       bufferObject.value = node;
       selectedObjects.value = null;
       const parentNode = node.parentId;
@@ -524,8 +611,29 @@ export default defineComponent({
     function isTryPath() {
       return !Number.isNaN(id);
     }
+    function getDisplayCost(value) {
+      return new Intl.NumberFormat('ru', { style: 'currency', currency: 'RUB' }).format(Number(value));
+    }
+    function getOptionsNewObjects() {
+      const newObjects = [];
+      typesNewObjects.value.forEach((element) => {
+        if (element.newObject) {
+          newObjects.push(element);
+        }
+      });
+      return newObjects;
+    }
+    function rightClick(target) {
+      if (target.target.parentNode.id) {
+        const nodeId = Number(String(target.target.parentNode.id).replace('node_', ''));
+        selectedObjects.value = nodeId;
+      }
+    }
     onMounted(() => {
       updateStructure();
+      document.getElementById('field_tree').oncontextmenu = function () {
+        return false;
+      };
     });
     return {
       projects,
@@ -539,14 +647,17 @@ export default defineComponent({
       selectedObjects,
       bufferObject,
       getObject,
+      refDialogAddObject,
+      pasteFrom,
       selectNode,
+      getDisplayCost,
       getIcon,
       resetSelect,
       getNodeObject,
       newObject,
       getNodeObjectKey,
       removeObject,
-      cutDirectory,
+      cutObject,
       changeObject,
       pasteDirectoryFromBuffer,
       open,
@@ -555,50 +666,14 @@ export default defineComponent({
       getCurrentNode,
       updateStructure,
       isTryPath,
+      getOptionsNewObjects,
       typeNewObject,
       typesNewObjects,
       data,
       validationName,
       TYPE_DIRECTORY,
       TYPE_CALC_MANUAL,
-
-      // simple: [
-      //   {
-      //     label: 'Satisfied customers (with avatar)',
-      //     avatar: 'https://cdn.quasar.dev/img/boy-avatar.png',
-      //     children: [
-      //       {
-      //         label: 'Good food (with icon)',
-      //         icon: 'restaurant_menu',
-      //         children: [
-      //           { label: 'Quality ingredients' },
-      //           { label: 'Good recipe' },
-      //         ],
-      //       },
-      //       {
-      //         label: 'Good service (disabled node with icon)',
-      //         icon: 'room_service',
-      //         disabled: true,
-      //         children: [
-      //           { label: 'Prompt attention' },
-      //           { label: 'Professional waiter' },
-      //         ],
-      //       },
-      //       {
-      //         label: 'Pleasant surroundings (with icon)',
-      //         icon: 'photo',
-      //         children: [
-      //           {
-      //             label: 'Happy atmosphere (with image)',
-      //             img: 'https://cdn.quasar.dev/img/logo_calendar_128px.png',
-      //           },
-      //           { label: 'Good table presentation' },
-      //           { label: 'Pleasing decor' },
-      //         ],
-      //       },
-      //     ],
-      //   },
-      // ],
+      rightClick,
     };
   },
 });

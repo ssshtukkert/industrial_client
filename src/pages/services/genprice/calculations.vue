@@ -5,10 +5,13 @@
     </q-card-section>
     <Table ref="table" :columnsDef="columns" :rowsDef="rows" createNewName="Новый расчет себестоимости"
       :queryAll="getQueryAll()" :queryUpdate="getQueryUpdate()" :queryDelete="getQueryDelete()"
-      :queryCreate="getQueryCreate()" :actionRow="actionRow" :deleted="false" :renderRow="renderRow">
+      :queryCreate="getQueryCreate()" :actionRow="actionRow" :deleted="isPermissions('deleteCalculate')"
+      :changed="isPermissions('editCalculate')" :created="isPermissions('createCalculate')" :renderRow="renderRow">
       <template v-slot:actions>
-        <q-btn color='dark-grey' label='Открыть' icon="open_in_new" v-show="isOneSelect()" @click="goCalculation" />
-        <q-btn color='dark-grey' label='Скопировать' icon="content_copy" v-show="isOneSelect()" @click="copy" />
+        <q-btn color='dark-grey' label='Открыть' icon="open_in_new" v-show="isOneSelect()" @click="goCalculation"
+        v-if="!isPermissions('openCalculate')" />
+        <q-btn color='dark-grey' label='Скопировать' icon="content_copy" v-show="isOneSelect()" @click="copy"
+          v-if="!isPermissions('copyCalculate')" />
         <q-btn color='dark-grey' label='Обновить' icon="update" v-show="isOneSelect()" @click="updateCalc" />
       </template>
     </Table>
@@ -49,9 +52,10 @@ export default defineComponent({
   setup() {
     document.title = 'Расчеты';
     const {
-      host, getProp, getRubFormat,
+      host, getProp, getRubFormat, getObject, isPermissions,
     } = inject('store');
     const router = useRouter();
+
     const table = ref(null);
     const dialog = ref(false);
     const dialogName = ref('');
@@ -102,8 +106,8 @@ export default defineComponent({
       return `${getQueryAll()}/create`;
     }
     function goCalculationId(id) {
-      const route = router.resolve({ path: `/services/genprice/calculations/${id}` });
-      window.open(route.href, '_blank');
+      const routeGo = router.resolve({ path: `/services/genprice/calculations/${id}` });
+      window.open(routeGo.href, '_blank');
     }
     function goCalculation() {
       router.push(`/services/genprice/calculations/${table.value.getSelect()[0].id}`);
@@ -120,6 +124,8 @@ export default defineComponent({
     function updateCalc() {
       axios
         .get(`${host}/services/genprice/Setting`).then((responseS) => {
+          const costOneHourWorker = Number(getObject(responseS.data, 'name', 'costOneHourWorker').value);
+          const percentOfMaterials = Number(getObject(responseS.data, 'name', 'percentOfMaterials').value);
           axios
             .get(`${host}/services/genprice/Calculation/${table.value.selected[0].id}`).then((responseC) => {
               const query = responseC.data.data;
@@ -137,7 +143,7 @@ export default defineComponent({
                     const element = materials[index];
                     sum += Number(getProp(allMaterials, element.id, 'cost') || 0) * element.count;
                   }
-                  const summaryCost = (sum * (responseS.data[1].value / 100 + 1) + Number(responseC.data.data.operations) * responseS.data[0].value).toFixed(0);
+                  const summaryCost = (sum * (percentOfMaterials / 100 + 1) + Number(responseC.data.data.operations) * costOneHourWorker).toFixed(0);
                   if (cost !== summaryCost) {
                     query.cost = summaryCost;
                     axios.post(`${getQueryUpdate()}/${table.value.selected[0].id}`, query).then((res) => {
@@ -209,6 +215,7 @@ export default defineComponent({
       getQueryDelete,
       getQueryUpdate,
       getQueryCreate,
+      isPermissions,
       Table,
       table,
       isOneSelect,

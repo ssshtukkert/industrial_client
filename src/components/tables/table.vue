@@ -6,17 +6,17 @@
       @row-click="selectRow" @row-dblclick="actionRow" style="max-height: 87vh; background-color: rgb(60, 60, 60);">
       <template v-slot:top>
         <q-card-actions v-show="!hideButtons" class="fit">
-          <q-btn color='dark-grey' label="" icon="add" @click="createAction">
+          <q-btn color='dark-grey' v-if="!created" label="" icon="add" @click="createAction">
             <q-tooltip :delay="800">
               Создать новую запись
             </q-tooltip>
           </q-btn>
-          <q-btn color='dark-grey' label="Редактировать" icon="edit" v-show="isOneSelect()" @click="changeAction(selected)">
+          <q-btn color='dark-grey' v-if="!changed" label="Редактировать" icon="edit" v-show="isOneSelect()" @click="changeAction(selected)">
             <q-tooltip :delay="800">
               Редактировать запись
             </q-tooltip>
           </q-btn>
-          <q-btn color='dark-grey' :disable="deleted" label="Удалить" icon="delete" v-show="selected.length > 0" @click="deleteAction(selected)">
+          <q-btn color='dark-grey' v-if="!deleted" label="Удалить" icon="delete" v-show="selected.length > 0" @click="deleteAction(selected)">
             <q-tooltip :delay="800">
               Удалить запись/записи
             </q-tooltip>
@@ -96,7 +96,7 @@ import DialogError from 'src/components/dialogs/error.vue';
 import DialogConfirm from 'src/components/dialogs/confirm.vue';
 
 export default defineComponent({
-  name: 'Table',
+  name: 'TableUniversal',
   components: {
     DialogError,
     DialogConfirm,
@@ -147,7 +147,15 @@ export default defineComponent({
     },
     deleted: {
       type: Boolean,
-      default: true,
+      default: false,
+    },
+    changed: {
+      type: Boolean,
+      default: false,
+    },
+    created: {
+      type: Boolean,
+      default: false,
     },
   },
   setup(props) {
@@ -315,6 +323,7 @@ export default defineComponent({
       hideDEDialog,
       getQueryData,
       showError,
+      resetSelect,
       action,
       validationName,
       createInputName,

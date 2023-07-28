@@ -1,9 +1,9 @@
 <template>
-  <q-table dark dense flat :rows="rows" class="m-table" :columns="columns" row-key="name" :filter="filter" :filter-method="find"
-    virtual-scroll :hide-selected-banner="true" selection="multiple" v-model:selected="selected" binary-state-sort
-    v-model:pagination="pagination" :rows-per-page-options="[1]"
+  <q-table dark dense flat :rows="rows" class="m-table" :columns="columns" row-key="idTable" :filter="filter"
+    :filter-method="find" virtual-scroll :hide-selected-banner="true" selection="multiple" v-model:selected="selected"
+    binary-state-sort v-model:pagination="pagination" :rows-per-page-options="[1]"
     :no-results-label="`По запросу '${filter}' ничего не найдено`" grid-header wrap-cells :no-data-label="noDataText"
-    @update:selected="updateSelected" @row-click="selectRow" :style="styleContent">
+    @update:selected="updateSelected" @row-click="selectRow" :style="styleContent" @row-dblclick="actionRow">
     <template v-slot:top>
       <q-card-actions class="fit">
         <slot name="actions" />
@@ -28,30 +28,8 @@
         <div class="text-h6">{{ props.col.label }}</div>
       </q-th>
     </template>
-    <template v-slot:body-cell-name="props">
-      <q-td key="name" :props="props">
-        <q-badge color="red" class="text-white" v-if="props.row.status">Запрещено к применению</q-badge>
-        <div class="text-h6">{{ props.row.name }}</div>
-      </q-td>
-    </template>
-    <template v-slot:body-cell-count="props">
-      <q-td key="count" :props="props">
-        <div class="text-h6">{{ props.row.count }}</div>
-        <q-popup-edit v-if="changed" @save="setChange" label-cancel="Отмена" label-set="Установить" v-model="props.row.count"
-          title="Изменить количество" buttons v-slot="scope" :validate="(val) => val > 0" v-on:keyup.enter="keyEnter">
-          <q-input class="text-h6" type="number" v-model="scope.value" autofocus :rules="validationNumberNoZero" />
-        </q-popup-edit>
-      </q-td>
-    </template>
-    <template v-slot:body-cell-cost="props">
-      <q-td key="cost" :props="props">
-        <div class="text-h6">{{ props.row.cost }}</div>
-      </q-td>
-    </template>
-    <template v-slot:body-cell-meas="props">
-      <q-td key="meas" :props="props">
-        <div class="text-h6">{{ props.row.meas }}</div>
-      </q-td>
+    <template v-slot:body-cell="props">
+      <slot name="cell" :arg="props"/>
     </template>
   </q-table>
 </template>
@@ -109,9 +87,10 @@ export default defineComponent({
       type: String,
       default: '',
     },
-    changed: {
-      type: Boolean,
-      default: false,
+    actionRow: {
+      type: Function,
+      default() {
+      },
     },
   },
   setup(props) {

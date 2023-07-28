@@ -1,5 +1,5 @@
 <template>
-  <q-table dark dense flat class="q-pa-md q-ma-md" :columns="columnsDef" :rows="rows" row-key="name" :title="name"
+  <q-table dark dense flat class="q-pa-md q-ma-md cursor-pointer" :columns="columnsDef" :rows="rows" row-key="name" :title="name"
     virtual-scroll :hide-selected-banner="true" :hide-pagination="true" selection="none" separator="cell" wrap-cells
     :rows-per-page-options="[1]" v-model:pagination="pagination" style="background-color: rgb(60, 60, 60);">
     <template v-slot:header-cell="props">

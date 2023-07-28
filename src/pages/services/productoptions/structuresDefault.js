@@ -355,7 +355,6 @@ const coord = {
   press_y: par_postrecuperator.y,
   tkan_x: 28,
   tkan_y: par_postrecuperator.y,
-  pvlv2_x: 29,
   pvlv2_y: par_postrecuperator.y,
 };
 
@@ -376,7 +375,7 @@ const defaultStructure = {
   cav: false,
   vav: false,
   troom: false,
-  version: '0.14.1',
+  version: '0.14.10',
   elements: [
     {
       enabled: false,
@@ -1546,33 +1545,9 @@ const defaultStructure = {
       y: coord.tkan_y,
     },
     {
-      enabled: true, // жалюзи 2 в канале притока
-      enable: false,
-      el: 'pvlv2',
-      svg: 'valve',
-      manual: true,
-      mark: 'КВ2',
-      bottom: 'air24',
-      references: [
-        {
-          name: 'typeValve_pvlv2',
-          label: options.labelValve,
-          valueId: 0,
-          values: options.valuesTypeValve,
-          enable: true,
-        },
-      ],
-      inputs: [
-        {
-          name: 'count_pvlv2',
-          label: 'Количество, шт',
-          value: 1,
-          type: 'number',
-          enable: true,
-        },
-      ],
-      x: coord.pvlv2_x,
-      y: coord.pvlv2_y,
+      el: 'air24',
+      x: 29,
+      y: par_postrecuperator.y,
     },
     // датчик температуры в помещении
     {

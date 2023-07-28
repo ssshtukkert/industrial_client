@@ -8,7 +8,7 @@
         :queryCreate="getQueryCreate()" :actionRow="actionRow" :deleted="false">
         <template v-slot:actions>
           <q-btn color='dark-grey' label="Открыть" icon="open_in_new" v-show="isOneSelect()" @click="goRoot" />
-          <q-btn color='dark-grey' label="Скопировать" icon="content_copy" v-show="isOneSelect()" @click="copy" />
+          <q-btn color='dark-grey' disabled label="Скопировать" icon="content_copy" v-show="isOneSelect()" @click="copy" />
         </template>
       </Table>
       <q-dialog v-model="dialog" persistent>
@@ -48,7 +48,7 @@ import {
 } from './structuresDefault';
 
 export default defineComponent({
-  name: 'GenPricePage',
+  name: 'ConfigurationPage',
   components: {
     Table,
   },
@@ -86,7 +86,7 @@ export default defineComponent({
       },
     ];
     function getQueryAll() {
-      return `${host}/services/productoptions/Configuration`;
+      return `${host}/services/genprice/Configuration`;
     }
     function getQueryDelete() {
       return `${getQueryAll()}/delete`;

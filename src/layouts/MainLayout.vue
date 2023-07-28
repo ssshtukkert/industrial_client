@@ -3,10 +3,6 @@
     <q-header elevated>
       <q-toolbar>
         <q-btn flat dense round icon="menu" aria-label="Menu" @click="toggleLeftDrawer" />
-        <!-- <Header /> -->
-        <!-- <q-toolbar-title>
-
-        </q-toolbar-title> -->
         <q-card-section class="q-pa-sm row items-center full-width">
           <div class="text-h4 text-weight-bolder text-white">
             nevatom
@@ -14,21 +10,33 @@
           <div class="col main-font text-h10 text-grey q-pa-sm" align="left" float="">
             технический сервер
           </div>
-          <div class="col-2 text-grey"  align="right">
-            v.0.12.7
+          <div v-if="isAuth()">
+            <q-btn push color="primary" :label="user().name">
+              <q-popup-proxy>
+                <q-card class="text-h6 text-white q-pa-md" style="background-color: rgb(60, 60, 60);">
+                  <q-card-section>
+                    Почта: {{ user().email }}
+                  </q-card-section>
+                  <q-card-section>
+                    Роль: {{ user().role }}
+                  </q-card-section>
+                  <q-card-section>
+                    <q-btn type="button" @click="logout">Выйти</q-btn>
+                  </q-card-section>
+                </q-card>
+              </q-popup-proxy>
+            </q-btn>
+          </div>
+          <div v-else>
+            Вход не выполнен
+            <q-btn type="button" @click="login">Войти</q-btn>
+          </div>
+          <div class="col-2 text-grey" align="right">
+            v.{{ version }}
           </div>
         </q-card-section>
-
       </q-toolbar>
     </q-header>
-
-    <!-- <q-footer>
-      <q-tabs>
-        <q-route-tab v-for="nav in navigation" :to="nav.to" :key="nav.label" :icon="nav.icon" :label="nav.label">
-
-        </q-route-tab>
-      </q-tabs>
-    </q-footer> -->
     <q-drawer v-model="leftDrawerOpen" show-if-above bordered :width="400" :breakpoint="800"
       style="background-color: rgb(60, 60, 60); overflow: hidden;">
       <q-scroll-area visible :delay="0" style="height: 100%;"
@@ -38,10 +46,9 @@
         :horizontal-bar-style="{ bottom: '2px', borderRadius: '0px', background: 'grey', opacity: 0.3, height: '15px' }">
         <Tree ref="navigator" :data="propsNav"></Tree>
       </q-scroll-area>
-
     </q-drawer>
     <q-page-container>
-      <router-view  style="padding: 0px; margin: 0px; " />
+      <router-view style="padding: 0px; margin: 0px;" />
     </q-page-container>
   </q-layout>
 </template>
@@ -51,16 +58,16 @@ import {
   defineComponent,
   ref,
   onMounted,
+  inject,
 } from 'vue';
-// import Header from 'components/Header/Header.vue';
 import Tree from 'components/Tree.vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
+import store from '../store/index';
 
 export default defineComponent({
   name: 'MainLayout',
   active: false,
   components: {
-    // Header,
     Tree,
   },
   props: {
@@ -70,7 +77,7 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const propsNav = [{
+    const propsNav = ref([{
       label: 'Навигация',
       selectable: false,
       children: [
@@ -163,7 +170,7 @@ export default defineComponent({
           ],
         },
         {
-          label: 'Сервисы',
+          label: 'Сервисы ОА',
           icon: 'settings',
           selectable: false,
           node: '/services',
@@ -179,6 +186,10 @@ export default defineComponent({
             {
               label: 'Конфигурации',
               to: '/services/productoptions/configurations',
+            },
+            {
+              label: 'Файлы',
+              to: '/services/files',
             },
             // {
             //   label: 'ChatOA',
@@ -208,23 +219,33 @@ export default defineComponent({
               ],
             },
             {
-              label: 'Файлы',
-              to: '/services/files',
-            },
-            {
               label: 'Настройки',
               to: '/services/genprice/settings',
+            },
+            {
+              label: 'Пользователи',
+              to: '/services/users',
             },
           ],
         },
       ],
-    }];
+    }]);
     const navigator = ref(null);
     const route = useRoute();
+    const router = useRouter();
     const leftDrawerOpen = ref(props.open);
+    const { version } = inject('store');
+
     function update() {
+      store.storeVue.state.upd();
       const p = route.path;
       navigator.value.expand(p, Object.prototype.hasOwnProperty.call(route.params, 'id'));
+    }
+    function user() {
+      return store.storeVue.state.user;
+    }
+    function isAuth() {
+      return store.storeVue.getters.getAuth;
     }
     function hideToggleLeftDrawer() {
       leftDrawerOpen.value = false;
@@ -233,10 +254,32 @@ export default defineComponent({
       leftDrawerOpen.value = !leftDrawerOpen.value;
       update();
     }
+    function login() {
+      router.push('/services/login');
+      update();
+    }
+    function logout() {
+      store.storeVue.dispatch('logout').then(() => {
+        router.replace('/services/login').then(() => window.location.reload());
+      });
+    }
     onMounted(() => {
+      store.storeVue.state.upd = () => {
+        store.storeVue.dispatch('isAuth').then(() => {
+          // propsNav.value[0].children.push();
+        }).catch((err) => {
+          if (err) {
+            console.log(err);
+          }
+        });
+      };
       update();
     });
     return {
+      user,
+      isAuth,
+      logout,
+      login,
       hide() {
         console.log(4);
       },
@@ -249,6 +292,8 @@ export default defineComponent({
         // eslint-disable-next-line no-console
         // console.log(1);
       },
+      update,
+      version,
     };
   },
 });
@@ -259,6 +304,5 @@ export default defineComponent({
   .q-footer {
     display: none;
   }
-
 }
 </style>

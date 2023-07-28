@@ -728,12 +728,6 @@ export default defineComponent({
       description: 'Приточный вентилятор обеспечивает подачу свежего воздуха с улицы в помещение.',
     },
     {
-      id: 'pvlv2',
-      imageTop: 'valve.svg',
-      imageBottom: 'air.svg',
-      name: 'Воздушный клапан притока 2',
-    },
-    {
       id: 'vvlv1',
       imageTop: 'valve.svg',
       imageBottom: 'air.svg',
@@ -1194,11 +1188,11 @@ export default defineComponent({
     function confirmExit() {
       router.push('/services/productoptions/configurations');
     }
-    function getPathList() {
-      return '/services/productoptions/configurations';
-    }
+    // function getPathList() {
+    //   return '/services/productoptions/configurations';
+    // }
     function getQueryAll() {
-      return `${host}/services/productoptions/Configuration`;
+      return `${host}/services/genprice/Configuration`;
     }
     const name = ref('');
     const updatedAt = ref('');
@@ -2053,6 +2047,7 @@ export default defineComponent({
     function update(callback) {
       axios.get(`${getQueryAll()}/${id}`)
         .then((res) => {
+          console.log(1);
           if (res.data.result === 'ok') {
             if (res.data.data) {
               object = res.data.data;
@@ -2260,7 +2255,7 @@ export default defineComponent({
       change,
       writeDatabase,
       inputDescript,
-      getPathList,
+      // getPathList,
       name,
       updatedAt,
       getQueryAll,

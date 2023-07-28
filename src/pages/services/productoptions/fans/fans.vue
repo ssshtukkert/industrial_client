@@ -212,7 +212,7 @@ export default defineComponent({
       selected.value.length = 0;
     }
     function getQueryAll() {
-      return `${host}/services/productoptions/Fan`;
+      return `${host}/services/genprice/Fan`;
     }
     function getQueryDelete() {
       return `${getQueryAll()}/delete`;
@@ -276,7 +276,7 @@ export default defineComponent({
     const rows = ref([]);
     function update() {
       axios
-        .get(`${host}/services/productoptions/Fan`).then((responseM) => {
+        .get(`${host}/services/genprice/Fan`).then((responseM) => {
           for (let index = 0; index < responseM.data.length; index += 1) {
             const m = responseM.data[index];
             rows.value.push({

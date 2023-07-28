@@ -1,6 +1,6 @@
 <template>
   <q-expansion-item dense expand-separator :header-style="{ backgroundColor: 'rgb(80, 80, 80)' }"
-    expand-icon-class="text-white">
+    expand-icon-class="text-white" @show="show">
 
     <template v-slot:header>
       <q-card-section class="text-white full-width">
@@ -9,33 +9,15 @@
         </div>
       </q-card-section>
     </template>
-    <q-table dark dense flat class="q-pa-md q-ma-md" :rows="rows" :columns="[
-      {
-        name: 'name',
-        required: true,
-        label: 'Материал',
-        align: 'left',
-        field: (row) => row.name,
-        format: (val) => `${val}`,
-        sortable: true,
-      },
-      {
-        name: 'count',
-        align: 'left',
-        label: 'Количество',
-        field: 'count',
-        style: 'width: 50px',
-        sortable: true,
-      },
-    ]" row-key="name" virtual-scroll :hide-selected-banner="true" :hide-pagination="true" selection="none"
-      separator="cell" wrap-cells :rows-per-page-options="[1]" v-model:pagination="pagination"
-      style="background-color: rgb(60, 60, 60); margin-left: 60px;">
+    <q-table dark dense flat class="q-pa-md q-ma-md" :rows="rows" :columns="columnsAddBuffer" row-key="name"
+      virtual-scroll :hide-selected-banner="true" :hide-pagination="true" selection="none" separator="cell" wrap-cells
+      :rows-per-page-options="[1]" v-model:pagination="pagination"
+      style="background-color: rgb(60, 60, 60); margin-left: 60px;" no-data-label="Нет материалов" @row-click="openEdit">
       <template v-slot:top>
         <q-card-actions class="fit">
-          <q-btn color='dark-grey' icon="edit" @click="openEdit" />
+          <q-btn color='dark-grey' icon="edit" @click="openEdit" :loading="load" />
         </q-card-actions>
       </template>
-
       <template v-slot:header-cell="props">
         <q-th :props="props">
           <div class="text-h6">{{ props.col.label }}</div>
@@ -74,14 +56,37 @@ export default defineComponent({
       type: String,
       default: '',
     },
+    typeSelected: {
+      type: String,
+      default: 'multiply',
+    },
   },
   setup(props) {
     const refAddMaterials = ref(null);
     const rows = ref([]);
+    const load = ref(true);
     const {
       host,
       getObject,
     } = inject('store');
+    const columnsAddBuffer = ref([{
+      name: 'name',
+      required: true,
+      label: 'Наименование',
+      align: 'left',
+      field: (row) => row.name,
+      format: (val) => `${val}`,
+      sortable: true,
+    }]);
+    if (props.typeSelected === 'multiply') {
+      columnsAddBuffer.value.push({
+        name: 'count',
+        align: 'center',
+        label: 'Количество',
+        field: 'count',
+        sortable: true,
+      });
+    }
     function openEdit() {
       axios
         .get(`${host}/services/genprice/Material`).then((responseMaterials) => {
@@ -95,27 +100,11 @@ export default defineComponent({
             format: (val) => `${val}`,
             sortable: false,
           }]);
-          refAddMaterials.value.setColumnAddBuffer([
-            {
-              name: 'name',
-              required: true,
-              label: 'Наименование',
-              align: 'left',
-              field: (row) => row.name,
-              format: (val) => `${val}`,
-              sortable: true,
-            },
-            {
-              name: 'count',
-              align: 'center',
-              label: 'Количество',
-              field: 'count',
-              sortable: true,
-            },
-          ]);
+          refAddMaterials.value.setColumnAddBuffer(columnsAddBuffer.value);
           refAddMaterials.value.setSplitter(50);
           refAddMaterials.value.setAllMaterials(responseMaterials.data);
           refAddMaterials.value.setBufferMaterials(rows.value);
+          refAddMaterials.value.setType(props.typeSelected);
           refAddMaterials.value.show(true);
           refAddMaterials.value.exitAndSave = (materialsAdd) => {
             rows.value.length = 0;
@@ -135,7 +124,9 @@ export default defineComponent({
           };
         });
     }
-    onMounted(() => {
+    function show() {
+      load.value = true;
+      rows.value.length = 0;
       axios
         .get(`${host}/services/genprice/Material`).then((responseMaterials) => {
           axios
@@ -147,16 +138,22 @@ export default defineComponent({
                   count: element.count,
                 });
               });
+              load.value = false;
             });
         });
+    }
+    onMounted(() => {
     });
     return {
+      show,
       openEdit,
       refAddMaterials,
+      columnsAddBuffer,
       pagination: ref({
         rowsPerPage: 0,
       }),
       rows,
+      load,
     };
   },
 });

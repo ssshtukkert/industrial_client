@@ -7,8 +7,8 @@
     </q-card-section>
     <q-splitter v-model="settingSplitterTab" style="height: 100%;">
       <template v-slot:before>
-        <q-tabs v-model="settingsTab" class="text-grey" no-caps active-color="white" indicator-color="white" align="left"
-          vertical>
+        <q-tabs v-model="settingsTab" dense class="text-grey" no-caps active-color="white" indicator-color="white"
+          align="left" vertical>
           <q-tab name="settingsGenerate">
             <div class="text-h6">Подбор ЩУ</div>
           </q-tab>
@@ -17,6 +17,12 @@
           </q-tab>
           <q-tab name="settingsMaterials">
             <div class="text-h6">Комплектующие</div>
+          </q-tab>
+          <q-tab name="settingsSync1С">
+            <div class="text-h6">Синхронизация с 1С</div>
+          </q-tab>
+          <q-tab name="settingsZModbusParser">
+            <div class="text-h6">Парсер переменных Zentec</div>
           </q-tab>
         </q-tabs>
       </template>
@@ -46,6 +52,16 @@
                   type="number"
                   :rules="[val => (val >= 0.001) && (+val <= 999) || 'Введите корректные данные от 0.001 A до 999 A']"
                   suffix="А" />
+                <q-select dark class="text-h6" label="Категория автоматических выключателей"
+                  options-selected-class="text-h6 text-grey" label-active-class="text-red" popup-content-class="text-h6"
+                  outlined :options="materialsCategories" option-value="id" v-model="selectorCategoryAutoSwitch"
+                  @update:model-value="syncData">
+                  <template v-slot:selected>
+                    <div class="text-white text-h6">
+                      {{ selectorCategoryAutoSwitch.name }}
+                    </div>
+                  </template>
+                </q-select>
               </div>
             </q-card-section>
           </q-tab-panel>
@@ -74,7 +90,7 @@
             ]" tableName="LaborCost" />
           </q-tab-panel>
           <q-tab-panel name="settingsMaterials">
-            <q-tabs v-model="settingsTabMaterials" class="text-grey text-h8" no-caps active-color="white"
+            <q-tabs v-model="settingsTabMaterials" dense class="text-grey text-h8" no-caps active-color="white"
               indicator-color="white" align="left">
               <q-tab name="settingsMaterialsAll">
                 <div>Роли</div>
@@ -106,10 +122,17 @@
             </q-tabs>
             <q-tab-panels v-model="settingsTabMaterials" animated keep-alive style="background-color: rgb(60, 60, 60);">
               <q-tab-panel name="settingsMaterialsAll">
+                <q-input dark dense class="text-h6" v-model="searchRole" outlined label="Поиск по ролям:" type="text"
+                  clearable @clear="() => {
+                    searchRole = '';
+                  }" />
                 <ScrollBar styleContent="margin-top: 10px; padding-right: 20px; height: 70vh;">
                   <q-list>
-                    <MaterialSelected v-for="element in settingsMaterialsAllArray" :key="element"
-                      :materialName="element.name" :parameterSettings="element.parameter" />
+                    <template v-for="element in settingsMaterialsAllArray" :key="element">
+                      <MaterialSelected v-if="element.name.indexOf(searchRole) != -1" :materialName="element.name"
+                        :parameterSettings="element.parameter" :typeSelected="element.single ? 'single' : 'multiply'" />
+                    </template>
+
                   </q-list>
                 </ScrollBar>
               </q-tab-panel>
@@ -139,6 +162,18 @@
                     defaultValue: 0,
                     type: 'selector',
                     changeText: 'Изменить напряжение',
+                    edit: true,
+                  },
+                  {
+                    name: 'current_nom',
+                    align: 'left',
+                    label: 'Номинальный ток, А',
+                    field: 'current_nom',
+                    format: (val) => `${Number(val)}`,
+                    sortable: true,
+                    defaultValue: 0,
+                    type: 'number',
+                    changeText: 'Изменить номинальный ток',
                     edit: true,
                   },
                   {
@@ -459,6 +494,299 @@
               </q-tab-panel>
             </q-tab-panels>
           </q-tab-panel>
+          <q-tab-panel name="settingsSync1С">
+            <q-table class="m-table text-white cursor-pointer" dark dense flat :rows="rowsMaterialsWithCode" :columns="[
+              {
+                name: 'name',
+                required: true,
+                label: 'Материал',
+                align: 'left',
+                field: (row) => row.name,
+                format: (val) => `${val}`,
+                sortable: true,
+                required: true,
+                style: 'min-width: 500px',
+                edit: false,
+              },
+              {
+                name: 'code',
+                align: 'left',
+                label: 'Код 1C',
+                field: 'code',
+                format: (val) => `${val}`,
+                sortable: true,
+                defaultValue: 0,
+                type: 'text',
+                changeText: 'Изменить код',
+                edit: true,
+              },
+              {
+                name: 'status',
+                align: 'left',
+                label: 'Статус',
+                field: 'status',
+                format: (val) => `${val}`,
+                sortable: true,
+                defaultValue: 0,
+                type: 'text',
+                edit: true,
+              },
+            ]" row-key="id" virtual-scroll :hide-selected-banner="true" selection="none" binary-state-sort
+              :hide-pagination="true" v-model:pagination="pagination" separator="cell" :rows-per-page-options="[1]"
+              wrap-cells style="background-color: rgb(60, 60, 60);" grid-header no-data-label="Нет данных">
+              <template v-slot:top>
+                <q-card-actions class="fit" style="background-color: rgb(60, 60, 60);">
+                  <q-btn color='dark-grey' label="Загрузить файл синхронизации" icon='upload' @click="() => {
+                    dialog = true;
+                    completeLoad = '';
+                  }" />
+                </q-card-actions>
+              </template>
+              <template v-slot:pagination>
+                <div class="text-h6">
+                  {{ selected.length === 0 ? `Всего объектов: ${rows.length}` : `Объектов выбрано:
+                  ${selected.length} из ${rows.length}` }}
+                </div>
+              </template>
+              <template v-slot:header-cell="props">
+                <q-th :props="props" style="background-color: rgb(60, 60, 60);">
+                  <div class="text-h6">{{ props.col.label }}</div>
+                </q-th>
+              </template>
+              <template v-slot:body-cell="props">
+                <q-td :props="props">
+                  <div class="text-h6">
+                    {{ props.value }}
+                  </div>
+                </q-td>
+              </template>
+              <template v-slot:body-cell-status="props">
+                <q-td :props="props">
+                  <div :class="`text-h6 ${props.value == 'Готово' ? 'text-green' : 'text-red'}`">
+                    {{ props.value }}
+                  </div>
+                </q-td>
+              </template>
+            </q-table>
+            <q-dialog v-model="dialog" persistent>
+              <q-card class="text-white q-pt-none"
+                style="width: 900px; max-width: 95vw; background-color: rgb(60, 60, 60);">
+                <q-bar>
+                  <div class="text-h6">Загрузка файла .xlsx для обработки</div>
+                  <q-space />
+                  <q-btn dense flat icon="close" v-close-popup>
+                    <q-tooltip class="bg-grey text-white">Закрыть</q-tooltip>
+                  </q-btn>
+                </q-bar>
+                <q-card-section class="row items-center q-pa-md">
+                  <q-uploader class="full-width" dark :url="`${host}/upload_excel`" multiple max-files="1"
+                    :headers="[{ name: 'X-Custom-Timestamp', value: 1550240306080 }]" @uploaded="uploadComplete"
+                    @removed="removedFiles" @failed="uploadError" style="background-color: rgb(60, 60, 60);">
+                    <template v-slot:header="scope">
+                      <div class="row items-center q-pa-sm q-gutter-xs" style="background-color: rgb(80, 80, 80);">
+                        <q-btn v-if="scope.uploadedFiles.length > 0" icon="done_all" @click="scope.removeUploadedFiles"
+                          round dense flat>
+                          <q-tooltip>Убрать загруженные файлы</q-tooltip>
+                        </q-btn>
+                        <q-spinner v-if="scope.isUploading" class="q-uploader__spinner" />
+                        <div class="col">
+                          <div>
+                            Максимальный размер: 5МБ
+                          </div>
+                          <div class="text-h8">{{ scope.uploadSizeLabel }} / {{ scope.uploadProgressLabel }}</div>
+                        </div>
+                        <q-btn v-if="scope.canAddFiles" type="a" icon="add_box" @click="scope.pickFiles" round dense flat>
+                          <q-uploader-add-trigger />
+                          <q-tooltip>Выбрать файл</q-tooltip>
+                        </q-btn>
+                        <q-btn v-if="scope.canUpload" icon="upload" @click="scope.upload" round dense flat>
+                          <q-tooltip>Загрузить файлы</q-tooltip>
+                        </q-btn>
+                        <q-btn v-if="scope.isUploading" icon="clear" @click="scope.abort" round dense flat>
+                          <q-tooltip>Отменить загрузку</q-tooltip>
+                        </q-btn>
+                        <q-btn v-if="scope.queuedFiles.length > 0" icon="delete" @click="scope.removeQueuedFiles" round
+                          dense flat>
+                          <q-tooltip>Очистить список</q-tooltip>
+                        </q-btn>
+                      </div>
+                    </template>
+                  </q-uploader>
+                  <q-list separator>
+                    <q-item class="text-red text-h6" v-for="element in errorsLoad" :key="element">
+                      {{ element.message }}
+                    </q-item>
+                  </q-list>
+                  <q-card-section class="text-h6 text-green">
+                    {{ completeLoad }}
+                  </q-card-section>
+                </q-card-section>
+              </q-card>
+            </q-dialog>
+          </q-tab-panel>
+          <q-tab-panel name="settingsZModbusParser">
+            <Hiearchy ref="hiearchyZModbus" :data="hiearchyData" @click="hiearchyClick"/>
+            <q-table class="m-table text-white cursor-pointer" dark dense flat :rows="rowsZVariables" :columns="[
+              {
+                name: 'name',
+                required: true,
+                label: 'Наименование',
+                align: 'left',
+                field: (row) => row.name,
+                format: (val) => `${val}`,
+                sortable: true,
+                required: true,
+                style: 'min-width: 500px',
+                edit: false,
+              },
+              {
+                name: 'address',
+                align: 'left',
+                label: 'Адрес',
+                field: 'address',
+                format: (val) => `${Number(val)}`,
+                sortable: true,
+                defaultValue: 0,
+                type: 'text',
+                changeText: 'Изменить код',
+                edit: true,
+              },
+              {
+                name: 'type',
+                align: 'left',
+                label: 'Тип',
+                field: 'type',
+                format: (val) => `${val}`,
+                sortable: true,
+                defaultValue: 0,
+                type: 'text',
+                edit: true,
+              },
+              {
+                name: 'function',
+                align: 'left',
+                label: 'Функция',
+                field: 'function',
+                format: (val) => `${val}`,
+                sortable: true,
+                defaultValue: 0,
+                type: 'text',
+                edit: true,
+              },
+              {
+                name: 'access',
+                align: 'left',
+                label: 'Доступ',
+                field: 'access',
+                format: (val) => `${val}`,
+                sortable: true,
+                defaultValue: 0,
+                type: 'text',
+                edit: true,
+              },
+            ]" row-key="id" virtual-scroll :hide-selected-banner="true" selection="none" binary-state-sort
+              :hide-pagination="true" v-model:pagination="pagination" separator="cell" :rows-per-page-options="[1]"
+              wrap-cells style="background-color: rgb(60, 60, 60);" grid-header no-data-label="Нет данных"
+              :filter="filterZVariables">
+              <template v-slot:top>
+                <q-card-actions class="fit" style="background-color: rgb(60, 60, 60);">
+                  <q-btn color='dark-grey' label="Загрузить файл переменных" icon='upload' @click="() => {
+                    dialogZModbusParser = true;
+                    completeLoad = '';
+                  }" />
+                  <q-btn v-if="rowsZVariables.length > 0" color='dark-grey' label="Скопировать как JSON"
+                    icon='content_copy' @click="copyJSON" />
+                  <q-space />
+                  <q-input dark class="text-h6" outlined dense debounce="300" v-model="filterZVariables" clearable
+                    placeholder="Поиск" style="margin: 10px;">
+                    <template v-slot:append>
+                      <q-icon name="search" />
+                    </template>
+                  </q-input>
+                </q-card-actions>
+              </template>
+              <template v-slot:pagination>
+                <div class="text-h6">
+                  {{ selected.length === 0 ? `Всего объектов: ${rows.length}` : `Объектов выбрано:
+                  ${selected.length} из ${rows.length}` }}
+                </div>
+              </template>
+              <template v-slot:header-cell="props">
+                <q-th :props="props" style="background-color: rgb(60, 60, 60);">
+                  <div class="text-h6">{{ props.col.label }}</div>
+                </q-th>
+              </template>
+              <template v-slot:body-cell="props">
+                <q-td :props="props">
+                  <div class="text-h6">
+                    {{ props.value }}
+                  </div>
+                </q-td>
+              </template>
+              <template v-slot:body-cell-status="props">
+                <q-td :props="props">
+                  <div :class="`text-h6 ${props.value == 'Готово' ? 'text-green' : 'text-red'}`">
+                    {{ props.value }}
+                  </div>
+                </q-td>
+              </template>
+            </q-table>
+            <q-dialog v-model="dialogZModbusParser" persistent>
+              <q-card class="text-white q-pt-none"
+                style="width: 900px; max-width: 95vw; background-color: rgb(60, 60, 60);">
+                <q-bar>
+                  <div class="text-h6">Загрузка файла .mbm для обработки</div>
+                  <q-space />
+                  <q-btn dense flat icon="close" v-close-popup>
+                    <q-tooltip class="bg-grey text-white">Закрыть</q-tooltip>
+                  </q-btn>
+                </q-bar>
+                <q-card-section class="row items-center q-pa-md">
+                  <q-uploader class="full-width" dark :url="`${host}/upload_zmodbus`" multiple max-files="1"
+                    :headers="[{ name: 'X-Custom-Timestamp', value: 1550240306080 }]" @uploaded="uploadCompleteZModbus"
+                    @removed="removedFiles" @failed="uploadError" style="background-color: rgb(60, 60, 60);">
+                    <template v-slot:header="scope">
+                      <div class="row items-center q-pa-sm q-gutter-xs" style="background-color: rgb(80, 80, 80);">
+                        <q-btn v-if="scope.uploadedFiles.length > 0" icon="done_all" @click="scope.removeUploadedFiles"
+                          round dense flat>
+                          <q-tooltip>Убрать загруженные файлы</q-tooltip>
+                        </q-btn>
+                        <q-spinner v-if="scope.isUploading" class="q-uploader__spinner" />
+                        <div class="col">
+                          <div>
+                            Максимальный размер: 5МБ
+                          </div>
+                          <div class="text-h8">{{ scope.uploadSizeLabel }} / {{ scope.uploadProgressLabel }}</div>
+                        </div>
+                        <q-btn v-if="scope.canAddFiles" type="a" icon="add_box" @click="scope.pickFiles" round dense flat>
+                          <q-uploader-add-trigger />
+                          <q-tooltip>Выбрать файл</q-tooltip>
+                        </q-btn>
+                        <q-btn v-if="scope.canUpload" icon="upload" @click="scope.upload" round dense flat>
+                          <q-tooltip>Загрузить файлы</q-tooltip>
+                        </q-btn>
+                        <q-btn v-if="scope.isUploading" icon="clear" @click="scope.abort" round dense flat>
+                          <q-tooltip>Отменить загрузку</q-tooltip>
+                        </q-btn>
+                        <q-btn v-if="scope.queuedFiles.length > 0" icon="delete" @click="scope.removeQueuedFiles" round
+                          dense flat>
+                          <q-tooltip>Очистить список</q-tooltip>
+                        </q-btn>
+                      </div>
+                    </template>
+                  </q-uploader>
+                  <q-list separator>
+                    <q-item class="text-red text-h6" v-for="element in errorsLoad" :key="element">
+                      {{ element.message }}
+                    </q-item>
+                  </q-list>
+                  <q-card-section class="text-h6 text-green">
+                    {{ completeLoad }}
+                  </q-card-section>
+                </q-card-section>
+              </q-card>
+            </q-dialog>
+          </q-tab-panel>
         </q-tab-panels>
       </template>
     </q-splitter>
@@ -470,6 +798,7 @@ import {
   ref, defineComponent, inject, onMounted,
 } from 'vue';
 import ScrollBar from 'src/components/ScrollBar.vue';
+import Hiearchy from 'src/components/Hiearchy.vue';
 import MaterialSelected from 'src/pages/services/genprice/materialSelected.vue';
 import MaterialTable from 'src/pages/services/genprice/materialTable.vue';
 import StringTable from 'src/pages/services/genprice/stringTable.vue';
@@ -485,6 +814,7 @@ export default defineComponent({
     MaterialSelected,
     MaterialTable,
     StringTable,
+    Hiearchy,
   },
   setup() {
     document.title = 'Настройки';
@@ -499,18 +829,31 @@ export default defineComponent({
     const refCurrentDefaultKG = ref(null);
     const inputCurrentDefaultUnitACDC = ref(0);
     const refCurrentDefaultUnitACDC = ref(null);
-    const settingSplitterTab = ref(20);
+    const settingSplitterTab = ref(28);
     const settingsTab = ref('settingsGenerate');
     const settingsTabMaterials = ref('settingsMaterialsAll');
+    const searchRole = ref('');
     const settings = [];
     const materials = [];
-
+    const materialsCategories = ref([]);
+    const selectorCategoryAutoSwitch = ref({});
+    const dialog = ref(false);
+    const rowsMaterialsWithCode = ref([]);
+    const errorsLoad = ref([]);
+    const completeLoad = ref('');
     const rowsMaterialsDefault = ref([
       {
         name: 'Авт выкл',
         count: 1,
       },
     ]);
+    const dialogZModbusParser = ref(false);
+    const rowsZVariables = ref([]);
+    const filterZVariables = ref('');
+
+    // дерево
+    const hiearchyZModbus = ref(null);
+    const hiearchyData = ref([]);
     function getMaterialsFromSettings(parameter) {
       return JSON.parse(getObject(settings, 'name', parameter).value);
     }
@@ -554,6 +897,9 @@ export default defineComponent({
       } else {
         inputCurrentDefaultUnitACDC.value = Number(getObject(settings, 'name', 'currentDefaultUnitACDC').value);
       }
+      axios.post(`${host}/services/genprice/settings/categoryAutoSwitch`, {
+        value: Number(selectorCategoryAutoSwitch.value.id),
+      });
     }
     onMounted(() => {
       axios
@@ -562,174 +908,251 @@ export default defineComponent({
             materials.push(element);
           });
           axios
-            .get(`${host}/services/genprice/Setting`).then((responseM) => {
-              responseM.data.forEach((parameter) => {
-                settings.push(parameter);
+            .get(`${host}/services/genprice/MaterialCategory`).then((responsMaterialsCategory) => {
+              responsMaterialsCategory.data.forEach((element) => {
+                element.label = element.name;
+                materialsCategories.value.push(element);
               });
-              inputCostOneHourWorker.value = Number(getObject(settings, 'name', 'costOneHourWorker').value);
-              inputPercentOfMaterials.value = Number(getObject(settings, 'name', 'percentOfMaterials').value);
-              inputKPrice.value = Number(getObject(settings, 'name', 'kPrice').value);
-              inputCurrentDefaultKG.value = Number(getObject(settings, 'name', 'currentDefaultKG').value);
-              inputCurrentDefaultUnitACDC.value = Number(getObject(settings, 'name', 'currentDefaultUnitACDC').value);
-              [
-                {
-                  name: 'пульт Зентек',
-                  parameter: 'PZ_ZENTEC_ID',
-                },
-                {
-                  name: 'материалы для пульта управления PU',
-                  parameter: 'PU_BOX_2_ID',
-                },
-                {
-                  name: 'панель Elhart',
-                  parameter: 'PANEL_ELHART_ID',
-                },
-                {
-                  name: 'материалы для контроллера основного',
-                  parameter: 'CONTROLLER_MASTER_ID',
-                },
-                {
-                  name: 'материалы для контроллера-модуля расширения',
-                  parameter: 'CONTROLLER_SLAVE_ID',
-                },
-                {
-                  name: 'доп. контакт для ВА-101',
-                  parameter: 'AUTO_SWITCH_CONTACT_ID',
-                },
-                // ================================================
-                {
-                  name: 'двухрядная клемма',
-                  parameter: 'TERMINAL_4_ID',
-                },
-                {
-                  name: 'трансформатор АС',
-                  parameter: 'PZ_ZENTEC_ID',
-                },
-                {
-                  name: 'полиблок',
-                  parameter: 'PZ_ZENTEC_ID',
-                },
-                {
-                  name: 'ограничитель на дин рейку',
-                  parameter: 'PZ_ZENTEC_ID',
-                },
-                {
-                  name: 'фланцевый изолятор для клемм 1 рядных',
-                  parameter: 'PZ_ZENTEC_ID',
-                },
-                {
-                  name: 'фланцевый изолятор для клемм 2 рядных',
-                  parameter: 'PZ_ZENTEC_ID',
-                },
-                {
-                  name: 'врезная зеленая лампа',
-                  parameter: 'PZ_ZENTEC_ID',
-                },
-                {
-                  name: 'врезная жёлтая лампа',
-                  parameter: 'PZ_ZENTEC_ID',
-                },
-                {
-                  name: 'врезная красная лампа',
-                  parameter: 'PZ_ZENTEC_ID',
-                },
-                {
-                  name: 'врезной переключатель 3 пол.',
-                  parameter: 'PZ_ZENTEC_ID',
-                },
-                {
-                  name: 'врезной переключатель 2 пол.',
-                  parameter: 'PZ_ZENTEC_ID',
-                },
-                {
-                  name: 'кнопка КМУ',
-                  parameter: 'PZ_ZENTEC_ID',
-                },
-                {
-                  name: 'переключатель модульный',
-                  parameter: 'PZ_ZENTEC_ID',
-                },
-                {
-                  name: 'реле 2СО 24В',
-                  parameter: 'PZ_ZENTEC_ID',
-                },
-                {
-                  name: 'реле 4СО 220В',
-                  parameter: 'PZ_ZENTEC_ID',
-                },
-                {
-                  name: 'контактор 6А',
-                  parameter: 'PZ_ZENTEC_ID',
-                },
-                {
-                  name: 'авт. выкл. 1Ф 3А',
-                  parameter: 'PZ_ZENTEC_ID',
-                },
-                {
-                  name: 'авт. выкл. 1Ф 2А',
-                  parameter: 'PZ_ZENTEC_ID',
-                },
-                {
-                  name: 'реле перепада давления',
-                  parameter: 'PZ_ZENTEC_ID',
-                },
-                {
-                  name: 'датчик температуры канальный',
-                  parameter: 'PZ_ZENTEC_ID',
-                },
-                {
-                  name: 'датчик температуры накладной',
-                  parameter: 'PZ_ZENTEC_ID',
-                },
-                {
-                  name: 'датчик температуры в помещении',
-                  parameter: 'PZ_ZENTEC_ID',
-                },
-                {
-                  name: 'датчик влажности канальный',
-                  parameter: 'PZ_ZENTEC_ID',
-                },
-                {
-                  name: 'материалы для 1Ф силового реле',
-                  parameter: 'PZ_ZENTEC_ID',
-                },
-                {
-                  name: '1Ф регулятор скорости до 0,8 кВт',
-                  parameter: 'PZ_ZENTEC_ID',
-                },
-                {
-                  name: '1Ф регулятор скорости свыше 0,8 кВт (включительно)',
-                  parameter: 'PZ_ZENTEC_ID',
-                },
-                {
-                  name: 'радиатор для 3Ф твердотельного реле',
-                  parameter: 'PZ_ZENTEC_ID',
-                },
-                {
-                  name: 'предохранитель 0,5 А',
-                  parameter: 'PZ_ZENTEC_ID',
-                },
-                {
-                  name: 'клемма держатель для предохранителя',
-                  parameter: 'PZ_ZENTEC_ID',
-                },
-                {
-                  name: 'кросс-модуль 100А',
-                  parameter: 'PZ_ZENTEC_ID',
-                },
-                {
-                  name: 'кросс-модуль 125А',
-                  parameter: 'PZ_ZENTEC_ID',
-                },
-              ].forEach((element) => {
-                settingsMaterialsAllArray.value.push(element);
-              });
+              axios
+                .get(`${host}/services/genprice/Setting`).then((responseM) => {
+                  responseM.data.forEach((parameter) => {
+                    settings.push(parameter);
+                  });
+                  inputCostOneHourWorker.value = Number(getObject(settings, 'name', 'costOneHourWorker').value);
+                  inputPercentOfMaterials.value = Number(getObject(settings, 'name', 'percentOfMaterials').value);
+                  inputKPrice.value = Number(getObject(settings, 'name', 'kPrice').value);
+                  inputCurrentDefaultKG.value = Number(getObject(settings, 'name', 'currentDefaultKG').value);
+                  inputCurrentDefaultUnitACDC.value = Number(getObject(settings, 'name', 'currentDefaultUnitACDC').value);
+                  selectorCategoryAutoSwitch.value = getObject(materialsCategories.value, 'id', Number(getObject(settings, 'name', 'categoryAutoSwitch').value));
+                  [
+                    {
+                      name: 'пульт Зентек',
+                      parameter: 'PZ_ZENTEC_ID',
+                    },
+                    {
+                      name: 'материалы для пульта управления PU',
+                      parameter: 'PU_BOX_2_ID',
+                    },
+                    {
+                      name: 'панель Elhart',
+                      parameter: 'PANEL_ELHART_ID',
+                    },
+                    {
+                      name: 'основной контроллер',
+                      parameter: 'CONTROLLER_MASTER_ID',
+                      single: true,
+                    },
+                    {
+                      name: 'материалы для контроллера-модуля расширения',
+                      parameter: 'CONTROLLER_SLAVE_ID',
+                    },
+                    {
+                      name: 'доп. контакт для ВА-101',
+                      parameter: 'AUTO_SWITCH_CONTACT_ID',
+                    },
+                    {
+                      name: 'трансформатор',
+                      parameter: 'TRANSFOMATOR_ID',
+                    },
+                    {
+                      name: 'блок распределительный для автоматов от 160А до 250А',
+                      parameter: 'POLYBLOCK_250A_ID',
+                    },
+                    {
+                      name: 'двухрядная клемма',
+                      parameter: 'TERMINAL_4_ID',
+                    },
+                    {
+                      name: 'ограничитель на дин рейку',
+                      parameter: 'TERMINAL_LIMIT',
+                      single: true,
+                    },
+                    {
+                      name: 'торцевой изолятор для клемм однорядных до 16А',
+                      parameter: 'TERMINAL_FLANGE_2',
+                    },
+                    {
+                      name: 'торцевой изолятор для клемм двухрядных',
+                      parameter: 'TERMINAL_FLANGE_4',
+                    },
+                    {
+                      name: 'предохранитель 0,5 А',
+                      parameter: 'FUSE_05_ID',
+                    },
+                    {
+                      name: 'кнопка врезная зелёная с подсветкой',
+                      parameter: 'BTN_GREEN_ID',
+                    },
+                    {
+                      name: 'кнопка КМУ',
+                      parameter: 'KMU_GREEN_RED_LIGHT_ID',
+                    },
+                    {
+                      name: 'врезная зеленая лампа',
+                      parameter: 'LAMP_GREEN_ID',
+                    },
+                    {
+                      name: 'врезная жёлтая лампа',
+                      parameter: 'LAMP_YELLOW_ID',
+                    },
+                    {
+                      name: 'врезная красная лампа',
+                      parameter: 'LAMP_RED_ID',
+                    },
+                    {
+                      name: 'врезной переключатель 3 пол.',
+                      parameter: 'SWITCH_MODULE_3POS_ID',
+                    },
+                    {
+                      name: 'реле 2СО 24В',
+                      parameter: 'RELAY_2CO_24_ID',
+                    },
+                    {
+                      name: 'реле 2СО 220В',
+                      parameter: 'RELAY_2CO_220_ID',
+                    },
+                    {
+                      name: 'реле 4СО 220В',
+                      parameter: 'RELAY_4CO_220_ID',
+                    },
+                    {
+                      name: 'реле перепада давления',
+                      parameter: 'RPD_500_ID',
+                    },
+                    {
+                      name: 'датчик температуры канальный',
+                      parameter: 'K_NTC10K_ID',
+                    },
+                    {
+                      name: 'датчик температуры уличный',
+                      parameter: 'U_PT1000_ID',
+                    },
+                    {
+                      name: 'датчик температуры накладной',
+                      parameter: 'N_PT1000_ID',
+                    },
+                    {
+                      name: 'датчик влажности канальный',
+                      parameter: 'DPDC112000_ID',
+                    },
+                    {
+                      name: 'датчик влажности в помещение',
+                      parameter: 'RHS410R_ID',
+                    },
+                    {
+                      name: 'датчик давления',
+                      parameter: 'DPT2500_R8_ID',
+                    },
+                    {
+                      name: 'датчик скорости',
+                      parameter: 'AVT_D_ID',
+                    },
+                    {
+                      name: 'датчик СО2 канальный',
+                      parameter: 'RCD200_ID',
+                    },
+                    {
+                      name: 'датчик СО2 в помещение',
+                      parameter: 'RCD210_ID',
+                    },
+                    {
+                      name: 'датчик СО в помещение',
+                      parameter: 'RGI_CO0_L42M_ID',
+                    },
+                    {
+                      name: 'материалы для 1Ф силового реле',
+                      parameter: 'RELAY_FORCE_220_ID',
+                    },
+                    {
+                      name: 'радиатор для твердотельного реле',
+                      parameter: 'RADIATOR_3SSR_ID',
+                      single: true,
+                    },
+                    {
+                      name: '1Ф регулятор скорости до 0,8 кВт',
+                      parameter: 'SIMISTOR_2_5_ID',
+                    },
+                    {
+                      name: '1Ф регулятор скорости свыше 0,8 кВт (включительно)',
+                      parameter: 'SIMISROR_5_ID',
+                    },
+                    // {
+                    //   name: 'кросс-модуль 100А',
+                    //   parameter: 'PZ_ZENTEC_ID',
+                    // },
+                    // {
+                    //   name: 'кросс-модуль 125А',
+                    //   parameter: 'PZ_ZENTEC_ID',
+                    // },
+                    // {
+                    //   name: 'авт. выкл. 1Ф 3А',
+                    //   parameter: 'PZ_ZENTEC_ID',
+                    // },
+                    // {
+                    //   name: 'авт. выкл. 1Ф 2А',
+                    //   parameter: 'PZ_ZENTEC_ID',
+                    // },
+                    // {
+                    //   name: 'контактор 6А',
+                    //   parameter: 'PZ_ZENTEC_ID',
+                    // },
+                  ].forEach((element) => {
+                    settingsMaterialsAllArray.value.push(element);
+                  });
+                });
             });
         });
     });
-
+    function uploadComplete(info) {
+      rowsMaterialsWithCode.value.length = 0;
+      const materialsLoad = JSON.parse(info.xhr.response);
+      console.log(materialsLoad);
+      let countOk = 0;
+      materialsLoad.message.sort((a, b) => (a.status < b.status ? -1 : 1)).forEach((element) => {
+        rowsMaterialsWithCode.value.push({
+          name: element.name,
+          code: element.id,
+          status: element.status,
+        });
+        if (element.status === 'Готово') {
+          countOk += 1;
+        }
+      });
+      completeLoad.value = `Обновлено: ${countOk} материалов из ${materialsLoad.message.length} (${Number((countOk * 100) / materialsLoad.message.length).toFixed(0)}%)`;
+    }
+    function uploadError(error) {
+      console.log(JSON.parse(error.xhr.response));
+      errorsLoad.value.push(JSON.parse(error.xhr.response));
+    }
+    function uploadCompleteZModbus(info) {
+      const vars = JSON.parse(info.xhr.response);
+      console.log(vars);
+      hiearchyData.value.length = 0;
+      hiearchyData.value.push(vars.message);
+    }
+    function hiearchyClick() {
+      console.log(hiearchyZModbus.value.selected());
+    }
+    // function uploadCompleteZModbus(info) {
+    //   const vars = JSON.parse(info.xhr.response);
+    //   rowsZVariables.value.length = 0;
+    //   vars.message.forEach((element) => {
+    //     rowsZVariables.value.push(element);
+    //   });
+    // }
+    function removedFiles() {
+      completeLoad.value = '';
+      errorsLoad.value.length = 0;
+    }
+    function copyJSON() {
+      navigator.clipboard.writeText(JSON.stringify(rowsZVariables.value))
+        .then(() => console.log('Done!'))
+        .catch((err) => console.error(err));
+    }
     return {
       syncData,
+      uploadComplete,
+      uploadError,
       refCostOneHourWorker,
       inputCostOneHourWorker,
       refPercentOfMaterials,
@@ -747,10 +1170,29 @@ export default defineComponent({
       settingsTabMaterials,
       rowsMaterialsDefault,
       settingsMaterialsAllArray,
+      searchRole,
       getMaterialsFromSettings,
       getOptionsAllMaterials,
       getObject,
       options,
+      materialsCategories,
+      selectorCategoryAutoSwitch,
+      dialog,
+      errorsLoad,
+      completeLoad,
+      removedFiles,
+      rowsMaterialsWithCode,
+      pagination: ref({
+        rowsPerPage: 0,
+      }),
+      rowsZVariables,
+      dialogZModbusParser,
+      uploadCompleteZModbus,
+      copyJSON,
+      filterZVariables,
+      hiearchyData,
+      hiearchyZModbus,
+      hiearchyClick,
     };
   },
 });

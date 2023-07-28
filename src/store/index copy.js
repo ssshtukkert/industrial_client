@@ -1,10 +1,8 @@
 import { reactive } from 'vue';
-import Vuex from 'vuex';
 import axios from 'axios';
-import { useRoute } from 'vue-router';
 import ControlVU from '../../../industrial_server/classes/ControlVU.js';
 
-const stt = reactive({
+const state = reactive({
   portDefault: 3080,
   token: '',
   isAuth: false,
@@ -17,124 +15,7 @@ const stt = reactive({
 const ip = '10.8.5.76';
 const host = `http://${ip}:3001`;
 
-const version = '0.14.10';
-
-const storeVue = new Vuex.Store({
-  state: {
-    token: localStorage.getItem('token') || '',
-    refresh: localStorage.getItem('refresh') || '',
-    isAuth: false,
-    user: null,
-    upd: null,
-  },
-  mutations: {
-    auth_success(state, dataUser) {
-      state.token = dataUser.token;
-      if (dataUser.refresh) {
-        state.refresh = dataUser.refresh;
-      }
-      state.user = dataUser.user;
-      state.isAuth = true;
-    },
-    logout(state) {
-      state.isAuth = false;
-      state.token = '';
-      state.refresh = '';
-      state.user = null;
-    },
-  },
-  actions: {
-    register(state, userRegister) {
-      const { token } = this.state;
-      return new Promise((resolve, reject) => {
-        axios.post(`${host}/services/register`, { token, userRegister })
-          .then((resp) => {
-            resolve(resp);
-          })
-          .catch((err) => {
-            reject(err);
-          });
-      });
-    },
-    login({ commit }, userLogin) {
-      return new Promise((resolve, reject) => {
-        axios.post(`${host}/services/login`, userLogin)
-          .then((resp) => {
-            const { token, user, refresh } = resp.data;
-            // axios.defaults.headers.common.Authorization = `Bearer ${token}`;
-            localStorage.setItem('token', token);
-            localStorage.setItem('refresh', refresh);
-            commit('auth_success', { user, token, refresh });
-            resolve(resp);
-          })
-          .catch((err) => {
-            localStorage.removeItem('token');
-            localStorage.removeItem('refresh');
-            reject(err);
-          });
-      });
-    },
-    logout({ commit }) {
-      return new Promise((resolve) => {
-        const { refresh } = this.state;
-        if (refresh) {
-          axios.post(`${host}/services/logout`, { refresh }).then((resp) => {
-            commit('logout');
-            localStorage.removeItem('token');
-            localStorage.removeItem('refresh');
-            // delete axios.defaults.headers.common.Authorization;
-            console.log(resp.data.message);
-            resolve();
-          });
-        } else {
-          resolve();
-        }
-      });
-    },
-    isAuth({ commit }) {
-      const { token, refresh } = this.state;
-      return new Promise((resolve, reject) => {
-        if (token) {
-          axios.post(`${host}/services/auth`, { token }).then((resp) => {
-            // успешная аутентификация
-            console.log('Успешная аутентификация');
-            commit('auth_success', { user: resp.data.user, refresh, token });
-            resolve(resp.data);
-          }).catch(() => {
-            console.log('Ошибка аутентификации');
-            axios.post(`${host}/services/refresh`, { refresh }).then((resp) => {
-              console.log('Успешное обновление');
-              commit('auth_success', { user: resp.data.user, refresh, token: resp.data.token });
-              localStorage.setItem('token', resp.data.token);
-              resolve(resp.data);
-            }).catch((err) => {
-              console.log('Ошибка обновления');
-              reject(err.response.data);
-            });
-          });
-        } else {
-          reject();
-        }
-      });
-    },
-  },
-  getters: {
-    getAuth: (state) => state.isAuth,
-  },
-});
-
-function isPermissions(permission) {
-  const route = useRoute();
-  try {
-    const { requiresAuth, permissionsBlock } = route.meta;
-    if (requiresAuth) {
-      return (permissionsBlock[storeVue.state.user.role] || []).includes(permission);
-    }
-    return false;
-  } catch (err) {
-    return false;
-  }
-}
+const version = '0.14.6';
 
 function WebSocket_UpServer(onopenMessage) {
   console.log('Настроена связь с WebSocketServer');
@@ -143,7 +24,7 @@ function WebSocket_UpServer(onopenMessage) {
     ws.send(JSON.stringify(onopenMessage));
   };
   const serverName = 'wss';
-  stt.sockets[serverName] = ws;
+  state.sockets[serverName] = ws;
   return true;
 }
 function WebSocket_Create(name, onopenMessage) {
@@ -152,7 +33,7 @@ function WebSocket_Create(name, onopenMessage) {
   ws.onopen = function () {
     ws.send(JSON.stringify(onopenMessage));
   };
-  stt.sockets[name] = ws;
+  state.sockets[name] = ws;
   return true;
 }
 function isOpen(ws) { return ws.readyState === ws.OPEN; }
@@ -183,10 +64,10 @@ function isOpen(ws) { return ws.readyState === ws.OPEN; }
 // }
 // закрывает вебсокет
 function WebSocket_Close(name) {
-  stt.sockets[name].close();
-  stt.sockets[name] = null;
+  state.sockets[name].close();
+  state.sockets[name] = null;
   console.log(`Удален WebSocket: ${name}`);
-  console.log(stt.sockets);
+  console.log(state.sockets);
 }
 // возвращает метаданные аварийных сообщений (зашиты в сервер)
 function getDataAlarms() {
@@ -204,7 +85,7 @@ function getDataAlarm(id) {
 }
 // отправляет сообщение по вебсокету name
 function WebSocket_Send(name, json) {
-  stt.sockets[name].send(JSON.stringify(json));
+  state.sockets[name].send(JSON.stringify(json));
 }
 // function WebSocket_Send(json) {
 //   state.socket.send(JSON.stringify(json));
@@ -226,12 +107,12 @@ function WebSocket_Send(name, json) {
 // }
 function WebSocket_Listen(name, fun) {
   try {
-    stt.sockets[name].onmessage = async (data) => {
+    state.sockets[name].onmessage = async (data) => {
       const getJson = JSON.parse(data.data);
       if (fun) {
         fun(getJson);
       }
-      stt.socketData = getJson;
+      state.socketData = getJson;
     };
     return true;
   } catch (error) {
@@ -400,7 +281,7 @@ export default {
   WebSocket_Listen,
   WebSocket_Create,
   isOpen,
-  state: stt,
+  state,
   getCurrentDate,
   getCurrentTime,
   getDataAlarms,
@@ -416,6 +297,4 @@ export default {
   validationName,
   validationNumber,
   validationNumberNoZero,
-  storeVue,
-  isPermissions,
 };

@@ -1,85 +1,90 @@
 <template>
   <q-page class="justify-center" style="background-color: rgb(60, 60, 60);">
-      <q-card-section class="text-white" style="background-color: rgb(80, 80, 80);">
-        <div class="text-h6">Материалы</div>
-      </q-card-section>
-      <q-table class="m-table" dark dense flat :rows="rows" :columns="columns" row-key="name" virtual-scroll
-        :filter="filter" :filter-method="find" :hide-selected-banner="true" selection="multiple"
-        v-model:selected="selected" binary-state-sort v-model:pagination="pagination" :rows-per-page-options="[1]"
-        style="background-color: rgb(60, 60, 60);" :no-results-label="`По запросу '${filter}' ничего не найдено`"
-        grid-header @row-click="selectRow">
-        <template v-slot:top>
-          <q-card-actions class="fit" style="background-color: rgb(60, 60, 60);">
-            <q-btn color='dark-grey' icon="add" @click="createAction" />
-            <q-btn color='dark-grey' icon='edit' label='Редактировать' v-show="selected.length === 1"
-              @click="changeAction(selected)" />
-            <q-btn color='dark-grey' icon="delete" label='Удалить' v-show="selected.length > 0"
-              @click="deleteAction(selected)" disable />
-            <q-space />
-            <q-select dark outlined dense v-model="filterOptions" :options="op" class="text-h6"
-              options-selected-class="text-h6 text-grey" popup-content-class="text-h6"
-              style="width: 220px; margin-right: 10px" />
-            <q-input dark class="text-h6" outlined dense debounce="300" color="primary" v-model="filter" clearable
-              placeholder="Поиск">
-              <template v-slot:append>
-                <q-icon name="search" />
-              </template>
-            </q-input>
-          </q-card-actions>
-        </template>
-        <template v-slot:pagination>
-          <div class="text-h6" style="background-color: rgb(60, 60, 60);">
-            {{ getSelectedString() }}
+    <q-card-section class="text-white" style="background-color: rgb(80, 80, 80);">
+      <div class="text-h6">Материалы</div>
+    </q-card-section>
+    <q-table class="m-table" dark dense flat :rows="rows" :columns="columns" row-key="name" virtual-scroll
+      :filter="filter" :filter-method="find" :hide-selected-banner="true" selection="multiple" v-model:selected="selected"
+      binary-state-sort v-model:pagination="pagination" :rows-per-page-options="[1]"
+      style="background-color: rgb(60, 60, 60);" :no-results-label="`По запросу '${filter}' ничего не найдено`"
+      grid-header @row-click="selectRow">
+      <template v-slot:top>
+        <q-card-actions class="fit row q-pa-md" style="background-color: rgb(60, 60, 60);">
+          <q-btn color='dark-grey' icon="add" @click="createAction" />
+          <q-btn color='dark-grey' icon='edit' label='Редактировать' v-show="selected.length === 1"
+            @click="changeAction(selected)" />
+          <q-btn color='dark-grey' icon="delete" label='Удалить' v-show="selected.length > 0"
+            @click="deleteAction(selected)" disable />
+          <q-space />
+          <q-btn color='dark-grey' label="Помощь" icon="help" @click="() => {
+            help = true;
+          }" />
+          <q-select dark outlined dense v-model="filterOptions" :options="op" class="text-h6 q-pa-sm"
+            options-selected-class="text-h6 text-grey" popup-content-class="text-h6" />
+          <q-input dark class="text-h6 q-pa-sm" outlined dense debounce="300" color="primary" v-model="filter" clearable
+            placeholder="Поиск">
+            <template v-slot:append>
+              <q-icon name="search" />
+            </template>
+          </q-input>
+        </q-card-actions>
+      </template>
+      <template v-slot:pagination>
+        <div class="text-h6" style="background-color: rgb(60, 60, 60);">
+          {{ getSelectedString() }}
+        </div>
+      </template>
+      <template v-slot:header-cell="props">
+        <q-th :props="props" style="background-color: rgb(60, 60, 60);">
+          <div class="text-h6">{{ props.col.label }}</div>
+        </q-th>
+      </template>
+      <template v-slot:body-cell="props">
+        <q-td :props="props">
+          <div class="text-h6">
+            {{ props.value }}
           </div>
-        </template>
-        <template v-slot:header-cell="props">
-          <q-th :props="props" style="background-color: rgb(60, 60, 60);">
-            <div class="text-h6">{{ props.col.label }}</div>
-          </q-th>
-        </template>
-        <template v-slot:body-cell="props">
-          <q-td :props="props">
-            <div class="text-h6">
-              {{ props.value }}
-            </div>
-            <q-tooltip v-if="props.row.descript" :delay="800">
-              <template v-slot:default>
-                <div v-if="props.row.descript.length > 0">
-                  <p style="white-space: pre;">
-                    {{ props.row.descript }}
-                  </p>
-                </div>
-              </template>
-            </q-tooltip>
-          </q-td>
-        </template>
-        <template v-slot:body-cell-category="props">
-          <q-td :props="props">
-            <q-badge color="grey-8">
-              <div class="text-h6">{{ props.row.category }}</div>
-            </q-badge>
-          </q-td>
-        </template>
-        <template v-slot:body-cell-status="props">
-          <q-td :props="props">
-            <q-badge :color="getColor(props.row.status)">
-              <div class="text-h6">{{ getStatusData()[props.row.status].label }}</div>
-            </q-badge>
-          </q-td>
-        </template>
-        <template v-slot:body-cell-measure="props">
-          <q-td :props="props">
-            <q-badge color="grey-8">
-              <div class="text-h6">{{ props.row.measure }}</div>
-            </q-badge>
-          </q-td>
-        </template>
-      </q-table>
+          <q-tooltip v-if="props.row.descript" :delay="800">
+            <template v-slot:default>
+              <div v-if="props.row.descript.length > 0">
+                <p style="white-space: pre;">
+                  {{ props.row.descript }}
+                </p>
+              </div>
+            </template>
+          </q-tooltip>
+        </q-td>
+      </template>
+      <template v-slot:body-cell-category="props">
+        <q-td :props="props">
+          <q-badge color="grey-8">
+            <div class="text-h6">{{ props.row.category }}</div>
+          </q-badge>
+        </q-td>
+      </template>
+      <template v-slot:body-cell-status="props">
+        <q-td :props="props">
+          <q-badge :color="getColor(props.row.status)">
+            <div class="text-h6">{{ getStatusData()[props.row.status].label }}</div>
+          </q-badge>
+        </q-td>
+      </template>
+      <template v-slot:body-cell-measure="props">
+        <q-td :props="props">
+          <q-badge color="grey-8">
+            <div class="text-h6">{{ props.row.measure }}</div>
+          </q-badge>
+        </q-td>
+      </template>
+    </q-table>
     <q-dialog v-model="dialog" persistent>
-      <q-card class="text-white q-pt-none" style="width: 900px; max-width: 95vw; background-color: rgb(60, 60, 60);">
+      <q-card class="text-white q-pt-none" style="width: 1100px; max-width: 95vw; background-color: rgb(60, 60, 60);">
         <q-bar style="background-color: rgb(80, 80, 80);">
           <div class="text-h6">{{ dialogName }}</div>
           <q-space />
+          <q-btn color='dark-grey' flat icon="help" @click="() => {
+            help = true;
+          }" />
           <q-btn dense flat icon="close" v-close-popup>
             <q-tooltip class="bg-grey text-white">Закрыть</q-tooltip>
           </q-btn>
@@ -90,20 +95,24 @@
               :rules="validationName" />
           </q-card-section>
           <q-card-section class="row" style="padding: 0px;">
-            <q-card-section class="col-3">
+            <q-card-section class="col-4">
               <q-input dark class="text-h6" v-model.number="inputCost" type="number" label="Цена" suffix="руб." outlined
                 lazy-rules :rules="createInputRealValueRules" />
             </q-card-section>
-            <q-card-section class="col-3">
+            <q-card-section class="col-2">
               <q-input dark class="text-h6" v-model.number="inputWeight" type="number" label="Вес" suffix="кг." outlined
                 lazy-rules :rules="createInputRealValueRules" />
             </q-card-section>
-            <q-card-section class="col-3">
+            <q-card-section class="col-2">
               <q-input dark class="text-h6" v-model.number="inputWidth" type="number" label="Ширина" suffix="мм." outlined
                 lazy-rules :rules="createInputRealValueRules" />
             </q-card-section>
-            <q-card-section class="col-3">
+            <q-card-section class="col-2">
               <q-input dark class="text-h6" v-model.number="inputHeight" type="number" label="Высота" suffix="мм."
+                outlined lazy-rules :rules="createInputRealValueRules" />
+            </q-card-section>
+            <q-card-section class="col-2">
+              <q-input dark class="text-h6" v-model.number="inputDepth" type="number" label="Глубина" suffix="мм."
                 outlined lazy-rules :rules="createInputRealValueRules" />
             </q-card-section>
           </q-card-section>
@@ -142,6 +151,113 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
+    <q-dialog v-model="help" persistent>
+      <q-card class="text-white q-pt-none"
+        style="width: 1200px; max-width: 95vw; height: 700px; background-color: rgb(60, 60, 60);">
+        <q-bar>
+          <div class="text-h6">Помощь</div>
+          <q-space />
+          <q-btn dense flat icon="close" v-close-popup>
+            <q-tooltip class="bg-grey text-white">Закрыть</q-tooltip>
+          </q-btn>
+        </q-bar>
+        <q-card-section class="row items-justify q-pa-md">
+          <ScrollBar styleContent="padding-right: 20px; width: 1200px; height: 600px;">
+            <h5 class="full-width" align="center">Инструкция по созданию/редактированию справочника материалов</h5>
+            <p class="text-justify">
+              Справочник <b>«Материалы»</b> (далее Материалы) является централизованным хранилищем элементов в базе данных
+              технического сервера. Материалы используются в качестве элементов формирования спецификаций как для ручных
+              расчётов (подсервис
+              «Расчёты себестоимости»), так и для автоматизированного подсервиса «Конфигурации систем», где спецификация
+              создаётся по определённому алгоритму.
+            </p>
+            <h6 align="center">Особенности:</h6>
+            <ul class="text-justify">
+              <li>уникальное наименование материала, преследуются основные цели — это упрощение процесса поиска и выборки,
+                повышение эффективности хранения данных;</li>
+              <li>заполняемые реквизиты используются в других подсервисах;</li>
+              <li>группировка по категориям для более быстрого поиска;</li>
+              <li>расширение перечня материалов за счёт пользователей, каждый пользователь может вносить свой вклад и
+                обновлять справочник данными, что может улучшить качество, расширить выбор из предоставленного перечня.
+                Актуальность материалов — это залог быстрого и эффективного принятия расчёта
+                себестоимости продукции.</li>
+            </ul>
+            <h6 align="center">Для создания материала необходимо:</h6>
+            <ol>
+              <li>Перейти в справочник материалы нажать на кнопку «+» в верхнем меню таблицы:
+                <img class="center q-pa-md" src="./img1.png" style="width: 400px;" />
+              </li>
+              <li>В появившемся диалоговом окне «Создание нового материала» необходимо заполнить следующие атрибуты:
+                <img class="center q-pa-md" src="./img2.png" style="width: 700px;" />
+                <ul class="text-justify">
+                  <li><b>Наименование</b> — обязательный атрибут, используется как уникальный идентификатор, в базе
+                    запрещено
+                    создавать два одинаковых по наименованию материала.
+                    Откуда брать данный реквизит?
+                    В общем случае наименование необходимо брать из атрибута «Рабочее наименование» в реквизитах
+                    «Номенклатуры» соответствующего справочника 1С:
+                    <img class="center q-pa-md" src="./img3.png" style="width: 700px;" />
+                  </li>
+                  <li><b>Цена</b>, в рублях — используется при вычислении суммарной стоимости
+                    комплектующих. В общем случае значение цены необходимо брать из регистра «Цены номенклатуры»
+                    номенклатуры из 1С:
+                    <img class="center q-pa-md" src="./img4.png" style="width: 700px;" />
+                  </li>
+                  <li><b>Вес</b>, кг — качественная характеристика материала, используется
+                    при вычислении суммарного веса комплектующих. Необходимо указать фактическую массу материала без
+                    упаковки;
+                  </li>
+                  <li><b>Ширина</b>, мм — качественная характеристика материала, используется
+                    при вычислении различных габаритных характеристик. Необходимо указать фактическую ширину материала без
+                    упаковки;
+                  </li>
+                  <li><b>Высота</b>, мм — качественная характеристика материала, используется при
+                    вычислении различных габаритных характеристик. Необходимо указать фактическую высоту материала без
+                    упаковки;
+                  </li>
+                  <li><b>Глубина</b>, мм — качественная характеристика материала, используется
+                    при вычислении различных габаритных характеристик. Необходимо указать фактическую глубину материала
+                    без упаковки;
+                  </li>
+                  <img class="center q-pa-md" src="./img5.png" style="width: 700px;" />
+                  <li><b>Категория</b> — используется для структурированного хранения материалов и
+                    быстрого
+                    поиска.;
+                  </li>
+                  <li><b>Единицы измерения</b> — используется для более информативного вида
+                    спецификации, в
+                    которую будет добавлен материал;
+                  </li>
+                  <li><b>Статус</b> — используется для отображения актуальности материала, по
+                    скольку
+                    материалы нельзя удалять из базы;
+                  </li>
+                  <li><b>Артикул</b> — используется как дополнительный информационный реквизит
+                    для более точной идентификации материала:
+                    <img class="center q-pa-md" src="./img6.png" style="width: 700px;" />
+                    Однако лучше всего уточнять информацию в каталогах производителя.
+                  </li>
+                  <li><b>Код номенклатуры 1С</b> — используется для синхронизации справочника
+                    номенклатуры из 1С:
+                    <img class="center q-pa-md" src="./img9.png" style="width: 700px;" />
+                  </li>
+                </ul>
+              </li>
+              <li>После заполнения всех атрибутов нажимаем на кнопку «Создать», материал будет добавлен в общую таблицу:
+                <img class="center q-pa-md" src="./img7.png" style="width: 700px;" />
+              </li>
+              <li>При необходимости изменить материал нажимаем на кнопку «РЕДАКТИРОВАТЬ», появится аналогичная по созданию
+                материала форма для заполнения атрибутов. При изменении наименования система так-же проверяет уникальность
+                имени:
+                <img class="center q-pa-md" src="./img8.png" style="width: 700px;" />
+              </li>
+            </ol>
+
+          </ScrollBar>
+
+        </q-card-section>
+      </q-card>
+    </q-dialog>
     <DialogError ref="de" />
     <DialogConfirm ref="dc">
       <template v-slot:buttons>
@@ -156,6 +272,7 @@
 import {
   onMounted, ref, defineComponent, inject,
 } from 'vue';
+import ScrollBar from 'src/components/ScrollBar.vue';
 import axios from 'axios';
 import DialogError from 'src/components/dialogs/error.vue';
 import DialogConfirm from 'src/components/dialogs/confirm.vue';
@@ -163,6 +280,7 @@ import DialogConfirm from 'src/components/dialogs/confirm.vue';
 export default defineComponent({
   name: 'GenPricePage',
   components: {
+    ScrollBar,
     DialogError,
     DialogConfirm,
   },
@@ -174,6 +292,7 @@ export default defineComponent({
     const de = ref(null);
     const dc = ref(null);
     const dialog = ref(false);
+    const help = ref(false);
     const dialogName = ref('');
     const nameDefault = 'Новый материал';
     const inputName = ref(nameDefault);
@@ -184,6 +303,7 @@ export default defineComponent({
     const inputWeight = ref(0);
     const inputWidth = ref(0);
     const inputHeight = ref(0);
+    const inputDepth = ref(0);
     const categories = [];
     const categoryOp = ref([]);
     const measures = [];
@@ -266,7 +386,7 @@ export default defineComponent({
     }
     function isValidationConfirm() {
       return !inputName.value || inputCost.value < 0 || inputWeight.value < 0 || inputWidth.value < 0
-        || inputHeight.value < 0;
+        || inputHeight.value < 0 || inputDepth.value < 0;
     }
     function createAction() {
       dialog.value = true;
@@ -281,6 +401,7 @@ export default defineComponent({
       inputWeight.value = 0;
       inputWidth.value = 0;
       inputHeight.value = 0;
+      inputDepth.value = 0;
       inputArticle.value = '';
       action.value = 0;
     }
@@ -308,6 +429,7 @@ export default defineComponent({
       inputWeight.value = object.weight;
       inputWidth.value = object.width;
       inputHeight.value = object.height;
+      inputDepth.value = object.depth;
       inputArticle.value = object.article;
       inputUID.value = object.uid_1C;
       status.value = getProp(statusOp.value, object.status, 'label');
@@ -352,6 +474,7 @@ export default defineComponent({
                       measureId: m.measure,
                       width: m.width,
                       height: m.height,
+                      depth: m.depth,
                       descript: m.descript,
                       article: m.article,
                       uid_1C: m.uid_1C,
@@ -374,7 +497,7 @@ export default defineComponent({
       query.height = inputHeight.value;
       query.category = getId(categories, 'name', categoryOptions.value);
       query.descript = inputDescript.value;
-      query.depth = 0;
+      query.depth = inputDepth.value;
       query.current_catalog_nom_inductive = 0;
       query.current_catalog_nom_resistive = 0;
       query.current_nom_inductive = 0;
@@ -410,7 +533,7 @@ export default defineComponent({
       query.category = getId(categories, 'name', categoryOptions.value);
       query.descript = inputDescript.value;
       query.status = status.value.id;
-      query.depth = 0;
+      query.depth = inputDepth.value;
       query.current_catalog_nom_inductive = 0;
       query.current_catalog_nom_resistive = 0;
       query.current_nom_inductive = 0;
@@ -504,6 +627,7 @@ export default defineComponent({
       inputWeight,
       inputWidth,
       inputHeight,
+      inputDepth,
       createConfirmAction,
       deleteConfirmAction,
       changeConfirmAction,
@@ -524,6 +648,7 @@ export default defineComponent({
         return (params === 0) ? 'grey-8' : 'red';
       },
       selected,
+      help,
       getSelectedString() {
         return selected.value.length === 0 ? `Всего объектов: ${rows.value.length}` : `Объектов выбрано: ${selected.value.length} из ${rows.value.length}`;
       },
@@ -531,3 +656,16 @@ export default defineComponent({
   },
 });
 </script>
+<style>
+p {
+  text-indent: 20px;
+  /* Отступ первой строки в пикселах */
+}
+
+.center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;
+}
+</style>

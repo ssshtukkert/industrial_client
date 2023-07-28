@@ -1,6 +1,6 @@
 <template>
   <q-page class="text-h6 text-white" style="background-color: rgb(60, 60, 60);">
-    <VueCanvas :script="script"/>
+    <VueCanvas :script="script" />
     {{ frames }}
   </q-page>
 </template>

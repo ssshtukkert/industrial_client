@@ -1,5 +1,5 @@
 <template>
-  <q-table class="m-table text-white" dark dense flat :rows="rows" :columns="columnsDef" row-key="id" virtual-scroll
+  <q-table class="m-table text-white cursor-pointer" dark dense flat :rows="rows" :columns="columnsDef" row-key="id" virtual-scroll
     :hide-selected-banner="true" selection="none" binary-state-sort :hide-pagination="true"
     v-model:pagination="pagination" separator="cell" :rows-per-page-options="[1]" wrap-cells
     style="background-color: rgb(60, 60, 60);" grid-header>
@@ -157,6 +157,7 @@ export default defineComponent({
           refAddMaterials.value.setAllMaterials(responseMaterials.data);
           refAddMaterials.value.setBufferMaterials(rows.value);
           refAddMaterials.value.show(true);
+          refAddMaterials.value.setType('multiply');
           refAddMaterials.value.exitAndSave = (materialsAdd) => {
             rows.value.length = 0;
             materialsAdd.forEach((element) => {

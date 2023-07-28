@@ -1,10 +1,10 @@
 <template>
   <div class="q-pa-sm q-gutter-sm text-h6" style="background-color: rgb(60, 60, 60);">
-    <q-tree dark :nodes="data" v-model:selected="selected" v-model:expanded="expanded" node-key="label" dense
+    <q-tree dense dark :nodes="data" v-model:selected="selected" v-model:expanded="expanded" node-key="label"
       no-selection-unset no-transition color="grey" text-color="grey" selected-color="grey" control-color="grey"
       tick-strategy="none" @update:selected="setSelect">
       <template v-slot:header-root="prop">
-        <q-item dark class="fit" v-ripple>
+        <q-item dark dense class="fit" v-ripple>
           <div v-if="prop.node.icon">
             <q-icon :name="prop.node.icon" size="14px" class="q-mr-sm" />
           </div>
@@ -14,7 +14,7 @@
       <template v-slot:default-header="prop">
         <q-item class="row fit items-center" v-ripple clickable :to="prop.node.to">
           <div v-if="prop.node.icon">
-            <q-icon :color="selected == prop.node.label ? 'white' : 'grey'" :name="prop.node.icon" size="28px" class="q-mr-sm" />
+            <!-- <q-icon :color="selected == prop.node.label ? 'white' : 'grey'" :name="prop.node.icon" size="28px" class="q-mr-sm" /> -->
           </div>
           <div v-if="selected == prop.node.label" class="text-weight-bold text-white">{{ prop.node.label }}</div>
           <div v-else class="text-grey">{{ prop.node.label }}</div>
@@ -87,13 +87,11 @@ export default defineComponent({
         const node = getNodeIsLabel(arr[index]);
         this.expanded.push(node);
       }
-      // if (isIdPAram) {
       selected.value = this.expanded[this.expanded.length - 1];
-      // }
     }
+    // eslint-disable-next-line no-unused-vars
     function setSelect(value) {
-      const node = getNodeIsLabel(value);
-      console.log(node);
+
     }
     return {
       expand,

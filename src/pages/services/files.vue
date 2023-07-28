@@ -10,15 +10,16 @@
         </div>
       </q-linear-progress>
     </q-card-section>
-    <Table ref="table" :columnsDef="columns" createNewName="Новый файл" :queryAll="getQueryAll()"
+    <Table ref="table" :created="isPermissions('operationsWithFiles')" :deleted="isPermissions('operationsWithFiles')"
+      :changed="isPermissions('operationsWithFiles')"
+      :columnsDef="columns" createNewName="Новый файл" :queryAll="getQueryAll()"
       :queryUpdate="getQueryUpdate()" :queryDelete="getQueryDelete()" :queryCreate="getQueryCreate()"
-      :actionRow="actionRow" :deleted="false">
+      :actionRow="actionRow">
       <template v-slot:actions>
         <q-btn color='dark-grey' label='Открыть' icon="open_in_new" v-show="isOneSelect()" @click="goCalculation()" />
       </template>
     </Table>
     <q-dialog v-model="dialog" persistent>
-
       <q-card class="text-white q-pt-none" style="width: 900px; max-width: 95vw; background-color: rgb(60, 60, 60);">
         <q-bar>
           <div class="text-h6">{{ dialogName }}</div>
@@ -85,7 +86,7 @@ export default defineComponent({
   },
   setup() {
     document.title = 'Файлы';
-    const { host } = inject('store');
+    const { host, isPermissions } = inject('store');
     const table = ref(null);
     const dialog = ref(false);
     const dialogName = ref('');
@@ -157,7 +158,6 @@ export default defineComponent({
           .then((r) => {
             free.value = (r.data.maxSize - r.data.totalSize).toFixed(1);
             total.value = r.data.maxSize.toFixed(1);
-            console.log(r);
             const query_rows = [];
             axios
               .get(getQueryAll()).then((response) => {
@@ -199,11 +199,14 @@ export default defineComponent({
           const element = table.value.getSelect()[index];
           axios.get(`${getQueryDelete()}/${element.name}`)
             .then((res) => {
-              console.log(res.data);
               if (res.data.result === 'ok') {
                 table.value.update(() => {
                   table.value.hideDCDialog();
+                  table.value.resetSelect();
                 });
+              } else if (res.data.result === 'error') {
+                table.value.hideDCDialog();
+                table.value.showError(res.data.data);
               }
             });
         }
@@ -248,6 +251,7 @@ export default defineComponent({
       getQueryDelete,
       getQueryUpdate,
       getQueryCreate,
+      isPermissions,
       Table,
       table,
       isOneSelect,
