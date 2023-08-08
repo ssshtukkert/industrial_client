@@ -1,5 +1,5 @@
 <template>
-  <q-page class="text-white" padding style="background-color: rgb(60, 60, 60);">
+  <q-page class="text-white" padding style="background-color: rgb(60, 60, 60);" >
     <q-card-section style="background-color: rgb(80, 80, 80);">
       <div class="text-h6">
         Расчет {{ name }} от {{ updatedAt }}
@@ -21,9 +21,11 @@
           <q-btn color='primary' label="Отмена" v-close-popup />
         </template>
       </DialogConfirm>
-      <q-btn color='dark-grey' v-if="change" icon="save" label='' @click="writeDatabase">
+      <q-btn color='dark-grey' v-if="change" icon="save" label='Сохранить' @click="writeDatabase">
       </q-btn>
-      <q-btn color='dark-grey' v-show="change" icon="cancel" label='' @click="resetChange">
+      <q-btn color='dark-grey' v-if="!change" icon="update" label='Обновить' @click="updateCalc">
+      </q-btn>
+      <q-btn color='dark-grey' v-show="change" icon="cancel" label='Отменить изменения' @click="resetChange">
       </q-btn>
       <q-btn-dropdown color='dark-grey' icon="download" label="" :disable="change">
         <q-list>
@@ -174,7 +176,7 @@
                       </q-scroll-area>
                     </template>
                     <template v-slot:after>
-                      <Table ref="tableAddMaterialsBuffer" dense dark :columnsDef="columnsAddMaterialsBuffer"
+                      <Table :changed="!isPermissions('editMaterials')" ref="tableAddMaterialsBuffer" dense dark :columnsDef="columnsAddMaterialsBuffer"
                         styleContent="max-height: 70vh; background-color: rgb(60, 60, 60);"
                         :rowsDef="rowsAddMaterialsBuffer" :hideShearch="true"
                         :updateSelected="updateSelectedTableMaterialsBuffer">
@@ -498,7 +500,7 @@ export default defineComponent({
                             cost.value = getCost(materialsEntry);
                             weight.value = getWeight(materialsEntry);
                             wh.value = getWidthHeight(materialsEntry);
-                            costAll.value = getCostAll(cost.value, inputLaboriousnes.value);
+                            costAll.value = object.cost.toFixed(2); // getCostAll(cost.value, inputLaboriousnes.value);
                             if (callback) {
                               callback();
                             }
@@ -513,6 +515,37 @@ export default defineComponent({
                       }
                     });
                 });
+            });
+        });
+    }
+    // пересчитывает комплектующие и обновляет себестоимость по текущим ценам
+    function updateCalc() {
+      axios
+        .get(`${host}/services/genprice/Calculation/${id}`).then((responseC) => {
+          const query = responseC.data.data;
+          const costUpdate = Number((query.cost).toFixed(0));
+          const allMaterialsUpdate = [];
+          axios
+            .get(`${host}/services/genprice/Material`).then((responseM) => {
+              for (let index = 0; index < responseM.data.length; index += 1) {
+                const m = responseM.data[index];
+                allMaterialsUpdate.push(m);
+              }
+              const materials = JSON.parse(responseC.data.data.materials);
+              let sum = 0;
+              for (let index = 0; index < materials.length; index += 1) {
+                const element = materials[index];
+                sum += Number(getProp(allMaterialsUpdate, element.id, 'cost') || 0) * element.count;
+              }
+              const summaryCost = (sum * (percentOfMaterials.value / 100 + 1) + Number(responseC.data.data.operations) * costOneHourWorker.value).toFixed(0);
+              if (costUpdate !== summaryCost) {
+                query.cost = summaryCost;
+                axios.post(`${getQueryUpdate()}/${id}`, query).then((res) => {
+                  if (res.data.result === 'ok') {
+                    update();
+                  }
+                });
+              }
             });
         });
     }
@@ -827,6 +860,7 @@ export default defineComponent({
       resetChange,
       splitterModel: ref(50),
       getMaterialsCount,
+      updateCalc,
     };
   },
 });
