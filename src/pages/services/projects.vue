@@ -13,22 +13,27 @@
             :vertical-bar-style="{ right: '2px', borderRadius: '0px', background: 'grey', opacity: 0.3, width: '15px' }"
             :horizontal-bar-style="{ bottom: '2px', borderRadius: '0px', background: 'grey', opacity: 0.3, height: '15px' }"
             @click="resetSelect" @mousedown.right="rightClick">
-            <q-card-actions>
-              <q-btn color='dark-grey' icon="refresh" @click="updateStructure(null, search)" />
-              <q-btn color='dark-grey' icon="unfold_more" @click="projects.expandAll()" />
-              <q-btn color='dark-grey' icon="unfold_less" @click="projects.collapseAll()" />
-              <q-space />
-              <q-input dark class="text-h6" outlined dense debounce="300" v-model="search"
-                @update:model-value="searchValue" clearable placeholder="Поиск" style="margin: 10px;">
-                <template v-slot:append>
-                  <q-icon name="search" />
-                </template>
-              </q-input>
+            <q-card-actions class="row">
+              <div class="col-6">
+                <q-btn color='dark-grey' icon="refresh" label="Обновить" @click="updateStructure(null, search)" />
+                <q-btn color='dark-grey' icon="unfold_more" label="Развернуть всё" @click="projects.expandAll()" />
+                <q-btn color='dark-grey' icon="unfold_less" label="Свернуть всё" @click="projects.collapseAll()" />
+              </div>
+              <div class="col-6">
+                <q-space />
+                <q-input dark class="text-h6" outlined dense debounce="300" v-model="search"
+                  @update:model-value="searchValue" clearable placeholder="Поиск" style="margin: 10px;">
+                  <template v-slot:append>
+                    <q-icon name="search" />
+                  </template>
+                </q-input>
+              </div>
+
             </q-card-actions>
             <div class="row">
               <q-tree class="col" dense ref="projects" :nodes="data" node-key="id" no-transition dark
                 v-model:selected="selectedObjects" @update:selected="selectNode" no-selection-unset
-                no-nodes-label="Объекты структуры отсутствуют">
+                no-nodes-label="Объекты структуры отсутствуют" default-expand-all>
                 <template v-slot:default-header="prop">
                   <q-item dense :id="`node_${prop.node.id}`" class="fit" @dblclick="open(prop.node, true)">
                     <q-icon :name="getIcon(prop.node.type)" :color="prop.node.id === selectedObjects ? 'orange' : 'white'"
@@ -91,6 +96,9 @@
                             <q-item-section>Вставить</q-item-section>
                           </q-item>
                         </template>
+                        <q-item @click="copyObject(prop.node)" clickable v-close-popup>
+                          <q-item-section>Копировать</q-item-section>
+                        </q-item>
                         <q-item :disable="getCurrentNode().parentId == -1 || (search ? (search.length > 0) : false)"
                           clickable v-close-popup>
                           <q-item-section @click="cutObject(prop.node)">Вырезать</q-item-section>
@@ -127,7 +135,11 @@
         <template v-slot:after style="overflow: hidden;">
           <div v-if="selectedObjects">
             <q-card-actions>
-              <!-- <q-btn color='dark-grey' label="Открыть" /> -->
+              <q-btn color='dark-grey' icon="open_in_new" label="Открыть" @click="open(getCurrentNode(), true)" />
+              <q-btn v-if="getCurrentNode().parentId != -1" color='dark-grey' icon="content_copy" label="Копировать"
+                @click="copyObject(getCurrentNode())" />
+                <q-btn v-if="getCurrentNode().parentId != -1" color='dark-grey' icon="content_paste" label="Вставить"
+                @click="pasteDirectoryFromBuffer(getCurrentNode())" />
             </q-card-actions>
             <q-card-section class="text-grey">
               Тип:
@@ -331,6 +343,11 @@ export default defineComponent({
       de.value.setText(text);
       de.value.show();
     }
+    function showInfo(text) {
+      de.value.setName('Инфо');
+      de.value.setText(text);
+      de.value.show();
+    }
     function showConfirm(text) {
       dc.value.setName('Подтверждение');
       dc.value.setText(text);
@@ -441,6 +458,7 @@ export default defineComponent({
         }
       });
     }
+    // работает
     function newObject() {
       const node = getCurrentNode();
       const name = inputNameDirectoryValue.value;
@@ -452,15 +470,16 @@ export default defineComponent({
             typeId: resNewObject.data.data.id,
             parentId: node.id,
           };
-          axios.post(`${host}/services/genprice/StructureProject/create`, structureObject).then((resStructure) => {
+          axios.post(`${host}/services/genprice/StructureProject/data/create`, structureObject).then((resStructure) => {
             if (resStructure.data.result === 'ok') {
-              structureObject.id = resStructure.data.data.id;
-              console.log('Создано', structureObject);
+              structureObject.id = getObject(resStructure.data.data, 'parentId', node.id).id;
               updateStructure(() => {
                 projects.value.setExpanded(node.id, true);
                 selectedObjects.value = structureObject.id;
                 dialogInputName.value = false;
               });
+            } else {
+              showError('Ошибка изменения структуры');
             }
           });
         } else if (resNewObject.data.data === 'name must be unique') {
@@ -471,22 +490,24 @@ export default defineComponent({
     function pasteDirectoryFromBuffer(node) {
       if (bufferObject.value) {
         selectedObjects.value = null;
+
         const structureObject = {
-          id: bufferObject.value.id,
           type: bufferObject.value.type,
           typeId: bufferObject.value.typeId,
           parentId: node.id,
         };
-        axios.post(`${host}/services/genprice/StructureProject/create`, structureObject).then((resStructure) => {
+        axios.post(`${host}/services/genprice/StructureProject/data/create`, structureObject).then((resStructure) => {
           if (resStructure.data.result === 'ok') {
             console.log('Вставлено', structureObject);
+            structureObject.id = getObject(resStructure.data.data, 'parentId', node.id).id;
             updateStructure(() => {
               projects.value.setExpanded(node.id, true);
               selectedObjects.value = structureObject.id;
             });
+          } else {
+            showError(resStructure.data.data);
           }
         });
-        bufferObject.value = null;
       }
     }
     function pasteFrom(node) {
@@ -537,9 +558,11 @@ export default defineComponent({
                   typeId: object.id,
                   parentId: element.id,
                 };
-                axios.post(`${host}/services/genprice/StructureProject/create`, structureObject).then((resStructure) => {
+                axios.post(`${host}/services/genprice/StructureProject/data/create`, structureObject).then((resStructure) => {
                   if (resStructure.data.result === 'ok') {
                     console.log('Вставлено', structureObject);
+                  } else {
+                    console.log('Ошибка изменения структуры');
                   }
                 });
               });
@@ -554,8 +577,13 @@ export default defineComponent({
         }
       };
     }
-    function cutObject(node) {
+    function copyObject(node) {
       bufferObject.value = node;
+      de.value.setColor('rgb(60,60,60)');
+      showInfo('Скопировано в буффер обмена');
+    }
+    function cutObject(node) {
+      copyObject(node);
       selectedObjects.value = null;
       const parentNode = node.parentId;
       axios.get(`${host}/services/genprice/StructureProject/cut/${node.id}`)
@@ -592,10 +620,13 @@ export default defineComponent({
           }
         });
     }
+    // одна из основных функций (взаимодействует с объектом)
     function open(node, dbclick, openStat) {
       if (node.type === TYPE_CALC_MANUAL) {
         const routePath = router.resolve({ path: `/services/genprice/calculations/${node.typeId}` });
         window.open(routePath.href, '_blank');
+      } else if (node.type === TYPE_FILE) {
+        window.open(`${host}/services/files/view/${getNodeObjectKey(node.id).name}`, '_blank');
       } else if (node.type === TYPE_DIRECTORY) {
         if (dbclick) {
           projects.value.setExpanded(selectedObjects.value, openStat || !projects.value.isExpanded(selectedObjects.value));
@@ -630,7 +661,9 @@ export default defineComponent({
       }
     }
     onMounted(() => {
-      updateStructure();
+      updateStructure(() => {
+        projects.value.expandAll();
+      });
       document.getElementById('field_tree').oncontextmenu = function () {
         return false;
       };
@@ -658,6 +691,7 @@ export default defineComponent({
       getNodeObjectKey,
       removeObject,
       cutObject,
+      copyObject,
       changeObject,
       pasteDirectoryFromBuffer,
       open,

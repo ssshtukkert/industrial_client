@@ -143,7 +143,10 @@ export default defineComponent({
                     const element = materials[index];
                     sum += Number(getProp(allMaterials, element.id, 'cost') || 0) * element.count;
                   }
-                  const summaryCost = (sum * (percentOfMaterials / 100 + 1) + Number(responseC.data.data.operations) * costOneHourWorker).toFixed(0);
+                  let summaryCost = 0;
+                  if (sum > 0) {
+                    summaryCost = (sum * (percentOfMaterials / 100 + 1) + Number(responseC.data.data.operations) * costOneHourWorker).toFixed(0);
+                  }
                   if (cost !== summaryCost) {
                     query.cost = summaryCost;
                     axios.post(`${getQueryUpdate()}/${table.value.selected[0].id}`, query).then((res) => {

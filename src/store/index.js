@@ -2,7 +2,7 @@ import { reactive } from 'vue';
 import Vuex from 'vuex';
 import axios from 'axios';
 import { useRoute } from 'vue-router';
-import ControlVU from '../../../industrial_server/classes/ControlVU.js';
+// import ControlVU from '../../../industrial_server/classes/ControlVU.js';
 
 const stt = reactive({
   portDefault: 3080,
@@ -17,7 +17,7 @@ const stt = reactive({
 const ip = '10.8.5.76';
 const host = `http://${ip}:3001`;
 
-const version = '0.14.10';
+const version = '0.14.11';
 
 const storeVue = new Vuex.Store({
   state: {
@@ -127,13 +127,17 @@ function isPermissions(permission) {
   const route = useRoute();
   try {
     const { requiresAuth, permissionsBlock } = route.meta;
-    if (requiresAuth) {
+    if (requiresAuth && permissionsBlock) {
       return (permissionsBlock[storeVue.state.user.role] || []).includes(permission);
     }
     return false;
   } catch (err) {
     return false;
   }
+}
+
+function getUser() {
+  return storeVue.state.user;
 }
 
 function WebSocket_UpServer(onopenMessage) {
@@ -189,19 +193,19 @@ function WebSocket_Close(name) {
   console.log(stt.sockets);
 }
 // возвращает метаданные аварийных сообщений (зашиты в сервер)
-function getDataAlarms() {
-  return ControlVU.getData();
-}
-function getDataAlarm(id) {
-  const array = getDataAlarms();
-  for (let index = 0; index < array.length; index += 1) {
-    const element = array[index];
-    if (element.id === id) {
-      return element;
-    }
-  }
-  return null;
-}
+// function getDataAlarms() {
+//   return ControlVU.getData();
+// }
+// function getDataAlarm(id) {
+//   const array = getDataAlarms();
+//   for (let index = 0; index < array.length; index += 1) {
+//     const element = array[index];
+//     if (element.id === id) {
+//       return element;
+//     }
+//   }
+//   return null;
+// }
 // отправляет сообщение по вебсокету name
 function WebSocket_Send(name, json) {
   stt.sockets[name].send(JSON.stringify(json));
@@ -392,6 +396,7 @@ function convertToBinary(number) {
 export default {
   TRUE_PASSWORD: 'lab123',
   host,
+  ip,
   version,
   convertToBinary,
   WebSocket_UpServer,
@@ -403,8 +408,8 @@ export default {
   state: stt,
   getCurrentDate,
   getCurrentTime,
-  getDataAlarms,
-  getDataAlarm,
+  // getDataAlarms,
+  // getDataAlarm,
   getProp,
   getObject,
   getId,
@@ -418,4 +423,5 @@ export default {
   validationNumberNoZero,
   storeVue,
   isPermissions,
+  getUser,
 };

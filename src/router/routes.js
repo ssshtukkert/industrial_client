@@ -9,17 +9,45 @@ const routes = [
         path: '/home',
         component: () => import('pages/Index.vue'),
       },
-      // { path: '/vent', component: () => import('pages/vent/index.vue') },
       {
-        path: '/vent/vu1',
-        component: () => import('pages/vent/vu1.vue'),
+        path: '/monitoring/configurations',
+        component: () => import('pages/monitoring/main.vue'),
         meta: {
-          requiresAuth: false,
+          requiresAuth: true,
+          allowedRoles: ['admin', 'user'],
+          permissionsBlock: {
+            user: ['viewLogs', 'createConfiguration', 'editConfiguration', 'deleteConfiguration', 'changeConfiguration', 'copyConfiguration'],
+          },
         },
       },
       {
-        path: '/vent/vu2',
-        component: () => import('pages/vent/vu2.vue'),
+        path: '/monitoring/configuration/:id',
+        component: () => import('src/pages/monitoring/system_conf.vue'),
+        meta: {
+          requiresAuth: true,
+          allowedRoles: ['admin', 'user'],
+          permissionsBlock: {
+            user: ['viewLogs', 'editConfiguration', 'addedTimer', 'changeTag'],
+          },
+        },
+      },
+      // {
+      //   path: '/vent/vu1',
+      //   component: () => import('pages/vent/vu1.vue'),
+      //   meta: {
+      //     requiresAuth: false,
+      //   },
+      // },
+      // {
+      //   path: '/vent/vu2',
+      //   component: () => import('pages/vent/vu2.vue'),
+      //   meta: {
+      //     requiresAuth: false,
+      //   },
+      // },
+      {
+        path: '/konva',
+        component: () => import('pages/canvas.vue'),
         meta: {
           requiresAuth: false,
         },
@@ -30,7 +58,7 @@ const routes = [
         component: () => import('src/pages/lab/main.vue'),
         meta: {
           requiresAuth: true,
-          allowedRoles: ['admin'],
+          allowedRoles: ['admin', 'lab'],
         },
       },
       {
@@ -38,7 +66,7 @@ const routes = [
         component: () => import('src/pages/lab/inflow.vue'),
         meta: {
           requiresAuth: true,
-          allowedRoles: ['admin'],
+          allowedRoles: ['admin', 'lab'],
         },
       },
       {
@@ -46,7 +74,7 @@ const routes = [
         component: () => import('src/pages/lab/outflow.vue'),
         meta: {
           requiresAuth: true,
-          allowedRoles: ['admin'],
+          allowedRoles: ['admin', 'lab'],
         },
       },
       {
@@ -54,7 +82,7 @@ const routes = [
         component: () => import('src/pages/lab/output.vue'),
         meta: {
           requiresAuth: true,
-          allowedRoles: ['admin'],
+          allowedRoles: ['admin', 'lab'],
         },
       },
       {
@@ -62,7 +90,7 @@ const routes = [
         component: () => import('src/pages/lab/tests.vue'),
         meta: {
           requiresAuth: true,
-          allowedRoles: ['admin'],
+          allowedRoles: ['admin', 'lab'],
         },
       },
       {
@@ -70,7 +98,7 @@ const routes = [
         component: () => import('src/pages/lab/testmanager.vue'),
         meta: {
           requiresAuth: true,
-          allowedRoles: ['admin'],
+          allowedRoles: ['admin', 'lab'],
         },
       },
       {
@@ -78,7 +106,7 @@ const routes = [
         component: () => import('src/pages/lab/calibration.vue'),
         meta: {
           requiresAuth: true,
-          allowedRoles: ['admin'],
+          allowedRoles: ['admin', 'lab'],
         },
       },
       {
@@ -86,7 +114,7 @@ const routes = [
         component: () => import('src/pages/lab/charts.vue'),
         meta: {
           requiresAuth: true,
-          allowedRoles: ['admin'],
+          allowedRoles: ['admin', 'lab'],
         },
       },
       {
@@ -94,7 +122,7 @@ const routes = [
         component: () => import('src/pages/lab/history.vue'),
         meta: {
           requiresAuth: true,
-          allowedRoles: ['admin'],
+          allowedRoles: ['admin', 'lab'],
         },
       },
       {
@@ -102,7 +130,7 @@ const routes = [
         component: () => import('src/pages/lab/alarms.vue'),
         meta: {
           requiresAuth: true,
-          allowedRoles: ['admin'],
+          allowedRoles: ['admin', 'lab'],
         },
       },
       {
@@ -110,7 +138,7 @@ const routes = [
         component: () => import('src/pages/lab/lab-recuperator/recupOnline.vue'),
         meta: {
           requiresAuth: true,
-          allowedRoles: ['admin'],
+          allowedRoles: ['admin', 'lab'],
         },
       },
       {
@@ -118,17 +146,17 @@ const routes = [
         component: () => import('src/pages/lab/lab-recuperator/recupHistory.vue'),
         meta: {
           requiresAuth: true,
-          allowedRoles: ['admin'],
+          allowedRoles: ['admin', 'lab'],
         },
       },
-      {
-        path: '/lab/test_rtk',
-        component: () => import('src/pages/lab/test_rtk.vue'),
-        meta: {
-          requiresAuth: true,
-          allowedRoles: ['admin'],
-        },
-      },
+      // {
+      //   path: '/lab/test_rtk',
+      //   component: () => import('src/pages/lab/test_rtk.vue'),
+      //   meta: {
+      //     requiresAuth: true,
+      //     allowedRoles: ['admin'],
+      //   },
+      // },
       // -----------------------------------SERVICES GENPRICE------------------------------------------------------------
       // разрешения:
       // 'openCalculate' - открыть расчёт
@@ -245,16 +273,12 @@ const routes = [
         },
       },
       {
-        path: '/services/error_allow',
-        component: () => import('src/pages/services/ErrorAllow.vue'),
+        path: '/editor',
+        component: () => import('src/pages/konva.vue'),
       },
-      // на удаление, тестовая хрень
       {
-        path: '/farm/execute',
-        meta: {
-          requiresAuth: false, allowedRoles: ['user', 'expert', 'admin'],
-        },
-        component: () => import('src/pages/farm/index.vue'),
+        path: '/services/error_allow',
+        component: () => import('src/components/ErrorAllow.vue'),
       },
     ],
   },

@@ -5,6 +5,7 @@
 .main-font {
   font-family: 'customfont';
 }
+
 .m-table {
   /* height or max-height is important */
   height: 700px;
@@ -32,21 +33,30 @@
   /* height of all previous header rows */
   top: 48px;
 }
+body {
+  -ms-overflow-style: none; /* for Internet Explorer, Edge */
+  scrollbar-width: none; /* for Firefox */
+  overflow-y: scroll;
+}
 
-.scroll::-webkit-scrollbar {
+body {
+  overflow: auto;
+}
+
+body::-webkit-scrollbar {
   width: 15px;
   background: rgb(60, 60, 60);
   opacity: 0 !important;
 }
 
-.scroll::-webkit-scrollbar-thumb {
+body::-webkit-scrollbar-thumb {
   background: grey
 }
 
-.scroll:hover::-webkit-scrollbar-thumb {
+body:hover::-webkit-scrollbar-thumb {
   background: grey
 }
 
-.scroll::-webkit-scrollbar-thumb:hover {
+body::-webkit-scrollbar-thumb:hover {
   background: grey
 }

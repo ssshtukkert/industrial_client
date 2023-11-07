@@ -1,0 +1,427 @@
+{
+  "offerNumber": "КП221031008",
+  "ahuNumber": "02.01",
+  "ahuDescription": "SL_ 3,0 221031008.02.01-K-O-RR(1)-A",
+  "ahuName": "SL_ 3,0 R-RR-K(4)-NE(22,5)-V(31/1,1)/K(4)V(31/1,1)-R",
+  "ahuFullName": "SL_ 3,0 K-O-RR-FK4-NE22,5-V31/1,1/FK4-V31/1,1-R-A-221031008",
+  "calculationType": "0",
+  "ahuType": "SL_",
+  "ahuSubType": "3",
+  "ahuID": "3E2ABB6CD8234C3ABCCBB38D8A306C51",
+  "creationDate": "2022-11-17T09:43:30",
+  "standardSize": "3,0",
+  "standardType": 1,
+  "ahuAssemblyTime": "36,41",
+  "ahuWeight": "387",
+  "units": [
+    {
+      "unitType": "ds",
+      "unitID": "1",
+      "assemblyTime": 0,
+      "materials": [
+        {
+          "id": "P-130-25",
+          "description": "P-130-25",
+          "qty": "1,8304",
+          "type": "0",
+          "uom": "69064a7f-0642-11e8-80c2-005056b64256",
+          "uomDescription": "м"
+        },
+        {
+          "id": "Клапан воздушный KVp-O-350*590",
+          "description": "Клапан воздушный KVp-O-350*590",
+          "qty": "1",
+          "type": "1",
+          "uom": "28b00812-a8af-11e7-8f00-60a44c540a82",
+          "uomDescription": "шт"
+        }
+      ]
+    }
+  ],
+  "structure": {
+    "fullReserve": true,
+    "sensorOut": {
+      "enable": true,
+      "type": 0,
+      "name": "Датчик наружней температуры"
+    },
+    "sensorCO2": {
+      "enable": true,
+      "type": "0(дискретный) 1(аналоговый)"
+    },
+    "inflow": {
+      "valve": {
+        "heat": {
+          "enable": true,
+          "voltage": 0,
+          "power": 16
+        },
+        "heat_perimeter": {
+          "enable": true,
+          "voltage": 0,
+          "power": 16
+        },
+        "model": "Модель клапана",
+        "name": "Клапан воздушный притока",
+        "driveUnits": [
+          {
+            "id": 0,
+            "type": 0,
+            "heat": true,
+            "model": "Модель привода",
+            "name": "Привод №1"
+          }
+        ]
+      },
+      "mixing": {
+        "enable": false,
+        "driveUnits": [
+          {
+            "id": 0,
+            "type": 5,
+            "heat": true,
+            "model": "Модель привода",
+            "name": "Привод №1"
+          }
+        ]
+      },
+      "filters": [
+        {
+          "id": 0,
+          "name": "Фильтр притока 1",
+          "indication": true,
+          "model": "Модель фильтра"
+        }
+      ],
+      "preheater": {
+        "enable": false,
+        "type": 0,
+        "voltage": 0,
+        "power": 60,
+        "model": "Модель нагревателя",
+        "stepsPower": [
+          12,
+          12,
+          12,
+          12,
+          12
+        ]
+      },
+      "recuperator": {
+        "enable": false,
+        "type": 0,
+        "baypass": {
+          "type": 1,
+          "heat": true,
+          "model": "Модель привода",
+          "name": "Привод байпаса рекуператора"
+        },
+        "motor": {
+          "voltage": 0,
+          "power": 0.8,
+          "model": "Модель привода ротора",
+          "name": "Привод роторного рекуператора"
+        },
+        "pump": {
+          "voltage": 0,
+          "power": 0.8,
+          "model": "Модель насоса",
+          "name": "Насос рекуператора"
+        },
+        "pressureAlarm": true,
+        "trayHeat": false,
+        "model": "Модель рекуператора",
+        "name": "Рекуператор"
+      },
+      "to_heat": [
+        {
+          "id": 0,
+          "type": 1,
+          "name": "Нагреватель",
+          "units": {
+            "pump": {
+              "voltage": 1,
+              "power": 0.8,
+              "model": "Модель насоса",
+              "name": "Циркуляционный насос",
+              "pressure": {
+                "enable": true,
+                "model": "Модель прессостата",
+                "name": "Прессостат циркуляционного насоса"
+              }
+            },
+            "valve": {
+              "model": "Модель клапана",
+              "name": "Клапан запорный регулирующий"
+            },
+            "sensor": {
+              "type": 0,
+              "name": "Датчик обратной воды"
+            }
+          }
+        },
+        {
+          "id": 1,
+          "type": 1,
+          "voltage": 0,
+          "current": 15,
+          "power": 60,
+          "model": "Модель нагревателя",
+          "name": "Нагреватель",
+          "stepsPower": [
+            12,
+            12,
+            12,
+            12,
+            12
+          ],
+          "toRoom": {
+            "enable": false,
+            "type": 0,
+            "name": "Датчик температуры в помещении"
+          }
+        }
+      ],
+      "to_cool": [
+        {
+          "id": 0,
+          "type": 0,
+          "step": 1,
+          "model": "Модель охладителя",
+          "name": "Нагреватель",
+          "control": 0,
+          "units": {
+            "pump": {
+              "voltage": 1,
+              "model": "Модель насоса",
+              "name": "Циркуляционный насос"
+            },
+            "valve": {
+              "model": "Модель клапана",
+              "name": "Клапан запорный регулирующий"
+            }
+          }
+        }
+      ],
+      "humdity": {
+        "enable": false,
+        "control": 0,
+        "model": "Модель увлажнителя",
+        "name": "Увлажнитель"
+      },
+      "fans": {
+        "separateControl": false,
+        "separateAlarms": false,
+        "units": [
+          {
+            "id": 0,
+            "pressure": true,
+            "voltage": 1,
+            "type": 0,
+            "power": 2.5,
+            "current": 10,
+            "thermocontact": true,
+            "speedСontrol": true,
+            "model": "Модель вентилятора",
+            "name": "Вентилятор притока",
+            "valve": {
+              "model": "Модель клапана",
+              "name": "Клапан воздушный притока",
+              "driveUnits": [
+                {
+                  "id": 0,
+                  "type": 1,
+                  "model": "Модель привода клапана вентилятора",
+                  "name": "Привод клапана вентилятора"
+                }
+              ]
+            },
+            "reserve": {
+              "enable": true,
+              "pressure": true,
+              "model": "Модель вентилятора притока резевного",
+              "name": "Вентилятор притока резервный",
+              "valve": {
+                "model": "Модель клапана",
+                "name": "Клапан воздушный притока",
+                "driveUnits": [
+                  {
+                    "id": 0,
+                    "type": 1,
+                    "model": "Модель привода клапана вентилятора",
+                    "name": "Привод клапана вентилятора"
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "sensor": {
+        "type": 0,
+        "name": "Датчик температуры канальный"
+      }
+    },
+    "outflow": {
+      "filters": [
+        {
+          "id": 0,
+          "name": "Фильтр притока 1",
+          "indication": true,
+          "model": "Модель фильтра"
+        }
+      ],
+      "fans": {
+        "separateControl": false,
+        "separateAlarms": false,
+        "units": [
+          {
+            "id": 0,
+            "pressure": true,
+            "voltage": 0,
+            "type": 0,
+            "power": 2.5,
+            "current": 10,
+            "thermocontact": true,
+            "speedСontrol": true,
+            "model": "Модель вентилятора",
+            "name": "Вентилятор притока",
+            "valve": {
+              "model": "Модель клапана",
+              "name": "Клапан воздушный притока",
+              "driveUnits": [
+                {
+                  "id": 0,
+                  "type": 0,
+                  "model": "Модель привода клапана вентилятора",
+                  "name": "Привод клапана вентилятора"
+                }
+              ]
+            },
+            "reserve": {
+              "enable": true,
+              "pressure": true,
+              "model": "Модель вентилятора притока резевного",
+              "name": "Вентилятор притока резервный",
+              "valve": {
+                "model": "Модель клапана",
+                "name": "Клапан воздушный притока",
+                "driveUnits": [
+                  {
+                    "id": 0,
+                    "type": 0,
+                    "model": "Модель привода клапана вентилятора",
+                    "name": "Привод клапана вентилятора"
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "sensor": {
+        "type": 1,
+        "name": "Датчик температуры удаляемого воздуха"
+      },
+      "valve": {
+        "model": "Модель клапана",
+        "name": "Клапан воздушный вытяжки",
+        "driveUnits": [
+          {
+            "id": 0,
+            "type": 0,
+            "model": "Модель привода",
+            "name": "Привод №1"
+          }
+        ]
+      }
+    },
+    "blockControl": {
+      "box": 0,
+      "rs485": false,
+      "remoteСontrol": 0,
+      "weight": 45.4,
+      "size": "800x600",
+      "name": "Щит управления ABU-W-1-ZM-2,5-UV",
+      "current": 15,
+      "assemblyTime": 12,
+      "materials": [
+        {
+          "id": 5,
+          "count": 1
+        },
+        {
+          "id": 12,
+          "count": 2
+        }
+      ]
+    }
+  },
+  "keysDescriptions": [
+    {
+      "offerNumber": "Строка, Номер коммерческого предложения",
+      "ahuNumber": "Строка, Номер ПВУ",
+      "ahuDescription": "Строка, Краткое наименование ПВУ (поле «КороткоеНаименование» существующей выгрузки) для формирования наименования номенклатуры DS",
+      "ahuNаме": "Строка, Наименование ПВУ (в стандарте до 2021г)",
+      "ahuFullNаме": "Строка – наименование ПВУ (в актуальном стандарте с 2021г, включающем номер проекта [КП] и номер установки в проекте)",
+      "calculationType": "Число, 1- окончательная спецификация ПВУ, 0 – предварительная спецификация ПВУ",
+      "ahuType": "Строка – перечисление, типы ПВУ: AL_, SL_, AL_2, SL_2, AL, SL (последние 2  - устаревшие)",
+      "ahuID": "Строка – идентификатор установки (поле IDУстановки в существующей выгрузке)",
+      "ahuSubType": "Число – подтип ПВУ, 1 – Приточная или вытяжная, 0 - приточно-вытяжная",
+      "creationDate": "Дата – дата и время создания файла",
+      "standardSize": "Число – типоразмер ПВУ",
+      "standardType": "Число, подтип ПВУ: 1 – Стандартные ПВУ, 0 - не стандартные ПВУ",
+      "ahuassemblyTime": "Число - время сборки установки в часах (используется для расчета трудозатрат)",
+      "ahuWeight": "Число – вес установки в кг",
+      "units": "Массив – каждый элемент массива представляет собой элемент ПВУ использующийся для заполнения документа «Заказа на сборку»",
+      "structure": "Объект, структура системы для расчёта ЩУ",
+      "structure.fullReserve": "Булево, Резервирование системы, (true/false)",
+      "structure.sensorOut": "Объект, Датчик наружней температуры",
+      "structure.sensorOut.enable": "Булево, вкл/выкл",
+      "structure.sensorOut.type": "Число, Тип датчика 0(NTC10k), 1(pt1000)",
+      "structure.inflow": "Элементы приточного канала",
+      "structure.inflow.valve": "Объект, Клапан воздушный",
+      "structure.inflow.mixing": "Объект, Камера смешения",
+      "structure.inflow.filters": "Массив, Перечень фильтров на притоке",
+      "structure.inflow.preheater": "Объект, Преднагреватель",
+      "structure.inflow.recuperator": "Объект, Рекуператор",
+      "structure.inflow.recuperator.type": "Число, Тип рекуператора 0(ротор), 1(пластинчатый), 2(гликолевый)",
+      "structure.inflow.to_heat": "Массив, Список нагревателей",
+      "structure.inflow.to_heat[n].id": "Число, Порядковый номер нагревателя",
+      "structure.inflow.to_heat[n].type": "Число, Тип нагревателя 0(вода), 1(электрика)",
+      "structure.inflow.to_heat[n].name": "Строки, Маркировка нагревателя",
+      "structure.inflow.to_heat[n].units": "Массив, Составляющие блоки нагревателя",
+      "structure.inflow.to_cool": "Массив, Список охладителей",
+      "structure.inflow.to_cool[n].id": "Число, Порядковый номер охладителя",
+      "structure.inflow.to_cool[n].type": "Число, Тип охладителя 0(water), 1(freon)",
+      "structure.inflow.to_cool[n].name": "Строки, Маркировка охладителя",
+      "structure.inflow.to_cool[n].step": "Число, количество контуров(ступеней) охладителя",
+      "structure.inflow.humdity": "Объект, Увлажнитель",
+      "structure.inflow.humdity.type": "Число, Тип управления увлажнителя 0(дискретный), 1(аналоговый)",
+      "structure.inflow.fans": "Объект, Вентиляторы",
+      "structure.inflow.fans.units": "Массив, Перечень вентиляторов",
+      "structure.inflow.fans.units[n].id": "Число, порядковый номер вентилятора",
+      "structure.inflow.fans.units[n].pressure": "Булево, контроль вентилятора по прессостату",
+      "structure.inflow.fans.units[n].type": "Число, тип вентилятора 0(асинхронный), 1(EC-колесо)",
+      "structure.inflow.fans.units[n].current": "Число, Номинальный ток, А",
+      "structure.inflow.fans.units[n].power": "Число, Номинальная мощность, кВт",
+      "structure.inflow.fans.units[n].voltage": "Число, Напряжение питания 0(380 В), 1(220 В)",
+      "structure.inflow.fans.units[n].model": "Строка, Номенклатура вентилятора",
+      "structure.inflow.fans.units[n].name": "Строка, Маркировка вентилятора",
+      "structure.inflow.fans.units[n].speedControl": "Булево, Регулировка скорости вентилятора",
+      "structure.inflow.fans.units[n].thermocontact": "Булево, Наличие термоконтакта в обмотке вентилятора",
+      "structure.inflow.sensor": "Объект, Датчик температуры в канале Притока",
+      "structure.inflow.sensor.type": "Число, Тип датчика 0(NTC10k), 1(pt1000)",
+      "structure.inflow.sensor.name": "Строка, Маркировка датчика",
+      "structure.outflow": "Объект, Элементы вытяжного канала",
+      "structure.outflow.filters": "Массив, Перечень фильтров на вытяжке",
+      "structure.outflow.fans": "Объект, Вентиляторы вытяжного канала",
+      "structure.outflow.sensor": "Объект, Датчик температуры удаляемого воздуха",
+      "structure.outflow.valve": "Объект, Воздушный клапан на вытяжке",
+      "structure.blockControl": "Объект, Щит управления системой",
+      "structure.blockControl.box": "Число, Корпус щита 0(пластик), 1(металл)",
+      "structure.blockControl.remoteControl": "Число, Пульт управления, 0(отсутствует), 1(ПУ кнопочный), 2(ПУ Zentec), 3(Danfoss), 4(Weintek), 5(Elheart)",
+      "driveUnit.type": "Типы приводов 0(AC220-P), 1(AC220-R), 2(AC24-P), 3(AC24-R), 4(AC/DC24-DC0...10), 5(AC24-DC0...10)"
+    }
+  ]
+}

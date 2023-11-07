@@ -11,4 +11,5 @@ export default defineComponent({
     store,
   },
 });
+
 </script>

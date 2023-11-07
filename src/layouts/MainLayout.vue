@@ -4,14 +4,10 @@
       <q-toolbar>
         <q-btn flat dense round icon="menu" aria-label="Menu" @click="toggleLeftDrawer" />
         <q-card-section class="q-pa-sm row items-center full-width">
-          <div class="text-h4 text-weight-bolder text-white">
-            nevatom
-          </div>
-          <div class="col main-font text-h10 text-grey q-pa-sm" align="left" float="">
-            технический сервер
-          </div>
+          <img class="q-mt-xs" src="./logo.svg" style="width: 300px;">
+          <q-space />
           <div v-if="isAuth()">
-            <q-btn push color="primary" :label="user().name">
+            <q-btn color="orange-10" :label="user().name">
               <q-popup-proxy>
                 <q-card class="text-h6 text-white q-pa-md" style="background-color: rgb(60, 60, 60);">
                   <q-card-section>
@@ -28,11 +24,13 @@
             </q-btn>
           </div>
           <div v-else>
-            Вход не выполнен
-            <q-btn type="button" @click="login">Войти</q-btn>
+            <span style="padding: 10px;">
+              Вход не выполнен
+            </span>
+            <q-btn color="orange-10"  @click="login">Войти</q-btn>
           </div>
           <div class="col-2 text-grey" align="right">
-            v.{{ version }}
+            v{{ version }}
           </div>
         </q-card-section>
       </q-toolbar>
@@ -48,7 +46,7 @@
       </q-scroll-area>
     </q-drawer>
     <q-page-container>
-      <router-view style="padding: 0px; margin: 0px;" />
+      <router-view />
     </q-page-container>
   </q-layout>
 </template>
@@ -84,28 +82,18 @@ export default defineComponent({
         {
           label: 'Главная',
           selectable: true,
-          icon: 'home',
           to: '/home',
         },
-        // {
-        //   label: 'Производство',
-        //   icon: 'precision_manufacturing',
-        //   selectable: false,
-        //   node: '/plant',
-        // },
         {
-          label: 'Вентиляция',
-          icon: 'hvac',
+          label: 'Инженерные системы',
           selectable: false,
-          node: '/vent',
+          node: '/monitoring',
           children: [
-            { label: 'Вент. установка №1', to: '/vent/vu1' },
-            { label: 'Вент. установка №2', to: '/vent/vu2' },
+            { label: 'База мониторинга', to: '/monitoring/configurations' },
           ],
         },
         {
           label: 'Лаборатория',
-          icon: 'science',
           selectable: false,
           node: '/lab',
           children: [
@@ -163,70 +151,11 @@ export default defineComponent({
                 },
               ],
             },
-            {
-              label: 'Испытания РТК',
-              to: '/lab/test_rtk',
-            },
           ],
         },
         {
-          label: 'Сервисы ОА',
-          icon: 'settings',
-          selectable: false,
-          node: '/services',
-          children: [
-            {
-              label: 'Проекты',
-              to: '/services/projects',
-            },
-            {
-              label: 'Расчеты',
-              to: '/services/genprice/calculations',
-            },
-            {
-              label: 'Конфигурации',
-              to: '/services/productoptions/configurations',
-            },
-            {
-              label: 'Файлы',
-              to: '/services/files',
-            },
-            // {
-            //   label: 'ChatOA',
-            //   to: '/services/chatOA',
-            // },
-            {
-              label: 'Справочники',
-              selectable: false,
-              node: '/services/references',
-              children: [
-                {
-                  label: 'Материалы',
-                  to: '/services/references/materials',
-                },
-                {
-                  label: 'Категории материалов',
-                  to: '/services/references/materials_categories',
-                },
-                {
-                  label: 'Eд. измерения материалов',
-                  to: '/services/references/materials_measures',
-                },
-                {
-                  label: 'Вентиляторы',
-                  to: '/services/references/fans',
-                },
-              ],
-            },
-            {
-              label: 'Настройки',
-              to: '/services/genprice/settings',
-            },
-            {
-              label: 'Пользователи',
-              to: '/services/users',
-            },
-          ],
+          label: 'Пользователи',
+          to: '/services/users',
         },
       ],
     }]);

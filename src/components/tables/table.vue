@@ -75,7 +75,7 @@
           :disabled="!createInputName" />
         <q-btn v-show="action === 1" color="dark-grey" label="Изменить" @click="changeConfirmAction"
           :disabled="!createInputName" />
-        <q-btn color="dark-grey" label="Отмена" v-close-popup @click="cancelConfirm" />
+        <q-btn color="dark-grey" label="Отмена" v-close-popup />
       </q-card-actions>
     </q-card>
   </q-dialog>

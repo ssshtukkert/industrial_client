@@ -1,0 +1,19 @@
+<svg width="32" height="32" xmlns="http://www.w3.org/2000/svg">
+ <title>vent</title>
+
+ <g>
+  <title>Layer 1</title>
+  <rect fill="none" stroke="#000" x="0.43533" y="0.36129" width="31.31495" height="31.49187" id="svg_4"/>
+  <g id="svg_12">
+   <g id="svg_10">
+    <line stroke-linecap="undefined" stroke-linejoin="undefined" id="svg_1" y2="25.93251" x2="12.25387" y1="7.6248" x1="12.13303" stroke-width="2" stroke="#000" fill="none"/>
+    <line stroke="#000" stroke-linecap="undefined" stroke-linejoin="undefined" id="svg_2" y2="17.11097" x2="23.61311" y1="8.4707" x1="12.55598" stroke-width="2" fill="none"/>
+    <line stroke="#000" stroke-linecap="undefined" stroke-linejoin="undefined" id="svg_3" y2="25.08658" x2="12.67682" y1="17.11094" x1="23.55269" stroke-width="2" fill="none"/>
+    <ellipse stroke="#000" ry="0.574" rx="0.574" id="svg_7" cy="17.08076" cx="23.46205" fill="none"/>
+    <ellipse stroke="#000" ry="0.574" rx="0.574" id="svg_8" cy="8.13838" cx="12.10281" fill="none"/>
+    <ellipse stroke="#000" ry="0.574" rx="0.574" id="svg_9" cy="25.3585" cx="12.28408" fill="none"/>
+   </g>
+   <ellipse stroke="#000" ry="11.14776" rx="10.6946" id="svg_11" cy="16.65781" cx="15.75831" fill="none"/>
+  </g>
+ </g>
+</svg>

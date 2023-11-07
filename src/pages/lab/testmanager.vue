@@ -155,8 +155,8 @@ export default {
         axios
           .get(`${host}/testrecup/get_all_from_start/${row.start}`).then((responseC) => {
             measures.value = responseC.data[0].countMeasures;
-            getRouteOrder.value = `http://${host}/testrecup/download/get_all_from_start/${responseC.data[0].start}`;
-            getRouteOrderRemove.value = `http://${host}/testrecup/remove_all_from_start/${responseC.data[0].start}`;
+            getRouteOrder.value = `${host}/testrecup/download/get_all_from_start/${responseC.data[0].start}`;
+            getRouteOrderRemove.value = `${host}/testrecup/remove_all_from_start/${responseC.data[0].start}`;
           });
       }
     }

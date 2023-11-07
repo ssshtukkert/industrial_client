@@ -881,7 +881,8 @@ export default {
     function updateNameTest(val) {
       const query = {};
       query.value = val;
-      axios.post(`http://${host}/testrecup/settings_set/nameTest`, query)
+      console.log(query);
+      axios.post(`${host}/testrecup/settings_set/nameTest`, query)
         .then((res) => {
           if (res.data.result === 'ok') {
             console.log('OK');
@@ -892,7 +893,7 @@ export default {
     }
     onMounted(() => {
       axios
-        .get(`http://${host}/testrecup/settings/nameTest`).then((res) => {
+        .get(`${host}/testrecup/settings/nameTest`).then((res) => {
           nameTest.value = res.data[0].value || 'Исп. по умолчанию';
         });
 

@@ -4,7 +4,7 @@
       <q-bar class="text-white" style="background-color: rgb(80, 80, 80);">
         <div>{{ name }}</div>
       </q-bar>
-      <q-card-section class="text-white" style="background-color: rgb(60, 60, 60);">
+      <q-card-section align="center" class="text-white" style="background-color: rgb(60, 60, 60);">
         {{ text }}
       </q-card-section>
       <q-card-actions align="center" class="text-black" style="background-color: rgb(60, 60, 60);">

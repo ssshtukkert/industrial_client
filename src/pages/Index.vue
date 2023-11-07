@@ -2,12 +2,13 @@
   <q-page class="flex flex-center text-white" style="background-color: rgb(60, 60, 60);">
     <q-card class="text-white" style="background-color: rgb(60, 60, 60);">
       <q-card-section style="background-color: rgb(80, 80, 80);">
-        <div class="text-h6">О сервере</div>
+        <div class="text-h6">О сервисе</div>
       </q-card-section>
       <q-card-section>
         <div class="q-pa-md">
-          <div class="text-h6">Технический сервер "Неватом"</div>
-          <div class="text-h6">Контакты: vfynk@nevatom.ru</div>
+          <div class="text-h6">Технический сервер ОАР - "Неватом"</div>
+          <div class="text-h6">Написать в техподдержку: <span> <a
+                href="mailto:email@example.com?subject=Mail from our Website" style="color: rgb(94, 102, 212); font-size: large;">vfynk@nevatom.ru</a> </span></div>
         </div>
       </q-card-section>
     </q-card>

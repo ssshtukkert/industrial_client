@@ -1,0 +1,22 @@
+<svg width="150" height="200" xmlns="http://www.w3.org/2000/svg">
+ <title>valve</title>
+
+ <g>
+  <title>Layer 1</title>
+  <path fill="none" stroke="#000000" stroke-width="2" opacity="undefined" d="m0.23812,0.71433l149.52374,0l0,198.57133l-149.52374,0l0,-198.57133z" id="svg_1"/>
+  <path fill="none" stroke="#000000" stroke-width="2" opacity="undefined" d="m-205.18915,47.64609l147.79527,0l0,197.81651l-147.79527,0l0,-197.81651z" id="svg_35"/>
+  <line fill="none" stroke="#000000" stroke-width="2" x1="-0.14793" y1="8.33512" x2="151" y2="8.33512" id="svg_2"/>
+  <line fill="none" stroke="#000000" stroke-width="2" x1="-0.12339" y1="16.88942" x2="151" y2="16.88942" id="svg_5"/>
+  <line fill="none" stroke="#000000" stroke-width="2" x1="0" y1="100.56502" x2="150" y2="100.56502" id="svg_11"/>
+  <line fill="none" stroke="#000000" stroke-width="2" x1="219.35644" y1="25.34653" x2="219.75248" y2="25.34653" id="svg_13"/>
+  <line fill="none" stroke="#000000" stroke-width="2" x1="-0.0495" y1="172.09464" x2="151" y2="172.09464" id="svg_15"/>
+  <line fill="none" stroke="#000000" stroke-width="2" x1="-0.0495" y1="30.22932" x2="150.64356" y2="30.22932" id="svg_16"/>
+  <line fill="none" stroke="#000000" stroke-width="2" x1="-0.24752" y1="184.32237" x2="150.24752" y2="184.32237" id="svg_18"/>
+  <line fill="none" stroke="#000000" stroke-width="2" x1="-0.0495" y1="191.14227" x2="150.44554" y2="191.14227" id="svg_22"/>
+  <path id="svg_3" d="m151.8982,18.21649" opacity="undefined" stroke-width="2" stroke="#000000" fill="none"/>
+  <line fill="none" stroke="#000000" stroke-width="2" x1="0" y1="56.39521" x2="150" y2="56.39521" id="svg_4"/>
+  <line fill="none" stroke="#000000" stroke-width="2" x1="0" y1="141.91093" x2="150" y2="141.91093" id="svg_6"/>
+  <line fill="none" stroke="#000000" stroke-width="2" x1="-0.14793" y1="4.56154" x2="151" y2="4.56154" id="svg_7"/>
+  <line fill="none" stroke="#000000" stroke-width="2" x1="-0.0495" y1="195.29321" x2="150.44554" y2="195.29321" id="svg_8"/>
+ </g>
+</svg>

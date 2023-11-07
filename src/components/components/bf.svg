@@ -1,0 +1,17 @@
+<svg width="50.00000000000001" height="50.00000000000001" xmlns="http://www.w3.org/2000/svg" fill="none">
+ <title>cooler</title>
+ <defs>
+  <clipPath id="clip0_51_128">
+   <rect id="svg_1" fill="white" height="50" width="50"/>
+  </clipPath>
+ </defs>
+ <g>
+  <title>Layer 1</title>
+  <path stroke="#000000" d="m7.52557,48.29215l33.96858,0c4.02008,0 7.27899,-3.24505 7.27899,-7.24803l0,-33.82416c0,-4.00298 -3.2589,-7.24803 -7.27899,-7.24803l-33.96858,0c-4.02008,0 -7.27899,3.24505 -7.27899,7.24803l0,33.82416c0,4.00299 3.2589,7.24803 7.27899,7.24803z" fill="none" stroke-width="2" id="svg_12"/>
+  <path id="svg_11" d="m-33.03105,10.84884l0.745,-1.30375l0.745,1.30375l-1.49,0z" stroke-width="2" stroke="#000000" fill="none"/>
+  <path id="svg_13" d="m-45.77595,43.27008l0.745,-1.30375l0.745,1.30375l-1.49,0z" stroke-width="2" stroke="#000000" fill="none"/>
+  <path id="svg_14" d="m-62.54556,32.09034l0.745,-1.30375l0.745,1.30375l-1.49,0z" stroke-width="2" stroke="#000000" fill="none"/>
+  <rect transform="rotate(90 25 11.7769)" fill="none" stroke="#000" x="22.19009" y="-7.14874" width="5.61983" height="37.85122" id="svg_2"/>
+  <rect transform="rotate(90 25 37.7273)" fill="none" stroke="#000" x="22.19009" y="18.80165" width="5.61983" height="37.85122" id="svg_3"/>
+ </g>
+</svg>

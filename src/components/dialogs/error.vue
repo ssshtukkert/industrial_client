@@ -1,7 +1,7 @@
 <template>
     <q-dialog v-model="visible" persistent transition-show="scale" transition-hide="scale">
       <q-card style="width: 900px; max-width: 95vw; background-color: rgb(60, 60, 60);">
-        <q-bar class="bg-red text-white">
+        <q-bar :class="`bg-${color} text-white`">
           <div class="text-h6">{{ name }}</div>
         </q-bar>
         <q-card-section class="text-h6 text-white">
@@ -19,6 +19,10 @@ import { defineComponent, ref } from 'vue';
 export default defineComponent({
   name: 'DialogError',
   props: {
+    headColor: {
+      type: String,
+      default: 'red',
+    },
     nameDef: {
       type: String,
       default: 'Error',
@@ -32,6 +36,9 @@ export default defineComponent({
     show() {
       this.visible = true;
     },
+    setColor(color) {
+      this.color = color;
+    },
     setName(newName) {
       this.name = newName;
     },
@@ -43,6 +50,7 @@ export default defineComponent({
     const visible = ref(false);
     return {
       visible,
+      color: props.headColor,
       name: props.nameDef,
       text: props.textDef,
     };

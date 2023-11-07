@@ -1241,7 +1241,7 @@
           <div class="col text-h6 text-white">
             Авария
           </div>
-          <q-btn class="col text-white" color="primary" label="Журнал аварий" :href="`http://${host}/#/lab/recup/alarms`"/>
+          <q-btn class="col text-white" color="primary" label="Журнал аварий" :href="`${host}/#/lab/recup/alarms`"/>
         </q-card-section>
       </q-card>
     </q-dialog>
