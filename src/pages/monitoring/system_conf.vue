@@ -139,7 +139,9 @@
                 </template>
               </q-select>
               <q-card-actions>
-                <q-btn color='dark-grey' label="Скачать" @click="downloadPDF(tagIsChart)" />
+                <q-btn color='dark-grey' label="Отчет PDF" @click="downloadPDF(tagIsChart)" />
+                <q-btn color='dark-grey' label="Отчет Excel"
+      :href="`http://nsk-deb-tech:3001/monitoring/excel/save_chart/${id}`" target="_self"/>
               </q-card-actions>
             </div>
           </div>
@@ -1402,6 +1404,7 @@ export default {
       delete tagsModelElementName.value[tagId];
       synchSettingsTags(elementId);
     }
+
     function openInterpretatorTag(elementId) {
       const tag = getObject(getObjectSelect().tags, 'id', elementId);
       tagType.value = tag.type;
@@ -1418,6 +1421,7 @@ export default {
       tagConditionValue.value = tag.condition_value || '';
       rowsSettingsTag.value = tag.metadata;
     }
+
     function rebuildSettingsTags(tagId) {
       const tag = getObject(getObjectSelect().tags, 'id', tagId);
       tag.type = tagType.value || 'byte';

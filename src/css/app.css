@@ -60,3 +60,18 @@ body:hover::-webkit-scrollbar-thumb {
 body::-webkit-scrollbar-thumb:hover {
   background: grey
 }
+
+/* кастомизация скролла */
+
+::-webkit-scrollbar{
+  width: 10px;
+  background-color: rgba(80, 80, 80, .3);
+  overflow: auto;
+}
+::-webkit-scrollbar-thumb{
+  width: 10px;
+  background-color: rgba(134, 134, 134, 0.3);
+}
+::-webkit-scrollbar-thumb:hover{
+  background-color: rgba(255, 255, 255, 0.349);
+}

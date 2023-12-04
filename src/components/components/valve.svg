@@ -3,12 +3,12 @@
  <g>
   <title>Layer 1</title>
   <g id="svg_1">
-   <path id="svg_12" stroke-width="2" fill="none" d="m7.87225,49.24735l33.96858,0c4.02008,0 7.27899,-3.24505 7.27899,-7.24803l0,-33.82416c0,-4.00298 -3.2589,-7.24803 -7.27899,-7.24803l-33.96858,0c-4.02008,0 -7.27899,3.24505 -7.27899,7.24803l0,33.82416c0,4.00299 3.2589,7.24803 7.27899,7.24803z" stroke="#000000"/>
+   <path id="svg_12" stroke-width="2" fill="none" d="m7.87225,49.24735l33.96858,0c4.02008,0 7.27899,-3.24505 7.27899,-7.24803l0,-33.82416c0,-4.00298 -3.2589,-7.24803 -7.27899,-7.24803l-33.96858,0c-4.02008,0 -7.27899,3.24505 -7.27899,7.24803l0,33.82416c0,4.00299 3.2589,7.24803 7.27899,7.24803z" stroke="#ffffff"/>
    <g id="svg_33">
-    <line stroke-linecap="undefined" stroke-linejoin="undefined" id="svg_30" y2="36.79941" x2="12.60699" y1="13.2006" x1="37.39301" fill="none" stroke="#000" stroke-width="3" transform="rotate(-7.84002 25 25)"/>
-    <ellipse ry="0.62998" rx="0.85265" id="svg_31" cy="19.40735" cx="15.76112" fill="#000000" transform="rotate(-7.84002 25.1564 24.5607) matrix(-3.16603 0.00752658 0.00557446 4.27476 74.9484 -58.5197)" stroke="#000"/>
+    <line stroke-linecap="undefined" stroke-linejoin="undefined" id="svg_30" y2="36.79941" x2="12.60699" y1="13.2006" x1="37.39301" fill="none" stroke="#ffffff" stroke-width="3" transform="rotate(-7.84002 25 25)"/>
+    <ellipse ry="0.62998" rx="0.85265" id="svg_31" cy="19.40735" cx="15.76112" fill="#ffffff" transform="rotate(-7.84002 25.1564 24.5607) matrix(-3.16603 0.00752658 0.00557446 4.27476 74.9484 -58.5197)" stroke="#ffffff"/>
    </g>
-   <rect fill="none" stroke-width="2" x="0.74522" y="7.5203" width="48.50956" height="34.9594" id="svg_35" stroke="#000000"/>
+   <rect fill="none" stroke-width="2" x="0.74522" y="7.5203" width="48.50956" height="34.9594" id="svg_35" stroke="#ffffff"/>
   </g>
  </g>
 </svg>

@@ -79,7 +79,7 @@ export default defineComponent({
                     displayFormats: {
                       second: 'HH:mm:ss',
                     },
-                    tooltipFormat: 'HH:mm:ss YYYY-MM-DD',
+                    tooltipFormat: 'HH:mm:ss DD-MM-YYYY',
                   },
                 },
               ],

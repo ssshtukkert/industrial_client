@@ -21,6 +21,17 @@ const routes = [
         },
       },
       {
+        path: '/monitoring/mykonva',
+        component: () => import('pages/monitoring/new_konva.vue'),
+        // meta: {
+        //   requiresAuth: true,
+        //   allowedRoles: ['admin', 'user'],
+        //   permissionsBlock: {
+        //     user: ['viewLogs', 'createConfiguration', 'editConfiguration', 'deleteConfiguration', 'changeConfiguration', 'copyConfiguration'],
+        //   },
+        // },
+      },
+      {
         path: '/monitoring/configuration/:id',
         component: () => import('src/pages/monitoring/system_conf.vue'),
         meta: {
@@ -45,8 +56,15 @@ const routes = [
       //     requiresAuth: false,
       //   },
       // },
+      // {
+      //   path: '/konva',
+      //   component: () => import('pages/canvas.vue'),
+      //   meta: {
+      //     requiresAuth: false,
+      //   },
+      // },
       {
-        path: '/konva',
+        path: '/mykonva',
         component: () => import('pages/canvas.vue'),
         meta: {
           requiresAuth: false,

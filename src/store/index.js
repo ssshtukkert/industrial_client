@@ -255,6 +255,7 @@ function getStatusData() {
     },
   ];
 }
+// на удаление
 const newObjectCalculation = {
   cost: 0,
   materials: '[]',

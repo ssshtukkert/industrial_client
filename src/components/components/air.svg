@@ -3,7 +3,7 @@
 
  <g>
   <title>Layer 1</title>
-  <line id="svg_1" y2="0.26712" x2="33.89384" y1="0.15868" x1="-0.26712" stroke="#000" fill="none"/>
-  <line id="svg_3" y2="31.7169" x2="33.46005" y1="31.60845" x1="-0.70091" stroke="#000" fill="none"/>
+  <line id="svg_1" y2="0.26712" x2="33.89384" y1="0.15868" x1="-0.26712" stroke="#ffffff" fill="none"/>
+  <line id="svg_3" y2="31.7169" x2="33.46005" y1="31.60845" x1="-0.70091" stroke="#ffffff" fill="none"/>
  </g>
 </svg>

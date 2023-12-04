@@ -1,8 +1,8 @@
 <svg width="50" height="50" xmlns="http://www.w3.org/2000/svg" xml:space="preserve" version="1.1">
  <g>
   <title>Layer 1</title>
-  <g transform="rotate(-90 26.07 25.546)" stroke="null" id="svg_1">
-   <path stroke="null" id="svg_2" d="m26.07003,45.6137l9.37438,-20.06771l-5.85899,0l0,-20.06764l-7.03079,-0.00008l0,20.06771l-5.85899,0l9.37438,20.06771z"/>
+  <g transform="rotate(-90 26.07 25.546)" stroke="#ffffff" fill="#ffffff" id="svg_1">
+   <path stroke="#ffffff" id="svg_2" d="m26.07003,45.6137l9.37438,-20.06771l-5.85899,0l0,-20.06764l-7.03079,-0.00008l0,20.06771l-5.85899,0l9.37438,20.06771z"/>
   </g>
   <g id="svg_3"/>
   <g id="svg_4"/>

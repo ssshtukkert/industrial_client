@@ -162,6 +162,8 @@ export default defineComponent({
     function goCalculationId(id) {
       const routeGo = router.resolve({ path: `/monitoring/configuration/${id}` });
       window.open(routeGo.href, '_blank');
+      // const routeGo = router.resolve({ path: `/monitoring/mykonva` });
+      // window.open(routeGo.href, '_blank');
     }
     function goCalculation() {
       router.push(`/monitoring/configuration/${table.value.getSelect()[0].id}`);
@@ -308,6 +310,18 @@ export default defineComponent({
       return false;
     }
     function openLogs() {
+
+      function getSysName(id_system){
+        if (id_system !== -1) {
+        const object = getObject(table.value.rows, 'id', id_system);
+        if (object != null){
+          return object.name;
+        }
+      }
+        return '-';
+      }
+
+
       logs.value.length = 0;
       axios.get(`${host}/monitoring/table/SystemLog`).then((logData) => {
         logData.data.forEach((log) => {
@@ -316,7 +330,7 @@ export default defineComponent({
             time: log.createdAt,
             user: log.user,
             event: log.event,
-            system: getObject(table.value.rows, 'id', log.id_system).name,
+            system: getSysName(Number(log.id_system)),
           });
         });
       });

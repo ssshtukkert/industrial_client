@@ -27,7 +27,7 @@
             <span style="padding: 10px;">
               Вход не выполнен
             </span>
-            <q-btn color="orange-10"  @click="login">Войти</q-btn>
+            <q-btn color="orange-10" @click="login">Войти</q-btn>
           </div>
           <div class="col-2 text-grey" align="right">
             v{{ version }}
